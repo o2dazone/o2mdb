@@ -1,0 +1,9 @@
+*.*
+*/*
+
+!.gitignore
+!index.php
+!m.php
+!build.js
+!buildm.js
+!*.css
