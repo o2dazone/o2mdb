@@ -2,6 +2,26 @@
 (function(doc, win){
   'use strict';
 
+  function $(el) {
+    return doc.getElementById(el);
+  }
+
+  function getJSON(url, callback){
+    var ajax = new XMLHttpRequest();
+
+    ajax.onreadystatechange = function(){
+        if(ajax.readyState === 4 && ajax.status === 200){
+          var r = ajax.response;
+
+          if (r.charAt(0) !== '[') return;
+          callback(JSON.parse(r));
+      }
+    }
+
+    ajax.open('GET', url, !0);
+    ajax.send();
+  }
+
   var o2m, proto,
       sm = soundManager;
 
@@ -39,35 +59,107 @@
   proto.start = function(){
     var self = this;
 
+    function getQueryString(a, b) {
+      if (b == null) b = "";
+      a = a.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var c = (new RegExp("[\\?&]" + a + "=([^&#]*)")).exec(self.loc);
+      return c == null ? b : c[1]
+    }
+
+    function resultsDelegator(e, target) {
+      if (target.tagName !== 'A') return;
+      if (target.className === 'addAll') {
+        self.revealPlaylist();
+        self.plScroll.innerHTML += self.addResulted;
+      } else if (target.className === 'partial') {
+        self.musicAjaxCall = 'search.php?o=path&q=' + self.searchBox.value;
+        self.fetchMusic();
+      } else if (target.parentNode.id === 'resultList') {
+        self.revealPlaylist();
+        self.plScroll.innerHTML += '<a href="' + target.href + '">' + target.innerHTML + '</a>';
+      }
+    }
+
+    function playlistDelegator(e, target) {
+      if (target.id === this.id) return;
+      var targetClass = target.className
+      if (targetClass === 'clear') {
+        self.plScroll.innerHTML = '';
+        return;
+      } else if (targetClass === 'shuffle') {
+        if (self.isShuffled()) {
+          target.removeAttribute('id');
+        } else {
+          target.id = 'on';
+        }
+        return;
+      } else if (target.tagName === 'A' && target.parentNode.id === 'playlistScroll') {
+        var trackPlaying;
+        if (trackPlaying = $('playing')) {
+          trackPlaying.removeAttribute('id');
+          trackPlaying.removeAttribute('name');
+        }
+        self.playing = target;
+        self.queue();
+        return;
+      } else if (target.tagName === 'SPAN') {
+        self.plScroll.removeChild(target.parentNode);
+        return;
+      }
+    }
+
+    function omniDelegator(e, target) {
+      self.musicAjaxCall = null;
+      var targetDelegate = {
+        A: target,
+        SPAN: target.parentNode
+      };
+
+      var omniDelegate = {
+        'latest': 'search.php?q=&o=left(creationDate,10)%20desc,path&l=100',
+        'random': 'search.php?q=&o=rand()&l=100'
+      };
+
+      if (targetDelegate[target.tagName])
+        self.musicAjaxCall = omniDelegate[targetDelegate[target.tagName].getAttribute('data-el')];
+
+      if (self.musicAjaxCall) {
+        self.fetchMusic();
+        var ajax = self.musicAjaxCall.replace(/^search.php/,'');
+        self.replaceUrl(ajax, ajax);
+      }
+    }
+
     var paramMatch,
         regex = /[\?&]([^=]+)=/g,
         paramList = [],
         paramDelegator = {
-      auto: function() {
-        if (paramList.indexOf('p') != "1")
-          auto = !0; //if "play" param doesn't exist, then set auto to true.
-      },
-      s: function() {
-        self.searchBox.value = unescape(getQueryString('s'));
-        self.searchQuery();
-      },
-      p: function() {
-        auto = 0;
-        var track = unescape(getQueryString('p'));
-        self.revealPlaylist();
-        self.plScroll.innerHTML = '<a href="' + track + '">' + track.replace(/(^o\/)|(.mp3)/g,'') + '</a>';
-      },
-      o: function() {
-        self.musicAjaxCall = 'search.php?q=&o=' + getQueryString('o') + '&l=' + getQueryString('l');
-        self.fetchMusic();
-      },
-      shuffle: function() {
-        doc.querySelector('#playlist .shuffle').id = "on";
-      }
+          auto: function() {
+            if (paramList.indexOf('p') != "1")
+              self.auto = !0; //if "play" param doesn't exist, then set auto to true.
+          },
+          s: function() {
+            self.searchBox.value = unescape(getQueryString('s'));
+            self.searchQuery();
+          },
+          p: function() {
+            self.auto = 0;
+            var track = unescape(getQueryString('p'));
+            self.revealPlaylist();
+            self.plScroll.innerHTML = '<a href="' + track + '">' + track.replace(/(^o\/)|(.mp3)/g,'') + '</a>';
+          },
+          o: function() {
+            self.musicAjaxCall = 'search.php?q=&o=' + getQueryString('o') + '&l=' + getQueryString('l');
+            self.fetchMusic();
+          },
+          shuffle: function() {
+            doc.querySelector('#playlist .shuffle').id = "on";
+          }
     };
 
     while ((paramMatch = regex.exec(self.loc)) != null)
       paramList.push(paramMatch[1]);
+
 
     for (var i = 0, len = paramList.length; i < len; i++) {
       var paramKey = paramList[i];
@@ -76,43 +168,46 @@
       }
     }
 
-    if (self.loc.match(/\?/)) return;
+    if (!self.loc.match(/\?/)) {
+      self.omni = $('omni');
+      self.omni.style.display = 'block';
 
-    self.omni = $('omni');
-    self.omni.style.display = 'block';
+      $('omniSearchForm').addEventListener('submit', function(e){
+        e.preventDefault();
+        self.searchBox.value = $('omniSearch').value;
 
-    $('omniSearchForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      self.searchBox.value = $('omniSearch').value;
-
-      //FIXME: Duplicate code from the searchField submit event
-      self.searchQuery(function(){
-        self.replaceUrl(self.searchBox.value,'?s='+self.searchBox.value);
+        //FIXME: Duplicate code from the searchField submit event
+        self.searchQuery(function(){
+          self.replaceUrl(self.searchBox.value,'?s='+self.searchBox.value);
+        });
       });
-    });
+    }
 
-
-    var self = this;
-    var resizeTime,
-        animTime,
+    var resizeTime, animTime,
         eventDelegator = {
           playPause: self.togglePlayPause,
-          results: self.resultsDelegator,
-          playlist: self.playlistDelegator,
-          omni: self.omniDelegator
+          results: resultsDelegator,
+          playlist: playlistDelegator,
+          omni: omniDelegator
         };
 
     self.body.addEventListener('click',function(e){
-      var target = delegate = e.target || null,
+      var target = e.target || null,
+          delegate = target,
           targetTag = target.tagName,
           jumps = 0;
+
       if (!(targetTag === 'A' || targetTag === 'SPAN')) return;
+      e.preventDefault();
 
       while (!eventDelegator[delegate.getAttribute('data-el')] && jumps <= 4) { //bubble up the dom, but only three levels high.
           if (delegate.tagName === 'BODY') return;
           delegate = delegate.parentNode;
           jumps++;
       }
+
+      eventDelegator[delegate.getAttribute('data-el')];
+
       if (jumps === 4) return;
       e.preventDefault();
       eventDelegator[delegate.getAttribute('data-el')](e, target);
@@ -162,70 +257,6 @@
         target.innerHTML += '<span style="display:none;">Remove</span>';
       },250);
     });
-
-    function resultsDelegator(e, target) {
-      if (target.tagName !== 'A') return;
-      if (target.className === 'addAll') {
-        self.revealPlaylist();
-        self.plScroll.innerHTML += self.addResulted;
-      } else if (target.className === 'partial') {
-        self.musicAjaxCall = 'search.php?o=path&q=' + self.searchBox.value;
-        self.fetchMusic();
-      } else if (target.parentNode.id === 'resultList') {
-        self.revealPlaylist();
-        self.plScroll.innerHTML += '<a href="' + target.href + '">' + target.innerHTML + '</a>';
-      }
-    }
-
-    function playlistDelegator(e, target) {
-      if (target.id === this.id) return;
-      var targetClass = target.className
-      if (targetClass === 'clear') {
-        self.plScroll.innerHTML = '';
-        return;
-      } else if (targetClass === 'shuffle') {
-        if (self.isShuffled()) {
-          target.removeAttribute('id');
-        } else {
-          target.id = 'on';
-        }
-        return;
-      } else if (target.tagName === 'A' && target.parentNode.id === 'playlistScroll') {
-        var trackPlaying;
-        if (trackPlaying = $('playing')) {
-          trackPlaying.removeAttribute('id');
-          trackPlaying.removeAttribute('name');
-        }
-        playing = target;
-        self.queue();
-        return;
-      } else if (target.tagName === 'SPAN') {
-        self.plScroll.removeChild(target.parentNode);
-        return;
-      }
-    }
-
-    function omniDelegator(e, target) {
-      self.musicAjaxCall = null;
-      var targetDelegate = {
-        A: target,
-        SPAN: target.parentNode
-      };
-
-      var omniDelegate = {
-        'latest': 'search.php?q=&o=left(creationDate,10)%20desc,path&l=100',
-        'random': 'search.php?q=&o=rand()&l=100'
-      };
-
-      if (targetDelegate[target.tagName])
-        self.musicAjaxCall = omniDelegate[targetDelegate[target.tagName].getAttribute('data-el')];
-
-      if (self.musicAjaxCall) {
-        self.fetchMusic();
-        var ajax = self.musicAjaxCall.replace(/^search.php/,'');
-        self.replaceUrl(ajax, ajax);
-      }
-    }
   };
 
   proto.togglePlayPause = function(e, target) {
@@ -242,14 +273,14 @@
   };
 
   proto.replaceUrl = function(name, param) {
-    if (!self.historyReplace) return;
+    if (!this.historyReplace) return;
     history.replaceState('searchResults',name,param);
   };
 
   proto.scrubTime = function(song) {
-    var self = song,
-        t = self.position,
-        d = self.duration;
+    var self = this,
+        t = song.position,
+        d = song.duration;
 
     self.progress.style.width = (t/d*100).toFixed(1) + '%';
 
@@ -264,12 +295,13 @@
   };
 
   proto.searchQuery = function(callback) {
+    var self = this;
     if (self.searchBox.value === '') return;
     if (!self.debugMode)
       self.musicAjaxCall = 'search.php?o=path&q=' + self.searchBox.value + '&ft';
     else
       self.musicAjaxCall = 'songs.php?word=' + self.searchBox.value;
-    fetchMusic();
+    self.fetchMusic();
     if (callback) callback();
   };
 
@@ -317,7 +349,7 @@
           self.playing = currentTrack.nextSibling === null ? self.plScroll.getElementsByTagName('A')[0] : currentTrack.nextSibling;
         }
 
-        playing.setAttribute('name','play');
+        self.playing.setAttribute('name','play');
         win.location = '#play';
         self.queue();
       }
@@ -341,8 +373,8 @@
     if (self.omni) {
       self.omni.style.opacity = 0;
       setTimeout(function(){
-        self.omni.parentNode.removeChild(omni);
-        omni = null;
+        self.omni.parentNode.removeChild(self.omni);
+        self.omni = null;
       },500);
     }
 
@@ -380,40 +412,12 @@
       }
 
       self.searchResults.innerHTML = resultsItems;
-      if (!auto) return; //if autoplay param is available, then reveal playlist, add all songs and start playing
-      auto = 0;
+      if (!self.auto) return; //if autoplay param is available, then reveal playlist, add all songs and start playing
+      self.auto = 0;
       self.revealPlaylist();
       self.plScroll.innerHTML = self.addResulted;
     });
   };
-
-  function getQueryString(a, b) {
-    if (b == null) b = "";
-    a = a.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var c = (new RegExp("[\\?&]" + a + "=([^&#]*)")).exec(self.loc);
-    return c == null ? b : c[1]
-  }
-
-  function $(el) {
-    return doc.getElementById(el);
-  }
-
-  function getJSON(url, callback){
-    var ajax = new XMLHttpRequest();
-
-    ajax.onreadystatechange = function(){
-        if(ajax.readyState === 4 && ajax.status === 200){
-          var r = ajax.response;
-
-          if (r.charAt(0) !== '[') return;
-          callback(JSON.parse(r));
-      }
-    }
-
-    ajax.open('GET', url, !0);
-    ajax.send();
-  }
-
 
   o2m();
 

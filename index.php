@@ -33,10 +33,10 @@
   </div>
 </div>
 
-<div id="results" data-el="results">
+<div id="results">
   <p></p>
   <div>
-    <div id="resultList"></div>
+    <div id="resultList" data-el="results"></div>
   </div>
 </div>
 
