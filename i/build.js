@@ -198,7 +198,6 @@
           jumps = 0;
 
       if (!(targetTag === 'A' || targetTag === 'SPAN')) return;
-      e.preventDefault();
 
       while (!eventDelegator[delegate.getAttribute('data-el')] && jumps <= 4) { //bubble up the dom, but only three levels high.
           if (delegate.tagName === 'BODY') return;
