@@ -13,11 +13,11 @@
     var ajax = new XMLHttpRequest();
 
     ajax.onreadystatechange = function(){
-        if(ajax.readyState === 4 && ajax.status === 200){
-          var r = ajax.response;
+      if(ajax.readyState === 4 && ajax.status === 200){
+        var r = ajax.response;
 
-          if (r.charAt(0) !== '[') return;
-          callback(JSON.parse(r));
+        if (!r.match(/^(\[|\{)/)) return;
+        callback(JSON.parse(r));
       }
     }
 
@@ -26,7 +26,9 @@
   }
 
   var o2m, proto,
-      sm = soundManager;
+      sm = soundManager,
+      body = doc.getElementsByTagName('BODY')[0],
+      loc = win.location.href;
 
   o2m = function(){
     if (!(this instanceof o2m)) {
@@ -41,13 +43,11 @@
 
     //tons of initial setup
     var self = this;
-    self.body = doc.getElementsByTagName('BODY')[0];
-    self.loc = win.location.href;
-    self.isMobile = window.isMobile || 0;
-    self.historyReplace = typeof(history.replaceState) === "function" ? true : false;
-    self.debugMode = win.location.host.match(/localhost/) ? 1 : 0;
+    self.isMobile = win.isMobile || 0;
+    self.historyReplace = typeof(history.replaceState) === "function" ? !0 : 0;
+    self.debugMode = win.location.host.match(/(localhost)|(192.168)/g) ? 1 : 0;
     self.auto = 0;
-    self.playing = self.musicAjaxCall = null;
+    self.trackPlaying = self.musicAjaxCall = null;
 
     //start it all up
     self.start();
@@ -61,59 +61,64 @@
     function getQueryString(a, b) {
       if (b == null) b = "";
       a = a.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-      var c = (new RegExp("[\\?&]" + a + "=([^&#]*)")).exec(self.loc);
+      var c = (new RegExp("[\\?&]" + a + "=([^&#]*)")).exec(loc);
       return c == null ? b : c[1]
     }
 
     function resultsDelegator(e, target) {
-      var dataEl = target.getAttribute('data-el');
-      var resultObj = {
-        'addAllResults': function() {
-          self.revealPlaylist();
-          $('playlistScroll').innerHTML += self.addResulted;
-        },
-        'partialSearch': function() {
-          self.musicAjaxCall = 'search.php?o=path&q=' + $('search').value;
-          self.fetchMusic();
-        }
-      }
+      var dataEl = target.getAttribute('data-el'),
+          delegateFunc,
+          delegateObj = {
+            'addAllResults': function() {
+              self.revealPlaylist();
+              $('playlistScroll').innerHTML += self.addResulted;
+            },
+            'partialSearch': function() {
+              self.musicAjaxCall = 'search.php?o=path&q=' + $('search').value;
+              self.fetchMusic();
+            }
+          }
 
-      if (resultObj[dataEl]) {
-        resultObj[dataEl]();
+      if (delegateFunc = delegateObj[dataEl]) {
+        delegateFunc();
         return;
       }
 
       self.revealPlaylist();
       $('playlistScroll').innerHTML += '<a href="' + target.href + '">' + target.innerHTML + '</a>';
-
     }
 
     function playlistDelegator(e, target) {
-      if (target.id === this.id) return;
-      var targetClass = target.className
-      if (targetClass === 'clear') {
-        $('playlistScroll').innerHTML = '';
-        return;
-      } else if (targetClass === 'shuffle') {
-        if (self.isShuffled()) {
-          target.removeAttribute('id');
-        } else {
-          target.id = 'on';
-        }
-        return;
-      } else if (target.tagName === 'A' && target.parentNode.id === 'playlistScroll') {
-        var trackPlaying;
-        if (trackPlaying = $('playing')) {
-          trackPlaying.removeAttribute('id');
-          trackPlaying.removeAttribute('name');
-        }
-        self.playing = target;
-        self.queue();
-        return;
-      } else if (target.tagName === 'SPAN') {
-        $('playlistScroll').removeChild(target.parentNode);
+      var dataEl = target.getAttribute('data-el'),
+          delegateFunc,
+          delegateObj = {
+            'clearPlaylist': function() {
+              $('playlistScroll').innerHTML = '';
+            },
+            'shufflePlaylist': function() {
+              if (self.isShuffled()) {
+                target.removeAttribute('id');
+              } else {
+                target.id = 'on';
+              }
+            },
+            'deleteTrack': function() {
+              $('playlistScroll').removeChild(target.parentNode);
+            }
+          };
+
+      if (delegateFunc = delegateObj[dataEl]) {
+        delegateFunc();
         return;
       }
+
+      var trackPlaying;
+      if (trackPlaying = document.getElementById('playing')) {
+        trackPlaying.removeAttribute('id');
+        trackPlaying.removeAttribute('name');
+      }
+      self.trackPlaying = target;
+      self.queue();
     }
 
     function omniDelegator(e, target) {
@@ -165,7 +170,7 @@
           }
     };
 
-    while ((paramMatch = regex.exec(self.loc)) != null)
+    while ((paramMatch = regex.exec(loc)) != null)
       paramList.push(paramMatch[1]);
 
 
@@ -176,9 +181,8 @@
       }
     }
 
-    if (!self.loc.match(/\?/)) {
-      self.omni = $('omni');
-      self.omni.style.display = 'block';
+    if (!loc.match(/\?/)) {
+      $('omni').style.display = 'block';
 
       $('omniSearchForm').addEventListener('submit', function(e){
         e.preventDefault();
@@ -199,7 +203,7 @@
           omni: omniDelegator
         };
 
-    self.body.addEventListener('click',function(e){
+    body.addEventListener('click',function(e){
       var target = e.target || null,
           delegate = target,
           targetTag = target.tagName,
@@ -227,25 +231,25 @@
 
 
     if (!self.isMobile) {
-      window.onresize = function() {
+      win.onresize = function() {
         clearTimeout(resizeTime);
         clearTimeout(animTime);
         resizeTime = setTimeout(function(){
-          self.body.className = self.body.className.match(/anim/,'');
+          body.className = body.className.match(/anim/,'');
           animTime = setTimeout(function(){
-            self.body.removeAttribute('class');
+            body.removeAttribute('class');
           },500);
-        },10);
+        },50);
 
-        self.body.className = 'resize anim';
+        body.className = 'resize anim';
 
         if (!self.isPlaylistShowing()) return;
-        if (window.innerWidth < 700 || window.innerHeight < 300) {
-          if (self.body.id === 'minimize') return;
-          self.body.id = 'minimize';
+        if (win.innerWidth < 700 || win.innerHeight < 300) {
+          if (body.id === 'minimize') return;
+          body.id = 'minimize';
         } else {
           if (body.id === '') return;
-          self.body.removeAttribute('id');
+          body.removeAttribute('id');
         }
       };
     }
@@ -261,7 +265,7 @@
       var target = e.target;
       if (target.tagName !== 'A' || target.getElementsByTagName('SPAN').length) return;
       setTimeout(function(){
-        target.innerHTML += '<span style="display:none;">Remove</span>';
+        target.innerHTML += '<span style="display:none;" data-el="deleteTrack">Remove</span>';
       },250);
     });
   };
@@ -272,7 +276,7 @@
   };
 
   proto.isShuffled = function() {
-    return $('on');
+    return document.getElementById('on');
   };
 
   proto.isPlaylistShowing = function() {
@@ -317,7 +321,7 @@
     if ($('playlistScroll').innerHTML !== '') return;
     if (!self.isPlaylistShowing()) $('playlist').style.opacity = '1';
     setTimeout(function(){
-      self.playing = $('playlistScroll').getElementsByTagName('A')[0];
+      self.trackPlaying = $('playlistScroll').getElementsByTagName('A')[0];
       self.queue();
     },0);
   };
@@ -327,9 +331,9 @@
 
     $('progressBar').style.width = '0%';
     $('time').innerHTML = '';
-    self.playing.id = 'playing';
+    self.trackPlaying.id = 'playing';
 
-    var trackUrl = 'o/' + unescape(self.playing.href).replace(/^(.+?(\/o\/))/,'');
+    var trackUrl = 'o/' + unescape(self.trackPlaying.href).replace(/^(.+?(\/o\/))/,'');
 
     if (self.song) sm.destroySound('smObj');
     self.song = sm.createSound({
@@ -341,19 +345,19 @@
         self.scrubTime(this);
       },
       onfinish: function(){
-        var currentTrack = $('playing') || $('playlistScroll').getElementsByTagName('A')[0] || null;
+        var currentTrack = document.getElementById('playing') || $('playlistScroll').getElementsByTagName('A')[0] || null;
         if (!currentTrack) return; //no songs in the playlist
         currentTrack.removeAttribute('id');
         currentTrack.removeAttribute('name');
 
         if (self.isShuffled()) {
           var trackList = $('playlistScroll').getElementsByTagName('A');
-          self.playing = trackList[Math.floor(Math.random() * trackList.length)];
+          self.trackPlaying = trackList[Math.floor(Math.random() * trackList.length)];
         } else {
-          self.playing = currentTrack.nextSibling === null ? $('playlistScroll').getElementsByTagName('A')[0] : currentTrack.nextSibling;
+          self.trackPlaying = currentTrack.nextSibling === null ? $('playlistScroll').getElementsByTagName('A')[0] : currentTrack.nextSibling;
         }
 
-        self.playing.setAttribute('name','play');
+        self.trackPlaying.setAttribute('name','play');
         win.location = '#play';
         self.queue();
       }
@@ -361,24 +365,18 @@
 
     getJSON("id3.php?song="+trackUrl, function(r){
       doc.title = r[0] + " - " + r[1];
-
       $('songInfo').innerHTML = '<div class="album" style="background:url(\'' + trackUrl.replace(/(\/)[^\/]*$/g,'/cover.gif') + '\')"></div><h2>' + r[0] + '</h2><h3>' + r[1] + '</h3><h4>' + r[2] + '</h4>';
     });
 
-    // if (searchBox.value === '') return;
-    var queryStub = '';
-    if (queryStub = window.location.href.split('?')[1].split('&p')[0]) {}
-
-    self.replaceUrl(trackUrl, '?' + queryStub + '&p='+trackUrl);
+    self.replaceUrl(trackUrl, '?' + win.location.href.split('?')[1].split('&p')[0] + '&p='+trackUrl);
   };
 
   proto.fetchMusic = function() {
     var self = this;
-    if (self.omni) {
-      self.omni.style.opacity = 0;
+    if (document.getElementById('omni')) {
+      $('omni').style.opacity = 0;
       setTimeout(function(){
-        self.omni.parentNode.removeChild(self.omni);
-        self.omni = null;
+        $('omni').parentNode.removeChild($('omni'));
       },500);
     }
 

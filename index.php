@@ -53,7 +53,8 @@
     </div>
   </div>
 
-  <a href="#" class="clear">Clear Playlist</a><a href="#" class="shuffle">Shuffle</a>
+  <a href="#" class="clear" data-el="clearPlaylist">Clear Playlist</a>
+  <a href="#" class="shuffle" data-el="shufflePlaylist">Shuffle</a>
   <div id="playlistScroll"></div>
 </div>
 
