@@ -391,7 +391,7 @@
       if (!len || r[0] === '') {
         var noResults = '';
         if (self.musicAjaxCall.match(/\&ft$/)) noResults = '<a href="#" class="partial" data-el="partialSearch">No results found. Try a partial search?</a>';
-        else noResults = '<span href="#">No results found.</span>';
+        else noResults = '<span>No results found.</span>';
         $('resultList').innerHTML = noResults;
         return;
       }
@@ -411,7 +411,7 @@
       resultsItems += self.addResulted;
 
       if (self.musicAjaxCall.match(/\&ft$/)) {
-        resultsItems += '<a href="#" class="partial">Not what you\'re looking for? Try a partial match.</a>';
+        resultsItems += '<a href="#" class="partial" data-el="partialSearch">Not what you\'re looking for? Try a partial match.</a>';
       }
 
       $('resultList').innerHTML = resultsItems;
