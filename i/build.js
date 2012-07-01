@@ -3,7 +3,10 @@
   'use strict';
 
   function $(el) {
-    return doc.getElementById(el);
+    if (!o2m[el])
+      o2m[el] = doc.getElementById(el);
+
+    return o2m[el];
   }
 
   function getJSON(url, callback){
@@ -43,10 +46,6 @@
     self.isMobile = window.isMobile || 0;
     self.historyReplace = typeof(history.replaceState) === "function" ? true : false;
     self.debugMode = win.location.host.match(/localhost/) ? 1 : 0;
-    self.searchBox = $('search');
-    self.results = $('results');
-    self.searchResults = $('resultList');
-    self.plScroll = $('playlistScroll');
     self.auto = 0;
     self.playing = self.musicAjaxCall = null;
 
@@ -67,24 +66,33 @@
     }
 
     function resultsDelegator(e, target) {
-      if (target.tagName !== 'A') return;
-      if (target.className === 'addAll') {
-        self.revealPlaylist();
-        self.plScroll.innerHTML += self.addResulted;
-      } else if (target.className === 'partial') {
-        self.musicAjaxCall = 'search.php?o=path&q=' + self.searchBox.value;
-        self.fetchMusic();
-      } else if (target.parentNode.id === 'resultList') {
-        self.revealPlaylist();
-        self.plScroll.innerHTML += '<a href="' + target.href + '">' + target.innerHTML + '</a>';
+      var dataEl = target.getAttribute('data-el');
+      var resultObj = {
+        'addAllResults': function() {
+          self.revealPlaylist();
+          $('playlistScroll').innerHTML += self.addResulted;
+        },
+        'partialSearch': function() {
+          self.musicAjaxCall = 'search.php?o=path&q=' + $('search').value;
+          self.fetchMusic();
+        }
       }
+
+      if (resultObj[dataEl]) {
+        resultObj[dataEl]();
+        return;
+      }
+
+      self.revealPlaylist();
+      $('playlistScroll').innerHTML += '<a href="' + target.href + '">' + target.innerHTML + '</a>';
+
     }
 
     function playlistDelegator(e, target) {
       if (target.id === this.id) return;
       var targetClass = target.className
       if (targetClass === 'clear') {
-        self.plScroll.innerHTML = '';
+        $('playlistScroll').innerHTML = '';
         return;
       } else if (targetClass === 'shuffle') {
         if (self.isShuffled()) {
@@ -103,7 +111,7 @@
         self.queue();
         return;
       } else if (target.tagName === 'SPAN') {
-        self.plScroll.removeChild(target.parentNode);
+        $('playlistScroll').removeChild(target.parentNode);
         return;
       }
     }
@@ -139,14 +147,14 @@
               self.auto = !0; //if "play" param doesn't exist, then set auto to true.
           },
           s: function() {
-            self.searchBox.value = unescape(getQueryString('s'));
+            $('search').value = unescape(getQueryString('s'));
             self.searchQuery();
           },
           p: function() {
             self.auto = 0;
             var track = unescape(getQueryString('p'));
             self.revealPlaylist();
-            self.plScroll.innerHTML = '<a href="' + track + '">' + track.replace(/(^o\/)|(.mp3)/g,'') + '</a>';
+            $('playlistScroll').innerHTML = '<a href="' + track + '">' + track.replace(/(^o\/)|(.mp3)/g,'') + '</a>';
           },
           o: function() {
             self.musicAjaxCall = 'search.php?q=&o=' + getQueryString('o') + '&l=' + getQueryString('l');
@@ -174,11 +182,11 @@
 
       $('omniSearchForm').addEventListener('submit', function(e){
         e.preventDefault();
-        self.searchBox.value = $('omniSearch').value;
+        $('search').value = $('omniSearch').value;
 
         //FIXME: Duplicate code from the searchField submit event
         self.searchQuery(function(){
-          self.replaceUrl(self.searchBox.value,'?s='+self.searchBox.value);
+          self.replaceUrl($('search').value,'?s='+$('search').value);
         });
       });
     }
@@ -245,11 +253,11 @@
     $('searchField').addEventListener('submit', function(e){
       e.preventDefault();
       self.searchQuery(function(){
-        self.replaceUrl(self.searchBox.value,'?s='+self.searchBox.value);
+        self.replaceUrl($('search').value,'?s='+$('search').value);
       });
     }, 0);
 
-    self.plScroll.addEventListener('mouseover', function(e){
+    $('playlistScroll').addEventListener('mouseover', function(e){
       var target = e.target;
       if (target.tagName !== 'A' || target.getElementsByTagName('SPAN').length) return;
       setTimeout(function(){
@@ -281,7 +289,7 @@
         t = song.position,
         d = song.duration;
 
-    self.progress.style.width = (t/d*100).toFixed(1) + '%';
+    $('progressBar').style.width = (t/d*100).toFixed(1) + '%';
 
     var t = t/1000,
         hr =  t / 3600>>0,
@@ -290,38 +298,35 @@
         t = t % 60,
         sec = t>>0;
 
-    self.progressTime.innerHTML = ((hr > 0 ? hr + ":" : "") + (min > 0 ? (hr > 0 && min < 10 ? "0" : "") + min + ":" : "0:") + (sec < 10 ? "0" : "") + sec);
+    $('time').innerHTML = ((hr > 0 ? hr + ":" : "") + (min > 0 ? (hr > 0 && min < 10 ? "0" : "") + min + ":" : "0:") + (sec < 10 ? "0" : "") + sec);
   };
 
   proto.searchQuery = function(callback) {
     var self = this;
-    if (self.searchBox.value === '') return;
+    if ($('search').value === '') return;
     if (!self.debugMode)
-      self.musicAjaxCall = 'search.php?o=path&q=' + self.searchBox.value + '&ft';
+      self.musicAjaxCall = 'search.php?o=path&q=' + $('search').value + '&ft';
     else
-      self.musicAjaxCall = 'songs.php?word=' + self.searchBox.value;
+      self.musicAjaxCall = 'songs.php?word=' + $('search').value;
     self.fetchMusic();
     if (callback) callback();
   };
 
   proto.revealPlaylist = function() {
     var self = this;
-    if (self.plScroll.innerHTML !== '') return;
+    if ($('playlistScroll').innerHTML !== '') return;
     if (!self.isPlaylistShowing()) $('playlist').style.opacity = '1';
     setTimeout(function(){
-      self.playing = self.plScroll.getElementsByTagName('A')[0];
+      self.playing = $('playlistScroll').getElementsByTagName('A')[0];
       self.queue();
     },0);
   };
 
   proto.queue = function() {
     var self = this;
-    if (!self.progress) {
-      self.progress = $('progressBar');
-      self.progressTime = $('time');
-    }
-    self.progress.style.width = '0%';
-    self.progressTime.innerHTML = '';
+
+    $('progressBar').style.width = '0%';
+    $('time').innerHTML = '';
     self.playing.id = 'playing';
 
     var trackUrl = 'o/' + unescape(self.playing.href).replace(/^(.+?(\/o\/))/,'');
@@ -336,16 +341,16 @@
         self.scrubTime(this);
       },
       onfinish: function(){
-        var currentTrack = $('playing') || self.plScroll.getElementsByTagName('A')[0] || null;
+        var currentTrack = $('playing') || $('playlistScroll').getElementsByTagName('A')[0] || null;
         if (!currentTrack) return; //no songs in the playlist
         currentTrack.removeAttribute('id');
         currentTrack.removeAttribute('name');
 
         if (self.isShuffled()) {
-          var trackList = self.plScroll.getElementsByTagName('A');
+          var trackList = $('playlistScroll').getElementsByTagName('A');
           self.playing = trackList[Math.floor(Math.random() * trackList.length)];
         } else {
-          self.playing = currentTrack.nextSibling === null ? self.plScroll.getElementsByTagName('A')[0] : currentTrack.nextSibling;
+          self.playing = currentTrack.nextSibling === null ? $('playlistScroll').getElementsByTagName('A')[0] : currentTrack.nextSibling;
         }
 
         self.playing.setAttribute('name','play');
@@ -356,8 +361,8 @@
 
     getJSON("id3.php?song="+trackUrl, function(r){
       doc.title = r[0] + " - " + r[1];
-      if (!self.songInfo) self.songInfo = $('songInfo');
-      self.songInfo.innerHTML = '<div class="album" style="background:url(\'' + trackUrl.replace(/(\/)[^\/]*$/g,'/cover.gif') + '\')"></div><h2>' + r[0] + '</h2><h3>' + r[1] + '</h3><h4>' + r[2] + '</h4>';
+
+      $('songInfo').innerHTML = '<div class="album" style="background:url(\'' + trackUrl.replace(/(\/)[^\/]*$/g,'/cover.gif') + '\')"></div><h2>' + r[0] + '</h2><h3>' + r[1] + '</h3><h4>' + r[2] + '</h4>';
     });
 
     // if (searchBox.value === '') return;
@@ -377,18 +382,19 @@
       },500);
     }
 
-    if (!self.results.style.opacity) self.results.style.opacity = '1';
-    self.searchResults.innerHTML = '<h5>Loading...</h5>';
+    if (!$('results').style.opacity)
+        $('results').style.opacity = '1';
+    $('resultList').innerHTML = '<h5>Loading...</h5>';
 
     getJSON(self.musicAjaxCall, function(r){
       var len = r.length;
-      self.results.getElementsByTagName('p')[0].innerHTML = len + ' results for <span> ' + self.searchBox.value + '</span>';
+      $('results').getElementsByTagName('p')[0].innerHTML = len + ' results for <span> ' + $('search').value + '</span>';
 
       if (!len || r[0] === '') {
         var noResults = '';
-        if (self.musicAjaxCall.match(/\&ft$/)) noResults = '<a href="#" class="partial">No results found. Try a partial search?</a>';
+        if (self.musicAjaxCall.match(/\&ft$/)) noResults = '<a href="#" class="partial" data-el="partialSearch">No results found. Try a partial search?</a>';
         else noResults = '<span href="#">No results found.</span>';
-        self.searchResults.innerHTML = noResults;
+        $('resultList').innerHTML = noResults;
         return;
       }
 
@@ -396,7 +402,7 @@
       self.addResulted = '';
 
       if (len >= 2) {
-        resultsItems += '<a href="#" class="addAll">Add all these results to your playlist</a>';
+        resultsItems += '<a href="#" class="addAll" data-el="addAllResults">Add all these results to your playlist</a>';
       }
 
       for (var i=0; i<len; i++) {
@@ -410,11 +416,11 @@
         resultsItems += '<a href="#" class="partial">Not what you\'re looking for? Try a partial match.</a>';
       }
 
-      self.searchResults.innerHTML = resultsItems;
+      $('resultList').innerHTML = resultsItems;
       if (!self.auto) return; //if autoplay param is available, then reveal playlist, add all songs and start playing
       self.auto = 0;
       self.revealPlaylist();
-      self.plScroll.innerHTML = self.addResulted;
+      $('playlistScroll').innerHTML = self.addResulted;
     });
   };
 
