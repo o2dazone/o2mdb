@@ -3,10 +3,10 @@
   'use strict';
 
   function $(el) {
-    if (!o2m[el])
-      o2m[el] = doc.getElementById(el);
+    if (!OhTwo[el])
+      OhTwo[el] = doc.getElementById(el);
 
-    return o2m[el];
+    return OhTwo[el];
   }
 
   function getJSON(url, callback){
@@ -19,27 +19,23 @@
         if (!r.match(/^(\[|\{)/)) return;
         callback(JSON.parse(r));
       }
-    }
+    };
 
     ajax.open('GET', url, !0);
     ajax.send();
   }
 
-  var o2m, proto,
+  var OhTwo, proto,
       sm = soundManager,
       body = doc.getElementsByTagName('BODY')[0],
       loc = win.location.href;
 
-  o2m = function(){
-    if (!(this instanceof o2m)) {
-      return new o2m;
-    }
-
+  OhTwo = function(){
     //SoundManager setup
     sm.useHTML5Audio = 1;
     sm.preferFlash = 0;
     sm.debugMode = 0;
-    sm.url ='i/'
+    sm.url ='i/';
 
     //tons of initial setup
     var self = this;
@@ -53,16 +49,16 @@
     self.start();
   };
 
-  proto = o2m.prototype;
+  proto = OhTwo.prototype;
 
   proto.start = function(){
     var self = this;
 
     function getQueryString(a, b) {
-      if (b == null) b = "";
+      if (b === null) b = "";
       a = a.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
       var c = (new RegExp("[\\?&]" + a + "=([^&#]*)")).exec(loc);
-      return c == null ? b : c[1]
+      return c === null ? b : c[1];
     }
 
     function resultsDelegator(e, target) {
@@ -77,9 +73,9 @@
               self.musicAjaxCall = 'search.php?o=path&q=' + $('search').value;
               self.fetchMusic();
             }
-          }
+          };
 
-      if (delegateFunc = delegateObj[dataEl]) {
+      if ((delegateFunc = delegateObj[dataEl])) {
         delegateFunc();
         return;
       }
@@ -107,13 +103,13 @@
             }
           };
 
-      if (delegateFunc = delegateObj[dataEl]) {
+      if ((delegateFunc = delegateObj[dataEl])) {
         delegateFunc();
         return;
       }
 
       var trackPlaying;
-      if (trackPlaying = document.getElementById('playing')) {
+      if ((trackPlaying = document.getElementById('playing'))) {
         trackPlaying.removeAttribute('id');
         trackPlaying.removeAttribute('name');
       }
@@ -170,7 +166,7 @@
           }
     };
 
-    while ((paramMatch = regex.exec(loc)) != null)
+    while ((paramMatch = regex.exec(loc)) !== null)
       paramList.push(paramMatch[1]);
 
 
@@ -216,8 +212,6 @@
           delegate = delegate.parentNode;
           jumps++;
       }
-
-      eventDelegator[delegate.getAttribute('data-el')];
 
       if (jumps === 4) return;
       e.preventDefault();
@@ -289,18 +283,17 @@
   };
 
   proto.scrubTime = function(song) {
-    var self = this,
-        t = song.position,
+    var t = song.position,
         d = song.duration;
 
     $('progressBar').style.width = (t/d*100).toFixed(1) + '%';
 
-    var t = t/1000,
-        hr =  t / 3600>>0,
-        t = t % 3600,
-        min = t / 60>>0,
-        t = t % 60,
-        sec = t>>0;
+        t = t/1000;
+    var hr =  t / 3600>>0;
+        t = t % 3600;
+    var min = t / 60>>0;
+        t = t % 60;
+    var sec = t>>0;
 
     $('time').innerHTML = ((hr > 0 ? hr + ":" : "") + (min > 0 ? (hr > 0 && min < 10 ? "0" : "") + min + ":" : "0:") + (sec < 10 ? "0" : "") + sec);
   };
@@ -422,7 +415,7 @@
     });
   };
 
-  o2m();
+  new OhTwo();
 
 })(document, window);
 

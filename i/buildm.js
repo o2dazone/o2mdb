@@ -2,10 +2,10 @@
   'use strict';
 
   function $(el) {
-    if (!o2m[el])
-      o2m[el] = doc.getElementById(el);
+    if (!OhTwo[el])
+      OhTwo[el] = doc.getElementById(el);
 
-    return o2m[el];
+    return OhTwo[el];
   }
 
   function getJSON(url, callback){
@@ -18,25 +18,20 @@
         if (!r.match(/^(\[|\{)/)) return;
         callback(JSON.parse(r));
       }
-    }
+    };
 
     ajax.open('GET', url, !0);
     ajax.send();
   }
 
-  var o2m, proto,
+  var OhTwo, proto,
       sm = soundManager;
 
-  o2m = function(){
-    var self = this;
-    if (!(self instanceof o2m)) {
-      return new o2m;
-    }
-
-    self.initialize();
+  OhTwo = function(){
+    this.initialize();
   };
 
-  proto = o2m.prototype;
+  proto = OhTwo.prototype;
 
   proto.initialize = function() {
     var self = this;
@@ -97,8 +92,6 @@
   };
 
   proto.toggleControls = function() {
-    var self = this;
-
     if ($('controls').style.display === 'block') {
       $('controls').style.display = 'none';
       $('playlist').style.height = '175px';
@@ -136,7 +129,7 @@
       $('playPauseToggle').style.display = 'block';
     }
 
-    if (songPlaying = doc.getElementById('play')) {
+    if ((songPlaying = doc.getElementById('play'))) {
       songPlaying.removeAttribute('id');
       songPlaying.removeAttribute('name');
     }
@@ -175,7 +168,7 @@
     });
   };
 
-  o2m();
+  new OhTwo();
 
 })(document, window);
 
