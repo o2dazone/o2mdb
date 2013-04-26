@@ -6,4 +6,8 @@
 !m.php
 !build.js
 !buildm.js
+!config.rb
 !*.css
+!*.scss
+!*.md
+

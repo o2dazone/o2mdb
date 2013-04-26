@@ -1,11 +1,11 @@
 <!doctype html>
+<style>html{background:#000 url("i/bg.jpg");}</style>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>o2 Music Player</title>
   <link type="text/css" rel="stylesheet" href="i/style.css?<?=filemtime('i/style.css')?>"/>
-  <script type="text/javascript" src="i/sm.js?<?=filemtime('i/sm.js')?>"></script>
 </head>
 <body>
 <script type="text/javascript">if (navigator.userAgent.match(/iPhone/i)) {document.getElementsByTagName('BODY')[0].className = "resize anim"; window.isMobile = true;}</script>
@@ -58,6 +58,7 @@
   <div id="playlistScroll"></div>
 </div>
 
+<script type="text/javascript" src="i/sm.js?<?=filemtime('i/sm.js')?>"></script>
 <script type="text/javascript" src="i/build.js?<?=filemtime('i/build.js')?>"></script>
 </body>
 </html>

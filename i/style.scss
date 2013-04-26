@@ -1,0 +1,249 @@
+$experimental-support-for-mozilla : true !default;
+$experimental-support-for-webkit : true !default;
+$support-for-original-webkit-gradients : false !default;
+$experimental-support-for-opera : false !default;
+$experimental-support-for-microsoft : false !default;
+$experimental-support-for-khtml : false !default;
+
+@import 'compass/css3';
+
+@include font-face('Droid Sans', font-files('DroidSans.ttf'), 'DroidSans.ttf', normal);
+@include font-face('Droid Sans', font-files('DroidSans-Bold.ttf'), 'DroidSansBold.ttf', bold);
+
+/*
+  $c- = color
+  $p- = property
+  $f- = font
+  $i- = image
+*/
+
+$c-darkbg: #323232;
+$c-white: #fff;
+$c-offwhite: #efefef;
+$c-grey: #393939;
+$c-dkgrey: #171717;
+$c-almostBlack: #1a1a1a;
+$c-pink: #e60ed4;
+$c-semiBlack: rgba(0, 0, 0, .7);
+$c-noBoxShadow: none;
+
+$p-shadow1: 0 0 2px $c-white;
+$p-shadow2: inset 0 1px 2px $c-semiBlack;
+$p-shadow3: inset 0 -1px 2px $c-semiBlack;
+$p-shadow4: inset 1px 0 2px $c-semiBlack;
+$p-shadow5: inset -1px 0 2px $c-semiBlack;
+
+$f-droidSans: 'Droid Sans', Helvetica, Arial, sans-serif;
+
+
+$i-sprite: inline-image('sprite.png');
+
+@mixin anchorNormal {
+  color:$c-grey;
+  text-decoration:none;
+  font-size:12px; 
+  padding:6px 25px 6px 15px;
+  display:block;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+
+@mixin anchorHover {
+  background:#d9d9d9 right -143px no-repeat;
+  text-indent:0;
+}
+
+* {font-family:$f-droidSans; text-indent:0; padding:0; margin:0; text-decoration:none; border:0; outline:none; list-style:none;}
+
+/*the sprite is right*/
+h1 a,
+#results > a,
+#resultList a:hover,
+#playlist > a,
+#playlistScroll a span,
+#player > div > a,
+#searchField label,
+#musicTrack > a {background-image:$i-sprite; background-repeat:no-repeat; text-indent:100%; overflow:hidden;}
+
+/*styled scrollbars*/
+#playlistScroll::-webkit-scrollbar, #resultList::-webkit-scrollbar, #playlistScroll::-moz-scrollbar, #resultList::-moz-scrollbar {width:6px;}
+#playlistScroll::-webkit-scrollbar-thumb:vertical, #resultList::-webkit-scrollbar-thumb:vertical, #playlistScroll::-moz-scrollbar-thumb:vertical, #resultList::-moz-scrollbar-thumb:vertical {background:$c-almostBlack; @include border-radius(4px);}
+
+/*rounded corners*/
+#results,
+#results > div,
+#omniSearchForm,
+#omni,
+#omni > div,
+#player {@include border-radius(5px);}
+
+/*input shadow and outer glow*/
+#searchField input,
+#omniSearchForm fieldset,
+#results > div {@include box-shadow($p-shadow1, $p-shadow2, $p-shadow3, $p-shadow4, $p-shadow5);}
+
+/*shadows*/
+#results,
+#playlist,
+#omniSearchForm {position:absolute; @include box-shadow(3px 3px 20px rgba(0, 0, 0, 1)); -webkit-transition-property:opacity left right top bottom; -webkit-transition-duration:.5s; -moz-transition-property:opacity left right top bottom; -moz-transition-duration:.5s;}
+
+#topNav {min-width:610px; z-index:6; position:absolute; top:0; left:0; width:100%; overflow:hidden; @include background($c-darkbg linear-gradient(color-stops($c-darkbg, $c-almostBlack))); @include box-shadow(0 1px 7px $c-semiBlack);}
+h1 {float:left; margin-right:50px;}
+h1 a {width:73px; height:38px; display:inline-block;}
+#searchField {min-width:400px;}
+#searchField label {width:75px; height:17px; background-position:0 -49px; float:left; margin:10px 5px 0 0;}
+#searchField input {margin:5px 2px; padding:5px 0 5px 30px; color:$c-grey; font-size:14px; width:90%; max-width:220px; float:left; background-color:$c-offwhite; background:-moz-linear-gradient(top, #bbb, $c-white); background:$i-sprite -76px -6px no-repeat, -webkit-gradient(linear, 0 0, 0 100%, from(#bbb), to($c-white)); @include border-radius(3px);}
+
+
+#results {
+  width:50%; background:$c-almostBlack; z-index:3; padding:45px 0 0 0; top:0px; bottom:15px; left:15px; opacity:0;
+
+  > p { float:left; margin:0 0 0 15px; color:$c-white; font-size:13px;
+    span {color:$c-pink;}
+  }
+
+  > a {float:right; margin:0 15px 0 0; width:21px; height:16px; background-position:-63px -43px;}
+  > div {background:$c-offwhite; padding:5px 0 0 0; margin:22px 15px 15px 15px; position:absolute; left:0; right:0; bottom:0; top:45px;}
+}
+
+
+#omni a span, #playlist #playing {color:$c-pink;}
+
+
+#resultList {
+  margin:3px 5px 5px 2px; overflow:auto; position:absolute; top:0; left:0; bottom:0; right:0;
+
+  > span {text-transform:uppercase; font-size:10px; font-weight:bold; color:#aaa; display:block; text-align:center; padding:10px 0;}
+  a {
+    @include anchorNormal;
+    &:hover {@include anchorHover; padding-right:75px;}
+  }
+}
+
+
+#playlistScroll a {
+  @include anchorNormal;
+  &:hover {@include anchorHover;}
+}
+
+
+#resultList a.addAll, #resultList a.partial {background:#e1e1e1; color:#a1a1a1; text-align:center; padding:6px 0; font-size:9px; text-transform:uppercase; font-weight:bold;}
+#resultList a.addAll:hover, #resultList a.partial:hover {background:#e1e1e1 !important; color:$c-grey;}
+#playlistScroll a:hover {padding-right:30px;}
+
+
+#playlist {
+  background:$c-offwhite; z-index:2; top:60px; bottom:35px; right:15px; left:50%; margin:0 0 0 15px; padding:10px; @include border-right-radius(5px); opacity:0;
+
+  > a {float:right; height:15px; margin:0 8px 0 0;}
+  .shuffle {width:19px; background-position:-15px -108px;}
+  #on.shuffle {background-position:-15px -123px;}
+  .clear {width:15px; background-position:-51px -108px;}
+}
+
+
+#player {
+  position:relative; text-transform:uppercase; color:$c-white; height:108px; padding:10px; margin:0 0 7px 0; @include background($c-dkgrey linear-gradient(color-stops(#262626, $c-dkgrey))); @include box-shadow(0 0 7px $c-semiBlack);
+
+  h2 {font-size:16px; top:12px;}
+  h3 {font-size:14px; top:34px;}
+  h4 {font-size:12px; top:56px;}
+  > div > a {position:absolute;}
+  .album {float:left; margin:0 10px 0 0; border:3px solid $c-white; width:98px; height:98px;}
+}
+
+h2, h3, h4 {position:absolute; left:155px; right:15px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-weight:normal;}
+h5 {position:absolute; width:32px; height:32px; left:50%; top:10%; margin:-16px 0 0 -16px; background:url(data:image/gif;base64,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) no-repeat; text-indent:-9999px;}
+
+#musicPlayer {
+  height:20px; overflow:hidden; position:absolute; bottom:15px; left:125px; right:15px;
+
+  > a {width:13px; height:18px; float:left;}
+  .play {background-position:-21px -79px;}
+  .pause {background-position:-49px -79px;}
+  .loading {display:none; z-index:5; font-size:12px; position:absolute; top:2px; left:35px; color:rgb(255, 255, 255); @include transition(color .35 linear);}
+}
+
+
+#durationBar {width:inherit !important; position:absolute; left:30px; right:45px; top:0; background:#2c2c2c;}
+#progressBar {background:$c-white; width:0; height:16px;}
+#time {font-size:13px; float:right;}
+
+
+#playlistScroll {
+  overflow:auto; position:absolute; top:170px; bottom:10px; left:0; right:10px;
+
+  #playing {background-color:$c-almostBlack;}
+  #playing:hover {color:#ff6df3;}
+
+  > a {padding:6px 25px 6px 22px; position:relative;}
+  span {display:none;}
+  a {
+    &:hover span {
+      display:block !important; width:19px; height:19px; background-position:-87px -104px; position:absolute; top:50%; margin-top:-10px; right:3px;
+
+      &:hover {display:block; background-position:-87px -78px; width:1000 !important;}
+    }
+  }
+}
+
+
+#omni {
+  z-index:5; position:absolute; display:none; max-width:580px; width:95%; min-width:283px; height:100px; top:50%; left:50%; margin:-95px 0 0 -290px; -webkit-transition:opacity .5s linear; -moz-transition:opacity .5s linear;
+
+  > div {position:absolute; top:120px; left:0; right:0; background:rgba(0,0,0,.6); z-index:3; padding:10px 20px;}
+  p {font-weight:bold; font-size:36px; text-transform:uppercase; color:#eee; float:left; width:257px; line-height:32px;}
+  a {
+    float:right; clear:right; margin:20px 0 0 0; font-weight:bold; font-size:11px; color:#d6d6d6; text-transform:uppercase;
+
+    &:nth-child(2) {margin:10px 0 0 0;}
+    &:nth-child(4) {text-decoration:line-through;}
+  }
+}
+
+
+#omniSearchForm {
+  background:$c-almostBlack; top:0; left:0; right:0; bottom:0;
+
+  fieldset {padding:0px 15px; position:absolute; top:15px; bottom:15px; left:15px; right:15px; z-index:6; background-color:$c-offwhite; background:-moz-linear-gradient(top, #bbb, $c-white); background:no-repeat, -webkit-gradient(linear, 0 0, 0 100%, from(#bbb), to($c-white)); @include border-radius(5px);}
+  input {color:$c-grey; width:100%; height:100%; font-size:36px; background:transparent;}
+  input::-webkit-input-placeholder, #omniSearchForm input::-moz-placeholder {color:#a7a7a7;}
+}
+
+.resize {
+  #topNav,
+  #searchField input,
+  #results > div,
+  #results,
+  #player,
+  #omniSearchForm,
+  #omniSearchForm fieldset,
+  #playlist {@include box-shadow($c-noBoxShadow !important); @include border-radius(0px);}
+
+  #topNav,
+  #results,
+  #omniSearchForm {background:$c-almostBlack !important;}
+  #omni > div {background:#000 !important;}
+  #searchField input,
+  #omniSearchForm fieldset {background:$c-offwhite !important;}
+}
+
+.anim * {-webkit-transition-duration:0 !important; -moz-transition-duration:0 !important;}
+#minimize.anim * {-webkit-transition-duration:.5s !important; -moz-transition-duration:.5s !important;}
+
+#minimize {
+  #topNav,
+  #results,
+  #resultList,
+  #playlist > * {display:none;}
+  #playlist {min-width:200px; top:0 !important; left:0 !important; background:transparent; @include box-shadow($c-noBoxShadow !important);}
+  #player {display:block;}
+}
+
+#songLink {
+  float:left; z-index:6; padding:5px; position:absolute; background-color:$c-almostBlack; opacity:.9; -moz-border-radius:5px; -webkit-border-radius:5px; background:-moz-linear-gradient(top, $c-darkbg, $c-almostBlack); background:-webkit-gradient(linear, 0 0, 0 100%, from($c-darkbg), to($c-almostBlack)); -moz-box-shadow:0 1px 7px $c-semiBlack; -webkit-box-shadow:0 1px 7px $c-semiBlack;
+
+  a {text-transform:uppercase; color:#ccc; font-size:10px; font-weight:bold; margin:0 10px 0 0;}
+  input {width:250px; background:transparent; color:#ccc; padding:6px 0; text-align:center;}
+}
