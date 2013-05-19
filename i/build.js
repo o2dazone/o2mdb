@@ -183,11 +183,7 @@
       $('omniSearchForm').addEventListener('submit', function(e){
         e.preventDefault();
         $('search').value = $('omniSearch').value;
-
-        //FIXME: Duplicate code from the searchField submit event
-        self.searchQuery(function(){
-          self.replaceUrl($('search').value,'?s='+$('search').value);
-        });
+        self.searchQuery();
       });
     }
 
@@ -250,9 +246,7 @@
 
     $('searchField').addEventListener('submit', function(e){
       e.preventDefault();
-      self.searchQuery(function(){
-        self.replaceUrl($('search').value,'?s='+$('search').value);
-      });
+      self.searchQuery();
     }, 0);
 
     $('playlistScroll').addEventListener('mouseover', function(e){
@@ -284,16 +278,17 @@
 
   proto.scrubTime = function(song) {
     var t = song.position,
-        d = song.duration;
+        d = song.duration,
+        hr, min, sec;
 
     $('progressBar').style.width = (t/d*100).toFixed(1) + '%';
 
-        t = t/1000;
-    var hr =  t / 3600>>0;
-        t = t % 3600;
-    var min = t / 60>>0;
-        t = t % 60;
-    var sec = t>>0;
+    t = t/1000;
+    hr =  t / 3600>>0;
+    t = t % 3600;
+    min = t / 60>>0;
+    t = t % 60;
+    sec = t>>0;
 
     $('time').innerHTML = ((hr > 0 ? hr + ":" : "") + (min > 0 ? (hr > 0 && min < 10 ? "0" : "") + min + ":" : "0:") + (sec < 10 ? "0" : "") + sec);
   };
@@ -306,7 +301,7 @@
     else
       self.musicAjaxCall = 'songs.php?word=' + $('search').value;
     self.fetchMusic();
-    if (callback) callback();
+    self.replaceUrl($('search').value, '?s=' + encodeURIComponent($('search').value));
   };
 
   proto.revealPlaylist = function() {
