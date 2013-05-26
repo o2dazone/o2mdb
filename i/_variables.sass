@@ -1,0 +1,53 @@
+@import 'compass/css3'
+
+$experimental-support-for-mozilla:      true  !default
+$experimental-support-for-webkit:       true  !default
+$support-for-original-webkit-gradients: false !default
+$experimental-support-for-opera:        false !default
+$experimental-support-for-microsoft:    false !default
+$experimental-support-for-khtml:        false !default
+
+@include font-face('Droid Sans', font-files('DroidSans.ttf'), 'DroidSans.ttf', normal)
+@include font-face('Droid Sans', font-files('DroidSans-Bold.ttf'), 'DroidSansBold.ttf', bold)
+
+// $c- = color
+// $p- = property
+// $f- = font
+// $i- = image
+
+$c-darkbg:        #323232
+$c-white:         #fff
+$c-offwhite:      #efefef
+$c-grey:          #393939
+$c-dkgrey:        #171717
+$c-almostBlack:   #1a1a1a
+$c-pink:          #e60ed4
+$c-semiBlack:     rgba(0, 0, 0, .7)
+$c-noBoxShadow:   none
+
+$p-shadow1: 0 0 2px $c-white
+$p-shadow2: inset 0 1px 2px $c-semiBlack
+$p-shadow3: inset 0 -1px 2px $c-semiBlack
+$p-shadow4: inset 1px 0 2px $c-semiBlack
+$p-shadow5: inset -1px 0 2px $c-semiBlack
+
+$f-droidSans: 'Droid Sans', Helvetica, Arial, sans-serif
+
+$i-sprite: inline-image('sprite.png')
+
+@mixin anchorNormal
+  color: $c-grey
+  text-decoration: none
+  font-size: 12px
+  padding: 6px 25px 6px 15px
+  display: block
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+
+@mixin anchorHover
+  background: #d9d9d9 right -143px no-repeat
+  text-indent: 0 !important
+
+@mixin slightShadow
+  @include box-shadow(0 1px 7px $c-semiBlack)

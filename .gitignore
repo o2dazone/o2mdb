@@ -9,5 +9,6 @@
 !config.rb
 !*.css
 !*.scss
+!*.sass
 !*.md
 
