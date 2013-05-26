@@ -3,10 +3,10 @@
   'use strict';
 
   function $(el) {
-    if (!OhTwo[el])
-      OhTwo[el] = doc.getElementById(el);
+    if (!o2m[el])
+      o2m[el] = doc.getElementById(el);
 
-    return OhTwo[el];
+    return o2m[el];
   }
 
   function getJSON(url, callback){
@@ -25,12 +25,12 @@
     ajax.send();
   }
 
-  var OhTwo, proto,
+  var o2m, proto,
       sm = soundManager,
       body = doc.getElementsByTagName('BODY')[0],
       loc = win.location.href;
 
-  OhTwo = function(){
+  o2m = function(){
     //SoundManager setup
     sm.useHTML5Audio = 1;
     sm.preferFlash = 0;
@@ -49,7 +49,7 @@
     self.start();
   };
 
-  proto = OhTwo.prototype;
+  proto = o2m.prototype;
 
   proto.start = function(){
     var self = this;
@@ -410,7 +410,7 @@
     });
   };
 
-  new OhTwo();
+  new o2m();
 
 })(document, window);
 
