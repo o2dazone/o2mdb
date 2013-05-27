@@ -7,8 +7,8 @@ $experimental-support-for-opera:        false !default
 $experimental-support-for-microsoft:    false !default
 $experimental-support-for-khtml:        false !default
 
-@include font-face('Droid Sans', font-files('DroidSans.ttf'), 'DroidSans.ttf', normal)
-@include font-face('Droid Sans', font-files('DroidSans-Bold.ttf'), 'DroidSansBold.ttf', bold)
+@include font-face('Droid Sans', font-files("DroidSans.ttf", truetype), 'DroidSans.ttf', normal)
+@include font-face('Droid Sans', font-files("DroidSans-Bold.ttf", truetype), 'DroidSansBold.ttf', bold)
 
 // $c- = color
 // $p- = property
@@ -31,9 +31,10 @@ $p-shadow3: inset 0 -1px 2px $c-semiBlack
 $p-shadow4: inset 1px 0 2px $c-semiBlack
 $p-shadow5: inset -1px 0 2px $c-semiBlack
 
-$f-droidSans: 'Droid Sans', Helvetica, Arial, sans-serif
+// $f-droidSans: 'Droid Sans', Helvetica, Arial, sans-serif
 
 $i-sprite: inline-image('sprite.png')
+$i-loading: inline-image('ajax.gif')
 
 @mixin anchorNormal
   color: $c-grey
