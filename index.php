@@ -14,6 +14,13 @@
   <form action="index.php" method="get" id="searchField">
     <fieldset>
       <label>Search</label>
+      <a id="dropSelect" data-el="facetDrop" href="#">all</a>
+      <div id="dropdown" data-shown="false" class="hidden">
+        <a data-el="facets" href="#">all</a>
+        <a data-el="facets" data-select="artist" href="#">artist</a>
+        <a data-el="facets" data-select="title" href="#">song</a>
+        <a data-el="facets" data-select="album" href="#">album</a>
+      </div>
       <input id="search" type="text" value="" name="s" autocomplete="off" />
     </fieldset>
   </form>

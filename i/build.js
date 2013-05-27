@@ -38,7 +38,10 @@
       maxResults = 100,
       resultsItems = '',
       songResults = '',
-      trackPlaying = null;
+      autoPlay = 0,
+      page = 0,
+      trackPlaying = null,
+      defaultSearch = 'http://o2dazone.com/music/search/';
 
   O2m = function(){
     //SoundManager setup
@@ -49,8 +52,6 @@
 
     //tons of initial setup
     var self = this;
-    self.isMobile = w.isMobile || 0;
-    self.auto = 0;
     self.musicAjaxCall = null;
 
     //start it all up
@@ -58,28 +59,49 @@
   };
 
 
+  function jsonPipe() {
+    function outStr(arg) {
+      return encodeURI(JSON.stringify(arg));
+    }
+
+    function outObj(arg) {
+      return JSON.parse(decodeURI(arg));
+    }
+
+    return {
+      outStr: outStr,
+      outObj: outObj
+    };
+  }
+
+  function getFilter() {
+    var filter = $('dropSelect');
+    var filterParam = (filter.dataset.select) ? filter.dataset.select + ':' : '';
+    return filterParam;
+  }
+
+  var jsonc = jsonPipe(); //invoke json conversion functions
+
   O2m.prototype = {
     start: function(){
       var self = this;
 
       //written by DextOr from stackoverflow.com [ http://stackoverflow.com/a/901144 ]
-      function getQueryString(a){a=a.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");a=(new RegExp("[\\?&]"+a+"=([^&#]*)")).exec(location.search);return a==null?"":decodeURIComponent(a[1].replace(/\+/g," "))};
+      function getQueryString(a){a=a.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");a=(new RegExp("[\\?&]"+a+"=([^&#]*)")).exec(location.search);return a===null?"":decodeURIComponent(a[1].replace(/\+/g," "));}
 
-      function paginationFunc() {
-        self.page = 0;
-
+      var pagination = function paginationFunc() {
         function pageAround() {
-          self.publishResults(self.musicAjaxCall + '/page/' + self.page);
+          self.publishResults(self.musicAjaxCall + '/page/' + page);
         }
         function previousPage() {
-          if (self.page > 0) {
-            self.page--;
+          if (page > 0) {
+            page--;
             pageAround();
           }
         }
 
         function nextPage() {
-          self.page++;
+          page++;
           pageAround();
         }
 
@@ -87,25 +109,33 @@
           previousPage: previousPage,
           nextPage: nextPage
         };
+      }();
+
+      function facetDrop(e, target) {
+        if ($('dropdown').dataset.shown === 'true') {
+          $('dropdown').dataset.shown = 'false';
+          $('dropdown').className = 'hidden';
+        } else {
+          $('dropdown').dataset.shown = 'true';
+          $('dropdown').removeAttribute('class');
+        }
       }
 
-      function jsonPipe() {
-        function outStr(arg) {
-          return encodeURI(JSON.stringify(arg));
+      function facetSelection(e, target) {
+        var filter;
+        $('dropSelect').innerHTML = target.innerHTML;
+        $('dropSelect').dataset.select = target.dataset.select;
+        $('dropdown').dataset.shown = 'false';
+        $('dropdown').className = 'hidden';
+
+        if ((filter = target.dataset.select)) {
+          $('dropSelect').dataset.select = filter;
+        } else {
+          $('dropSelect').removeAttribute('data-select');
         }
 
-        function outObj(arg) {
-          return JSON.parse(decodeURI(arg));
-        }
-
-        return {
-          outStr: outStr,
-          outObj: outObj
-        };
+        getFilter();
       }
-
-      var pagination = paginationFunc(); //invoke pagination functions
-      self.jsonc = jsonPipe(); //invoke json conversion functions
 
       function resultsDelegator(e, target) {
         var dataEl = target.getAttribute('data-el'),
@@ -166,20 +196,20 @@
         self.queue();
       }
 
-      var paramMatch,
+      var paramMatch, i, paramKey, len,
           regex = /[\?&]([^=]+)=/g,
           paramList = [],
           paramDelegator = {
             auto: function() {
               if (paramList.indexOf('p') != "1")
-                self.auto = !0; //if "play" param doesn't exist, then set auto to true.
+                autoPlay = !0; //if "play" param doesn't exist, then set auto to true.
             },
             s: function() {
               $('search').value = unescape(getQueryString('s'));
               self.searchQuery();
             },
             p: function() {
-              self.auto = 0;
+              autoPlay = 0;
               var track = unescape(getQueryString('p'));
               self.revealPlaylist();
               $('playlistScroll').innerHTML = '<a href="' + track + '">' + track.replace(/(^o\/)|(.mp3)/g,'') + '</a>';
@@ -192,9 +222,8 @@
       while ((paramMatch = regex.exec(loc)) !== null)
         paramList.push(paramMatch[1]);
 
-
-      for (var i = 0, len = paramList.length; i < len; i++) {
-        var paramKey = paramList[i];
+      for (i = 0, len = paramList.length; i < len; i++) {
+        paramKey = paramList[i];
         if (paramDelegator[paramKey]) {
           paramDelegator[paramKey]();
         }
@@ -213,6 +242,8 @@
       var resizeTime, animTime,
           eventDelegator = {
             playPause: self.togglePlayPause,
+            facetDrop: facetDrop,
+            facets: facetSelection,
             results: resultsDelegator,
             playlist: playlistDelegator
           };
@@ -222,6 +253,11 @@
             delegate = target,
             targetTag = target.tagName,
             jumps = 0;
+
+        if ($('dropdown').dataset.shown == "true") {
+          $('dropdown').dataset.shown = "false";
+          $('dropdown').className = 'hidden';
+        }
 
         if (!(targetTag === 'A' || targetTag === 'SPAN')) return;
 
@@ -242,7 +278,7 @@
       });
 
 
-      if (!self.isMobile) {
+      if (!w.isMobile) {
         w.onresize = function() {
           clearTimeout(resizeTime);
           clearTimeout(animTime);
@@ -271,8 +307,9 @@
         self.searchQuery();
       }, 0);
 
+      var target;
       $('playlistScroll').addEventListener('mouseover', function(e){
-        var target = e.target;
+        target = e.target;
         if (target.tagName !== 'A' || target.getElementsByTagName('SPAN').length) return;
         setTimeout(function(){
           target.innerHTML += '<span style="display:none;" data-el="deleteTrack">Remove</span>';
@@ -332,8 +369,8 @@
 
       d.querySelectorAll('#results > p')[0].innerHTML = ''; //clear the resultCount box when a new query is done
       if (query === '') return;
-      self.musicAjaxCall = 'http://o2dazone.com/music/search/' + query;
-      self.page = 0; //reset whatever page you're on
+      self.musicAjaxCall = defaultSearch + getFilter() + query;
+      page = 0; //reset whatever page you're on
       self.publishResults();
       self.replaceUrl(query, '?s=' + encodeURIComponent(query));
     },
@@ -406,7 +443,7 @@
 
     publishTrackInfo: function(track) {
       var self = this;
-      track = self.jsonc.outObj(track.dataset.songdata);
+      track = jsonc.outObj(track.dataset.songdata);
       var title = track.title,
           artist = track.artist,
           album = track.album,
@@ -431,7 +468,7 @@
           showPrev = '',
           showNext = '';
 
-      if (self.page > 0) showPrev = '<a class="prev" data-el="prevPage" href="#">Prev Page</a>';
+      if (page > 0) showPrev = '<a class="prev" data-el="prevPage" href="#">Prev Page</a>';
       if (len >= maxResults) showNext = '<a class="next" data-el="nextPage" href="#">Next Page</a>';
 
       if (len > 0) {
@@ -458,12 +495,11 @@
           title:        song.title,
           artist:       song.artist,
           // year:         song.year,
-          albumArtUrl:  song.albumArtUrl,
-          id:           song.id
+          albumArtUrl:  song.albumArtUrl
           // lastPlayed:   song.lastPlayed,
           // playCount:    song.playCount
         };
-        songResults += '<a data-songdata="' + self.jsonc.outStr(data) +'" href="#">' + song.album + '/' + song.artist + ' - ' + song.title + '</a>';
+        songResults += '<a data-songdata="' + jsonc.outStr(data) +'" href="' + song.id + '">' + song.album + '/' + song.artist + ' - ' + song.title + '</a>';
       }
     },
 
@@ -497,8 +533,8 @@
         //appends all results to result window
         $('resultList').innerHTML = resultsItems;
 
-        if (!self.auto) return; //if autoplay param is available, then reveal playlist, add all songs and start playing
-        self.auto = 0;
+        if (!autoPlay) return; //if autoplay param is available, then reveal playlist, add all songs and start playing
+        autoPlay = 0;
         self.revealPlaylist();
         $('playlistScroll').innerHTML = songResults;
       });

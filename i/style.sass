@@ -1,7 +1,7 @@
 @import "./variables"
 
 *
-  font-family: 'Droid Sans'
+  font-family: $f-droidSans
   text-indent: 0
   padding: 0
   margin: 0
@@ -23,7 +23,7 @@
   @include border-radius(5px)
 
 /*input shadow and outer glow*/
-#searchField input, #omniSearchForm fieldset, #results > div
+#searchField fieldset, #omniSearchForm fieldset, #results > div
   @include box-shadow($p-shadow1, $p-shadow2, $p-shadow3, $p-shadow4, $p-shadow5)
 
 /*shadows*/
@@ -40,8 +40,7 @@
   top: 0
   left: 0
   width: 100%
-  overflow: hidden
-  @include background($c-darkbg linear-gradient(color-stops($c-darkbg, $c-almostBlack)))
+  @include background($c-darkbg linear-gradient($c-darkbg, $c-almostBlack))
   @include slightShadow
 
 h1
@@ -54,26 +53,73 @@ h1
 
 #searchField
   min-width: 400px
+  $fieldset-height: 27px
+  $input-height: $fieldset-height - 2
   label
     float: left
-  a
-    width: 75px
-    height: 17px
-    background-position: 0 -49px
-    float: left
-    margin: 10px 5px 0 0
-  input
+    text-indent: -9999px
+  fieldset
     margin: 5px 2px
-    padding: 5px 0 5px 30px
-    color: $c-grey
-    font-size: 14px
     float: left
-    width: 90%
-    max-width: 220px
-    background-color: $c-offwhite
-    background: -moz-linear-gradient(top, #bbb, $c-white)
-    background: $i-sprite -85px -6px no-repeat, -webkit-gradient(linear, 0 0, 0 100%, from(#bbb), to($c-white))
+    width: 400px
+    height: $fieldset-height
+    position: relative
+    @include background($c-offwhite linear-gradient(#bbb, $c-white))
     @include border-radius(3px)
+  input
+    background: none
+    color: $c-grey
+    font-size: 19px
+    margin: 1px 0 0 30px
+    line-height: $input-height
+    height: $input-height
+    display: block
+    width: 275px
+    border: 1px solid rgba(255,255,255,.2)
+    border-width: 0 0 0 1px
+    text-indent: 12px
+
+#dropSelect
+  float: left
+  font-size: 18px
+  color: $c-grey
+  text-indent: 30px
+  height: 23px
+  padding: 0 10px 0 0
+  margin: 2px 0 0 2px
+  border: 1px solid rgba(0,0,0,.1)
+  border-width: 0 1px 0 0
+  background: #ccc $i-sprite no-repeat -88px -6px
+  @include border-corner-radius(top, left, 3px)
+  &:hover
+    @include background($i-sprite no-repeat -88px -6px, linear-gradient(#ccc, #eee))
+
+#dropdown
+  position: absolute
+  width: 150px
+  z-index: 4
+  top: 30px
+  left: 0
+  padding: 5px 10px
+  @include border-radius(3px)
+  @include background(linear-gradient($c-white, #dadada))
+  @include slightShadow
+  a
+    font-size: 20px
+    padding: 6px 0
+    border-top: 1px solid $c-white
+    border-bottom: 1px solid rgba(0,0,0,.2)
+    display: block
+    color: #666
+    &:first-child
+      border-top: 0
+    &:last-child
+      border-bottom: 0
+    &:hover
+      color: $c-grey
+
+.hidden
+  visibility: hidden
 
 #results
   width: 50%
@@ -179,7 +225,7 @@ h1
   height: 108px
   padding: 10px
   margin: 0 0 7px 0
-  @include background($c-dkgrey linear-gradient(color-stops(#262626, $c-dkgrey)))
+  @include background($c-dkgrey linear-gradient(#262626, $c-dkgrey))
   h2
     font-size: 16px
     top: 12px
@@ -347,7 +393,7 @@ h5
     right: 15px
     z-index: 6
     background-color: $c-offwhite
-    @include background($c-darkbg linear-gradient(color-stops(#bbb, $c-white)))
+    @include background($c-darkbg linear-gradient(#bbb, $c-white))
     @include border-radius(5px)
   input
     color: $c-grey
@@ -359,14 +405,14 @@ h5
     color: #a7a7a7
 
 .resize
-  #topNav, #searchField input, #results > div, #results, #player, #omniSearchForm, #omniSearchForm fieldset, #playlist
+  #topNav, #searchField fieldset, #results > div, #results, #player, #omniSearchForm, #omniSearchForm fieldset, #playlist
     @include box-shadow($c-noBoxShadow !important)
     @include border-radius(0px)
   #topNav, #results, #omniSearchForm
     background: $c-almostBlack !important
   #omni > div
     background: #000 !important
-  #searchField input, #omniSearchForm fieldset
+  #searchField fieldset, #omniSearchForm fieldset
     background: $c-offwhite !important
 
 .anim *
@@ -395,7 +441,7 @@ h5
   background-color: $c-almostBlack
   opacity: .9
   @include border-radius(5px)
-  @include background($c-darkbg linear-gradient(color-stops($c-darkbg, $c-almostBlack)))
+  @include background($c-darkbg linear-gradient($c-darkbg, $c-almostBlack))
   @include slightShadow
   a
     text-transform: uppercase
@@ -411,7 +457,7 @@ h5
     text-align: center
 
 /*the sprite is right*/
-h1 a, #results > a, #resultList > a:hover, #playlist > a, #playlistScroll a span, #player > div > a, #searchField label, #musicTrack > a
+h1 a, #results > a, #resultList > a:hover, #playlist > a, #playlistScroll a span, #player > div > a, #musicTrack > a
   background-image: $i-sprite
   background-repeat: no-repeat
   text-indent: -9999px
