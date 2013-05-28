@@ -47,8 +47,7 @@
   //written by Phrogz from stackoverflow.com [ http://stackoverflow.com/a/4673990 ]
   Date.prototype.customFormat=function(k){var d,e,a,f,g,b,h,m,n,c,i,j,l,o;e=((d=this.getFullYear())+"").slice(-2);g=(b=this.getMonth()+1)<10?"0"+b:b;f=(a=["January","February","March","April","May","June","July","August","September","October","November","December"][b-1]).substring(0,3);n=(c=this.getDate())<10?"0"+c:c;m=(h=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][this.getDay()]).substring(0,3);o=c>=10&&c<=20?"th":(l=c%10)==1?"st":l==2?"nd":l==3?"rd":"th";k=k.replace("#YYYY#",d).replace("#YY#",e).replace("#MMMM#",a).replace("#MMM#",f).replace("#MM#",g).replace("#M#",b).replace("#DDDD#",h).replace("#DDD#",m).replace("#DD#",n).replace("#D#",c).replace("#th#",o);a=d=this.getHours();if(a===0)a=24;if(a>12)a-=12;e=a<10?"0"+a:a;h=(b=d<12?"am":"pm").toUpperCase();f=(i=this.getMinutes())<10?"0"+i:i;g=(j=this.getSeconds())<10?"0"+j:j;return k.replace("#hhh#",d).replace("#hh#",e).replace("#h#",a).replace("#mm#",f).replace("#m#",i).replace("#ss#",g).replace("#s#",j).replace("#ampm#",b).replace("#AMPM#",h);};
 
-  var O2m,
-      body = d.body,
+  var body = d.body,
       loc = w.location.href,
       maxResults = 100,
       resultsItems = '',
@@ -59,7 +58,7 @@
       musicAjaxCall = null,
       defaultSearch = 'http://o2dazone.com/music/search/';
 
-  O2m = function(){
+  var O2m = function(){
     if (!(this instanceof O2m))
           return new O2m();
 
@@ -72,6 +71,74 @@
     this.start();
   };
 
+  var Dropdown = function(id) {
+    if (!(this instanceof Dropdown))
+          return new Dropdown(id);
+
+    var el = d.getElementById(id);
+
+    function show() {
+      el.setAttribute('data-shown',true);
+      el.removeAttribute('class');
+    }
+
+    function hide() {
+      if (el.dataset.shown) {
+        el.removeAttribute('data-shown');
+        el.className = 'hidden';
+      }
+    }
+
+    return {
+      show: show,
+      hide: hide
+    };
+  };
+
+  var Pagination = function(self) {
+    function pageAround() {
+      self.publishResults(musicAjaxCall + '/page/' + page);
+    }
+
+    function previousPage() {
+      if (page > 0) {
+        page--;
+        pageAround();
+      }
+    }
+
+    function nextPage() {
+      page++;
+      pageAround();
+    }
+
+    function paging(len) {
+      var addAll = [],
+          showPrev = '',
+          showNext = '';
+
+      if (page > 0) showPrev = '<a class="prev" data-el="prevPage" href="#">Prev Page</a>';
+      if (len >= maxResults) showNext = '<a class="next" data-el="nextPage" href="#">Next Page</a>';
+
+      if (len > 0) {
+        addAll.push('<span><a class="addAll" href="#" data-el="addAllResults">Add all these results to your playlist</a>');
+
+        addAll.push(showPrev);
+        addAll.push(showNext);
+
+        addAll.push('</span>');
+      }
+
+      return addAll.join('');
+    }
+
+    return {
+      previousPage: previousPage,
+      nextPage: nextPage,
+      paging: paging
+    };
+  };
+
   O2m.prototype = {
     start: function(){
       var self = this;
@@ -79,49 +146,26 @@
       //written by DextOr from stackoverflow.com [ http://stackoverflow.com/a/901144 ]
       function getQueryString(a){a=a.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");a=(new RegExp("[\\?&]"+a+"=([^&#]*)")).exec(location.search);return a===null?"":decodeURIComponent(a[1].replace(/\+/g," "));}
 
-      var pagination = function paginationFunc() {
-        function pageAround() {
-          self.publishResults(musicAjaxCall + '/page/' + page);
-        }
-        function previousPage() {
-          if (page > 0) {
-            page--;
-            pageAround();
-          }
-        }
-
-        function nextPage() {
-          page++;
-          pageAround();
-        }
-
-        return {
-          previousPage: previousPage,
-          nextPage: nextPage
-        };
-      }();
+      self.drop = Dropdown('dropdown');
+      self.pagination = Pagination(self);
 
       function searchDelegator(e, target) {
         var dataEl = target.getAttribute('data-el'),
             delegateFunc,
             filter,
-            dropdown = $('dropdown'),
             dropSelect = $('dropSelect'),
             delegateObj = {
               'facetDrop': function() {
-                if (dropdown.dataset.shown) {
-                  dropdown.removeAttribute('data-shown');
-                  dropdown.className = 'hidden';
+                if (!dropdown.dataset.shown) {
+                  self.drop.show();
                 } else {
-                  dropdown.setAttribute('data-shown',true);
-                  dropdown.removeAttribute('class');
+                  self.drop.hide();
                 }
               },
               'facets': function() {
                 dropSelect.innerHTML = target.innerHTML;
                 dropSelect.dataset.select = target.dataset.select;
-                dropdown.dataset.shown = 'false';
-                dropdown.className = 'hidden';
+                self.drop.hide();
 
                 if ((filter = target.dataset.select)) {
                   dropSelect.dataset.select = filter;
@@ -145,10 +189,10 @@
                 $('playlistScroll').innerHTML += songResults;
               },
               'prevPage': function() {
-                pagination.previousPage();
+                self.pagination.previousPage();
               },
               'nextPage': function() {
-                pagination.nextPage();
+                self.pagination.nextPage();
               }
             };
 
@@ -277,10 +321,7 @@
             targetTag = target.tagName,
             jumps = 0;
 
-        if ($('dropdown').dataset.shown) {
-          $('dropdown').removeAttribute('data-shown');
-          $('dropdown').className = 'hidden';
-        }
+        self.drop.hide();
 
         if (!(targetTag === 'A' || targetTag === 'SPAN')) return;
 
@@ -485,27 +526,6 @@
       });
     },
 
-    paging: function(len) {
-      var self = this,
-          addAll = [],
-          showPrev = '',
-          showNext = '';
-
-      if (page > 0) showPrev = '<a class="prev" data-el="prevPage" href="#">Prev Page</a>';
-      if (len >= maxResults) showNext = '<a class="next" data-el="nextPage" href="#">Next Page</a>';
-
-      if (len > 0) {
-        addAll.push('<span><a class="addAll" href="#" data-el="addAllResults">Add all these results to your playlist</a>');
-
-        addAll.push(showPrev);
-        addAll.push(showNext);
-
-        addAll.push('</span>');
-      }
-
-      return addAll.join('');
-    },
-
     buildResults: function() {
       var self = this,
           songs = self.queryResults,
@@ -551,7 +571,7 @@
         resultsItems = '';
 
         self.buildResults();
-        resultsItems += self.paging(len);
+        resultsItems += self.pagination.paging(len);
         resultsItems += songResults;
 
         //appends all results to result window
