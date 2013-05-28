@@ -28,38 +28,8 @@
     ajax.send();
   }
 
-  //written by Phrogz from stackoverflow.com [ http://stackoverflow.com/a/4673990 ]
-  Date.prototype.customFormat=function(k){var d,e,a,f,g,b,h,m,n,c,i,j,l,o;e=((d=this.getFullYear())+"").slice(-2);g=(b=this.getMonth()+1)<10?"0"+b:b;f=(a=["January","February","March","April","May","June","July","August","September","October","November","December"][b-1]).substring(0,3);n=(c=this.getDate())<10?"0"+c:c;m=(h=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][this.getDay()]).substring(0,3);o=c>=10&&c<=20?"th":(l=c%10)==1?"st":l==2?"nd":l==3?"rd":"th";k=k.replace("#YYYY#",d).replace("#YY#",e).replace("#MMMM#",a).replace("#MMM#",f).replace("#MM#",g).replace("#M#",b).replace("#DDDD#",h).replace("#DDD#",m).replace("#DD#",n).replace("#D#",c).replace("#th#",o);a=d=this.getHours();if(a===0)a=24;if(a>12)a-=12;e=a<10?"0"+a:a;h=(b=d<12?"am":"pm").toUpperCase();f=(i=this.getMinutes())<10?"0"+i:i;g=(j=this.getSeconds())<10?"0"+j:j;return k.replace("#hhh#",d).replace("#hh#",e).replace("#h#",a).replace("#mm#",f).replace("#m#",i).replace("#ss#",g).replace("#s#",j).replace("#ampm#",b).replace("#AMPM#",h);};
-
-  var O2m,
-      sm = soundManager,
-      body = d.body,
-      loc = w.location.href,
-      maxResults = 100,
-      resultsItems = '',
-      songResults = '',
-      autoPlay = 0,
-      page = 0,
-      trackPlaying = null,
-      defaultSearch = 'http://o2dazone.com/music/search/';
-
-  O2m = function(){
-    //SoundManager setup
-    sm.useHTML5Audio = 1;
-    sm.preferFlash = 0;
-    sm.debugMode = 0;
-    sm.url ='i/';
-
-    //tons of initial setup
-    var self = this;
-    self.musicAjaxCall = null;
-
-    //start it all up
-    self.start();
-  };
-
-
-  function jsonPipe() {
+  //invoke and define json data conversion
+  var jsonc = function jsonPipe() {
     function outStr(arg) {
       return encodeURI(JSON.stringify(arg));
     }
@@ -72,15 +42,35 @@
       outStr: outStr,
       outObj: outObj
     };
-  }
+  }();
 
-  function getFilter() {
-    var filter = $('dropSelect');
-    var filterParam = (filter.dataset.select) ? filter.dataset.select + ':' : '';
-    return filterParam;
-  }
+  //written by Phrogz from stackoverflow.com [ http://stackoverflow.com/a/4673990 ]
+  Date.prototype.customFormat=function(k){var d,e,a,f,g,b,h,m,n,c,i,j,l,o;e=((d=this.getFullYear())+"").slice(-2);g=(b=this.getMonth()+1)<10?"0"+b:b;f=(a=["January","February","March","April","May","June","July","August","September","October","November","December"][b-1]).substring(0,3);n=(c=this.getDate())<10?"0"+c:c;m=(h=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][this.getDay()]).substring(0,3);o=c>=10&&c<=20?"th":(l=c%10)==1?"st":l==2?"nd":l==3?"rd":"th";k=k.replace("#YYYY#",d).replace("#YY#",e).replace("#MMMM#",a).replace("#MMM#",f).replace("#MM#",g).replace("#M#",b).replace("#DDDD#",h).replace("#DDD#",m).replace("#DD#",n).replace("#D#",c).replace("#th#",o);a=d=this.getHours();if(a===0)a=24;if(a>12)a-=12;e=a<10?"0"+a:a;h=(b=d<12?"am":"pm").toUpperCase();f=(i=this.getMinutes())<10?"0"+i:i;g=(j=this.getSeconds())<10?"0"+j:j;return k.replace("#hhh#",d).replace("#hh#",e).replace("#h#",a).replace("#mm#",f).replace("#m#",i).replace("#ss#",g).replace("#s#",j).replace("#ampm#",b).replace("#AMPM#",h);};
 
-  var jsonc = jsonPipe(); //invoke json conversion functions
+  var O2m,
+      body = d.body,
+      loc = w.location.href,
+      maxResults = 100,
+      resultsItems = '',
+      songResults = '',
+      autoPlay = 0,
+      page = 0,
+      trackPlaying = null,
+      musicAjaxCall = null,
+      defaultSearch = 'http://o2dazone.com/music/search/';
+
+  O2m = function(){
+    if (!(this instanceof O2m))
+          return new O2m();
+
+    //SoundManager setup
+    soundManager.useHTML5Audio = 1;
+    soundManager.preferFlash = 0;
+    soundManager.debugMode = 0;
+    soundManager.url ='i/';
+
+    this.start();
+  };
 
   O2m.prototype = {
     start: function(){
@@ -91,7 +81,7 @@
 
       var pagination = function paginationFunc() {
         function pageAround() {
-          self.publishResults(self.musicAjaxCall + '/page/' + page);
+          self.publishResults(musicAjaxCall + '/page/' + page);
         }
         function previousPage() {
           if (page > 0) {
@@ -111,30 +101,39 @@
         };
       }();
 
-      function facetDrop(e, target) {
-        if ($('dropdown').dataset.shown === 'true') {
-          $('dropdown').dataset.shown = 'false';
-          $('dropdown').className = 'hidden';
-        } else {
-          $('dropdown').dataset.shown = 'true';
-          $('dropdown').removeAttribute('class');
+      function searchDelegator(e, target) {
+        var dataEl = target.getAttribute('data-el'),
+            delegateFunc,
+            filter,
+            dropdown = $('dropdown'),
+            dropSelect = $('dropSelect'),
+            delegateObj = {
+              'facetDrop': function() {
+                if (dropdown.dataset.shown) {
+                  dropdown.removeAttribute('data-shown');
+                  dropdown.className = 'hidden';
+                } else {
+                  dropdown.setAttribute('data-shown',true);
+                  dropdown.removeAttribute('class');
+                }
+              },
+              'facets': function() {
+                dropSelect.innerHTML = target.innerHTML;
+                dropSelect.dataset.select = target.dataset.select;
+                dropdown.dataset.shown = 'false';
+                dropdown.className = 'hidden';
+
+                if ((filter = target.dataset.select)) {
+                  dropSelect.dataset.select = filter;
+                } else {
+                  dropSelect.removeAttribute('data-select');
+                }
+              }
+            };
+
+        if ((delegateFunc = delegateObj[dataEl])) {
+          delegateFunc(); //fire the delegated functions
         }
-      }
-
-      function facetSelection(e, target) {
-        var filter;
-        $('dropSelect').innerHTML = target.innerHTML;
-        $('dropSelect').dataset.select = target.dataset.select;
-        $('dropdown').dataset.shown = 'false';
-        $('dropdown').className = 'hidden';
-
-        if ((filter = target.dataset.select)) {
-          $('dropSelect').dataset.select = filter;
-        } else {
-          $('dropSelect').removeAttribute('data-select');
-        }
-
-        getFilter();
       }
 
       function resultsDelegator(e, target) {
@@ -242,8 +241,7 @@
       var resizeTime, animTime,
           eventDelegator = {
             playPause: self.togglePlayPause,
-            facetDrop: facetDrop,
-            facets: facetSelection,
+            search: searchDelegator,
             results: resultsDelegator,
             playlist: playlistDelegator
           };
@@ -254,8 +252,8 @@
             targetTag = target.tagName,
             jumps = 0;
 
-        if ($('dropdown').dataset.shown == "true") {
-          $('dropdown').dataset.shown = "false";
+        if ($('dropdown').dataset.shown) {
+          $('dropdown').removeAttribute('data-shown');
           $('dropdown').className = 'hidden';
         }
 
@@ -276,7 +274,6 @@
         self.song.setPosition((e.offsetX/this.clientWidth*self.song.duration));
         self.scrubTime(self.song);
       });
-
 
       if (!w.isMobile) {
         w.onresize = function() {
@@ -329,7 +326,7 @@
 
     togglePlayPause: function(e, target) {
       target.className = target.className === 'play' ? 'pause' : 'play';
-      sm.togglePause('smObj');
+      soundManager.togglePause('smObj');
     },
 
     isShuffled: function() {
@@ -367,9 +364,15 @@
       var self = this,
           query = $('search').value;
 
+      function getFilter() {
+        var filter = $('dropSelect');
+        var filterParam = (filter.dataset.select) ? filter.dataset.select + ':' : '';
+        return filterParam;
+      }
+
       d.querySelectorAll('#results > p')[0].innerHTML = ''; //clear the resultCount box when a new query is done
       if (query === '') return;
-      self.musicAjaxCall = defaultSearch + getFilter() + query;
+      musicAjaxCall = defaultSearch + getFilter() + query;
       page = 0; //reset whatever page you're on
       self.publishResults();
       self.replaceUrl(query, '?s=' + encodeURIComponent(query));
@@ -394,8 +397,8 @@
 
       var trackUrl = 'o/' + unescape(trackPlaying.href).replace(/^(.+?(\/o\/))/,'');
 
-      if (self.song) sm.destroySound('smObj');
-      self.song = sm.createSound({
+      if (self.song) soundManager.destroySound('smObj');
+      self.song = soundManager.createSound({
         id: 'smObj',
         url: trackUrl,
         autoPlay: 1,
@@ -515,7 +518,7 @@
 
       $('resultList').innerHTML = '<h5>Loading...</h5>';
 
-      self.getMusicQuery(url || self.musicAjaxCall, function(r){
+      self.getMusicQuery(url || musicAjaxCall, function(r){
         var len = r.length;
         self.resultCount(len);
         if (!len || r[0] === '') {
@@ -541,7 +544,6 @@
     }
   };
 
-  w.o2 = new O2m();
-
+  var o2m = O2m();
 })(document, window);
 

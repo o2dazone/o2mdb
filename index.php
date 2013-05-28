@@ -11,11 +11,11 @@
 <script type="text/javascript">if (navigator.userAgent.match(/iPhone/i)) {document.getElementsByTagName('BODY')[0].className = "resize anim"; window.isMobile = true;}</script>
 <div id="topNav">
   <h1><a href="index.php">o2mdb</a></h1>
-  <form action="index.php" method="get" id="searchField">
+  <form action="index.php" method="get" data-el="search" id="searchField">
     <fieldset>
       <label>Search</label>
       <a id="dropSelect" data-el="facetDrop" href="#">all</a>
-      <div id="dropdown" data-shown="false" class="hidden">
+      <div id="dropdown" class="hidden">
         <a data-el="facets" href="#">all</a>
         <a data-el="facets" data-select="artist" href="#">artist</a>
         <a data-el="facets" data-select="title" href="#">song</a>
