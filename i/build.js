@@ -195,6 +195,30 @@
         self.queue();
       }
 
+      function omniDelegator(e, target) {
+        musicAjaxCall = null;
+        var targetDelegate = {
+          A: target,
+          SPAN: target.parentNode
+        };
+
+        var date = new Date();
+
+        var omniDelegate = {
+          'latest': 'creationDate:[' + (date-2592000000)*1000 + '%20TO%20' + date*1000 + ']', //current date to 30 days ago
+          'random': 'playCount:>3%20AND%20lastPlayed:[' + (date-2592000000*4)*1000 + '%20TO%20' + date*1000 + ']', //disabled
+          'popular': 'playCount:>2%20AND%20lastPlayed:[' + (date-2592000000*12)*1000 + '%20TO%20' + date*1000 + ']' //playCount is greater than 2 and played in the last year
+        };
+
+        if (targetDelegate[target.tagName])
+          musicAjaxCall = defaultSearch + omniDelegate[targetDelegate[target.tagName].getAttribute('data-el')];
+        if (musicAjaxCall) {
+          self.publishResults();
+          // add search query to history
+          self.replaceUrl(musicAjaxCall, w.location.pathname + '?s=' + omniDelegate[targetDelegate[target.tagName].getAttribute('data-el')]);
+        }
+      }
+
       var paramMatch, i, paramKey, len,
           regex = /[\?&]([^=]+)=/g,
           paramList = [],
@@ -243,7 +267,8 @@
             playPause: self.togglePlayPause,
             search: searchDelegator,
             results: resultsDelegator,
-            playlist: playlistDelegator
+            playlist: playlistDelegator,
+            omni: omniDelegator
           };
 
       body.addEventListener('click',function(e){
@@ -315,10 +340,7 @@
     },
 
     convertnsToDate: function(ms) {
-      ms = ms+'';
-      ms = +ms.substring(0,ms.length-3);
-
-      var date = new Date(ms),
+      var date = new Date(Math.round(ms/1000)),
           formattedDate = date.customFormat('#MMM# #D#, #YYYY#') + ' at ' + date.customFormat('#h#:#mm##ampm#');
 
       return formattedDate;
@@ -338,8 +360,6 @@
     },
 
     replaceUrl: function(name, param) {
-      return;
-      if (!this.historyReplace) return;
       history.replaceState('searchResults',name,param);
     },
 
@@ -362,7 +382,7 @@
 
     searchQuery: function(callback) {
       var self = this,
-          query = $('search').value;
+          query = getFilter() + $('search').value;
 
       function getFilter() {
         var filter = $('dropSelect');
@@ -372,10 +392,10 @@
 
       d.querySelectorAll('#results > p')[0].innerHTML = ''; //clear the resultCount box when a new query is done
       if (query === '') return;
-      musicAjaxCall = defaultSearch + getFilter() + query;
+      musicAjaxCall = defaultSearch + query;
       page = 0; //reset whatever page you're on
       self.publishResults();
-      self.replaceUrl(query, '?s=' + encodeURIComponent(query));
+      self.replaceUrl(query, '?s=' + query);
     },
 
     revealPlaylist: function() {
@@ -426,8 +446,8 @@
       });
 
       self.publishTrackInfo(trackPlaying);
-
-      self.replaceUrl(trackUrl, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p='+trackUrl);
+      // self.replaceUrl(id, )
+      // self.replaceUrl(trackUrl, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p='+trackUrl);
     },
 
     hideOmnibox: function() {
@@ -453,7 +473,7 @@
           albumArt = track.albumArtUrl || 'i/cover.png';
 
       d.title = track.artist + " - " + track.title;
-
+      self.replaceUrl(track.id, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p=' + track.id);
       $('songInfo').innerHTML = '<div class="album" style="background-image:url(\'' + albumArt + '\')"></div><h2>' + track.title + '</h2><h3>' + track.artist + '</h3><h4>' + track.album + '</h4>';
     },
 
@@ -497,12 +517,13 @@
           album:        song.album,
           title:        song.title,
           artist:       song.artist,
+          id:           song.id,
           // year:         song.year,
           albumArtUrl:  song.albumArtUrl
           // lastPlayed:   song.lastPlayed,
           // playCount:    song.playCount
         };
-        songResults += '<a data-songdata="' + jsonc.outStr(data) +'" href="' + song.id + '">' + song.album + '/' + song.artist + ' - ' + song.title + '</a>';
+        songResults += '<a data-songdata="' + jsonc.outStr(data) +'" href="#">' + song.album + '/' + song.artist + ' - ' + song.title + '</a>';
       }
     },
 

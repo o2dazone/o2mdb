@@ -35,8 +35,8 @@
   <div>
     <p>Have no idea what to look for?</p>
     <a href="#" data-el="latest">Check out the <span>latest uploads</span></a>
-    <a href="#" data-el="random">Listen to something <span>random</span></a>
-    <a data-el="popular">Come see <span>what is popular</span></a>
+    <a href="#" class="strike" data-el="random">Listen to something <span>random</span></a>
+    <a href="#" data-el="popular">Come see <span>what is popular</span></a>
   </div>
 </div>
 

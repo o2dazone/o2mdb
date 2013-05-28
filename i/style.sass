@@ -83,16 +83,17 @@ h1
   float: left
   font-size: 18px
   color: $c-grey
-  text-indent: 30px
+  text-indent: 30px !important
   height: 23px
   padding: 0 10px 0 0
   margin: 2px 0 0 2px
   border: 1px solid rgba(0,0,0,.1)
   border-width: 0 1px 0 0
-  background: #ccc $i-sprite no-repeat -88px -6px
+  background-color: #ccc
+  background-position: -88px -6px
   @include border-corner-radius(top, left, 3px)
   &:hover
-    @include background($i-sprite no-repeat -88px -6px, linear-gradient(#ccc, #eee))
+    @include background-image(linear-gradient(#ccc, #eee))
 
 #dropdown
   position: absolute
@@ -377,6 +378,8 @@ h5
     text-transform: uppercase
   span
     color: $c-pink
+  .strike
+    text-decoration: line-through
 
 #omniSearchForm
   background: $c-almostBlack
@@ -457,7 +460,7 @@ h5
     text-align: center
 
 /*the sprite is right*/
-h1 a, #results > a, #resultList > a:hover, #playlist > a, #playlistScroll a span, #player > div > a, #musicTrack > a
+h1 a, #results > a, #resultList > a:hover, #playlist > a, #playlistScroll a span, #player > div > a, #musicTrack > a, #dropSelect, #dropSelect:hover
   background-image: $i-sprite
   background-repeat: no-repeat
   text-indent: -9999px
