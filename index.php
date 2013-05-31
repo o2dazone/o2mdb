@@ -11,7 +11,7 @@
 <script type="text/javascript">if (navigator.userAgent.match(/iPhone/i)) {document.getElementsByTagName('BODY')[0].className = "resize anim"; window.isMobile = true;}</script>
 <div id="topNav">
   <h1><a href="index.php">o2mdb</a></h1>
-  <form action="index.php" method="get" data-el="search" id="searchField">
+  <form action="index.php" method="get" id="searchField">
     <fieldset>
       <label>Search</label>
       <a id="dropSelect" data-el="facetDrop" href="#">all</a>
@@ -52,7 +52,7 @@
     <div id="songInfo"></div>
 
     <div id="musicPlayer">
-      <a href="#" class="pause" data-el="playPause">Play/Pause</a>
+      <a href="#" class="pause" data-el="controls">Play/Pause</a>
       <div id="durationBar">
         <div id="progressBar"></div>
       </div>
@@ -65,7 +65,7 @@
   <div id="playlistScroll"></div>
 </div>
 
-<script type="text/javascript" src="i/sm.js?<?=filemtime('i/sm.js')?>"></script>
-<script type="text/javascript" src="i/build.js?<?=filemtime('i/build.js')?>"></script>
+<?php/*<script type="text/javascript" src="i/build.min.js?<?=filemtime('i/build.min.js')?>"></script>*/?>
+<script type="text/javascript" src="i/js/compiled.js?<?=filemtime('i/js/compiled.js')?>"></script>
 </body>
 </html>
