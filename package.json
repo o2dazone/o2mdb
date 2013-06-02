@@ -1,8 +1,0 @@
-{
-  "name": "o2mdb",
-  "version": "1.0.1",
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-closure-compiler": "~0.0.18"
-  }
-}

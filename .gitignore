@@ -1,10 +1,7 @@
-node_modules
 todo.txt
 *.psd
 *.swf
-compiled.js
-build.min.js
 *.css
-.sass_cache/
+.sass_cache/*
 .htaccess
 *.ttf

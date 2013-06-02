@@ -7,17 +7,17 @@
     if (!(self instanceof Dropdown))
       return new Dropdown(id);
 
-    self.el = d.getElementById(id);
+    var el = d.getElementById(id);
 
     function show() {
-      self.el.setAttribute('data-shown',true);
-      self.el.removeAttribute('class');
+      el.setAttribute('data-shown',true);
+      el.removeAttribute('class');
     }
 
     function hide() {
-      if (self.el.dataset.shown) {
-        self.el.removeAttribute('data-shown');
-        self.el.className = 'hidden';
+      if (el.dataset.shown) {
+        el.removeAttribute('data-shown');
+        el.className = 'hidden';
       }
     }
 
