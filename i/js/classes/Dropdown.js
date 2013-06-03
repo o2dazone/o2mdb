@@ -1,8 +1,6 @@
 (function(o2, d){
   'use strict';
 
-  var instances = {};
-
   var DropdownFactory = function(id) {
     var el = d.getElementById(id);
 
@@ -24,6 +22,8 @@
     };
   };
 
+  var instances = {};
+
   function getInstance(id) {
     if (!instances[id]) {
       instances = new DropdownFactory(id);
@@ -36,3 +36,10 @@
     getInstance: getInstance
   };
 }(window.o2, document));
+
+/*
+*   Alternatives to singletons here
+*   credits to Geoff Berger
+*   http://jsfiddle.net/nbdH7/
+*   http://jsfiddle.net/RPqKr/
+*/
