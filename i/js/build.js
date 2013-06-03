@@ -24,7 +24,6 @@
   o2.Events();
   o2.Omni();
   o2.Jsonc = o2.Jsonc();
-  o2.Dropdown = o2.Dropdown('dropdown');
   o2.Pagination = o2.Pagination();
   o2.Song = o2.Song();
   o2.History = o2.History();

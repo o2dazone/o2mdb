@@ -5,6 +5,8 @@
     var self = this,
         $ = o2.$;
 
+    self.drop = o2.Dropdown.getInstance('dropdown');
+
     // window resize stuff
     var resizeTime, animTime,
         body = d.body;
@@ -57,7 +59,7 @@
     d.body.addEventListener('click',function(e){
       target = e.target;
 
-      self.Dropdown.hide(); //if dropdown is open, close it.
+      self.drop.hide(); //if dropdown is open, close it.
 
       dataEl = target.getAttribute('data-el') || null;
 
@@ -76,9 +78,9 @@
 
     function facetDrop() {
       if (!dropdown.dataset.shown) {
-        self.Dropdown.show();
+        self.drop.show();
       } else {
-        self.Dropdown.hide();
+        self.drop.hide();
       }
     }
 
@@ -87,7 +89,7 @@
     function facets() {
       dropSelect.innerHTML = target.innerHTML;
       dropSelect.dataset.select = target.dataset.select;
-      self.Dropdown.hide();
+      self.drop.hide();
 
       if ((selectFilter = target.dataset.select)) {
         dropSelect.dataset.select = selectFilter;

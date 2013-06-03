@@ -1,9 +1,9 @@
 (function(o2, d){
   'use strict';
 
-  var Dropdown = function(id) {
-    var self = this;
+  var instances = {};
 
+  var DropdownFactory = function(id) {
     var el = d.getElementById(id);
 
     function show() {
@@ -24,5 +24,15 @@
     };
   };
 
-  o2.Dropdown = Dropdown;
+  function getInstance(id) {
+    if (!instances[id]) {
+      instances = new DropdownFactory(id);
+    }
+
+    return instances;
+  }
+
+  o2.Dropdown = {
+    getInstance: getInstance
+  };
 }(window.o2, document));
