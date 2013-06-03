@@ -21,12 +21,10 @@
     }
 
     function show() {
-      if ($('playlistScroll').innerHTML !== '')
-        return;
-
       if (!isShowing()) $('playlist').style.opacity = '1';
       setTimeout(function(){
         self.trackPlaying = $('playlistScroll').getElementsByTagName('A')[0];
+        self.trackPlaying.id = 'playing';
         self.Song.playSong();
       },0);
     }

@@ -69,7 +69,7 @@
   <div id="playlistScroll"></div>
 </div>
 
-
+<!--
 <script type="text/javascript" src="i/js/o2mdb.js"></script>
 <script type="text/javascript" src="i/js/lib/soundManager.js"></script>
 <script type="text/javascript" src="i/js/classes/Dropdown.js"></script>
@@ -84,27 +84,26 @@
 <script type="text/javascript" src="i/js/classes/Omni.js"></script>
 <script type="text/javascript" src="i/js/classes/Events.js"></script>
 <script type="text/javascript" src="i/js/build.js"></script>
-<!--
+ -->
 <script type="text/javascript">
-  $script('i/js/o2mdb.js?' + rnd, function() {
+  $script(['i/js/o2mdb.js','i/js/lib/soundManager.js'], function() {
     $script([
-      'i/js/lib/soundManager.js?' + rnd,
-      'i/js/classes/Dropdown.js?' + rnd,
-      'i/js/classes/Jsonc.js?' + rnd,
-      'i/js/classes/Pagination.js?' + rnd,
-      'i/js/classes/History.js?' + rnd,
-      'i/js/classes/Song.js?' + rnd,
-      'i/js/classes/Results.js?' + rnd,
-      'i/js/classes/Playlist.js?' + rnd,
-      'i/js/classes/QueryParam.js?' + rnd,
-      'i/js/classes/Search.js?' + rnd,
-      'i/js/classes/Omni.js?' + rnd,
-      'i/js/classes/Events.js?' + rnd
+      'i/js/classes/Dropdown.js',
+      'i/js/classes/Jsonc.js',
+      'i/js/classes/Pagination.js',
+      'i/js/classes/History.js',
+      'i/js/classes/Song.js',
+      'i/js/classes/Results.js',
+      'i/js/classes/Playlist.js',
+      'i/js/classes/QueryParam.js',
+      'i/js/classes/Search.js',
+      'i/js/classes/Omni.js',
+      'i/js/classes/Events.js'
     ], function() {
-      $script('i/js/build.js?' + rnd);
+      $script('i/js/build.js');
     });
   });
 </script>
--->
+
 </body>
 </html>

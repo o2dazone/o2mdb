@@ -20,6 +20,23 @@
     }
 
 
+    function getJSON (url, callback){
+      var ajax = new XMLHttpRequest();
+
+      ajax.onreadystatechange = function(){
+        if(ajax.readyState === 4 && ajax.status === 200){
+          var r = ajax.response;
+
+          if (!r.match(/^(\[|\{)/)) return;
+          callback(JSON.parse(r));
+        }
+      };
+
+      ajax.open('GET', url, !0);
+      ajax.send();
+    }
+
+
     var songs, i, len, song, data;
 
     function buildResults() {
@@ -37,14 +54,14 @@
           // lastPlayed:   song.lastPlayed,
           // playCount:    song.playCount
         };
-        self.songResults += '<a data-songdata="' + self.Jsonc.outStr(data) +'" href="#">' + song.album + '/' + song.artist + ' - ' + song.title + '</a>';
+        self.songResults += '<a data-el="s" data-songdata="' + self.Jsonc.outStr(data) +'" href="#">' + song.album + '/' + song.artist + ' - ' + song.title + '</a>';
       }
     }
 
 
 
     function getMusicQuery(url, callback) {
-      self.getJSON(url, function(r){
+      getJSON(url, function(r){
         self.queryResults = r;
         callback(r);
       });

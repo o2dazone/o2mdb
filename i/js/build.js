@@ -8,37 +8,21 @@
 
   var soundManager = w.soundManager;
 
-
-  o2.$ = function(el) {
-    if (!o2.dom[el])
-      o2.dom[el] = d.getElementById(el);
-
-    return o2.dom[el];
-  };
-
-
-  o2.getJSON = function (url, callback){
-    var ajax = new XMLHttpRequest();
-
-    ajax.onreadystatechange = function(){
-      if(ajax.readyState === 4 && ajax.status === 200){
-        var r = ajax.response;
-
-        if (!r.match(/^(\[|\{)/)) return;
-        callback(JSON.parse(r));
-      }
-    };
-
-    ajax.open('GET', url, !0);
-    ajax.send();
-  };
-
   soundManager.useHTML5Audio = 1;
   soundManager.preferFlash = 0;
   soundManager.debugMode = 0;
   soundManager.url ='i/';
 
-  o2.Events = o2.Events();
+  var dom = o2.dom;
+  o2.$ = function(el) {
+    if (!dom[el])
+      dom[el] = d.getElementById(el);
+
+    return dom[el];
+  };
+
+  o2.Events();
+  o2.Omni();
   o2.Jsonc = o2.Jsonc();
   o2.Dropdown = o2.Dropdown('dropdown');
   o2.Pagination = o2.Pagination();
@@ -48,7 +32,6 @@
   o2.Playlist = o2.Playlist();
   o2.Search = o2.Search();
   o2.Query = o2.QueryParam();
-  o2.Omni = o2.Omni();
 
 })(document, window);
 

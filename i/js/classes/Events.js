@@ -49,7 +49,7 @@
       latest: loadQuery,
       random: loadQuery,
       popular: loadQuery,
-      s: playSong
+      s: song
     };
 
     var target, ref, dataEl;
@@ -159,18 +159,21 @@
     }
 
 
-    function playSong() {
-      console.log('play a god damn song, or add it to playlist');
+    function song() {
+      if (target.parentNode.id === 'resultList') {
+        $('playlistScroll').innerHTML += target.outerHTML;
+        self.Playlist.show();
+      } else {
+        //do stuff for playing song
+        if (self.trackPlaying) {
+          self.trackPlaying.removeAttribute('id');
+          self.trackPlaying.removeAttribute('name');
+        }
 
-      /*
-      if ((self.trackPlaying = document.getElementById('playing'))) {
-        self.trackPlaying.removeAttribute('id');
-        self.trackPlaying.removeAttribute('name');
+        self.trackPlaying = target;
+        target.id = 'playing';
+        self.Song.playSong();
       }
-      self.trackPlaying = target;
-      self.Song.playSong();
-      */
-
     }
   };
 
