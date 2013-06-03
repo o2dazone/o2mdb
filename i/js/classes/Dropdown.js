@@ -1,11 +1,8 @@
-(function(O2m, d){
+(function(o2, d){
   'use strict';
 
   var Dropdown = function(id) {
     var self = this;
-
-    if (!(self instanceof Dropdown))
-      return new Dropdown(id);
 
     var el = d.getElementById(id);
 
@@ -27,5 +24,5 @@
     };
   };
 
-  O2m.Dropdown = Dropdown;
-}(window.O2m, document));
+  o2.Dropdown = Dropdown;
+}(window.o2, document));

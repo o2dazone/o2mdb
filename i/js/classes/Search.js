@@ -1,12 +1,9 @@
-(function(O2m, d){
+(function(o2, d){
   'use strict';
 
   var Search = function() {
     var self = this,
-        $ = O2m.$;
-
-    if (!(self instanceof Search))
-      return new Search();
+        $ = o2.$;
 
     // search box submit delegators
     $('searchField').addEventListener('submit', function(e){
@@ -32,9 +29,9 @@
         return;
 
       self.musicAjaxCall = defaultSearch + searchQuery;
-      O2m.Pagination.reset();
-      O2m.Results.publish();
-      O2m.History.writeHistory(searchQuery, '?s=' + searchQuery);
+      o2.Pagination.reset();
+      o2.Results.publish();
+      o2.History.writeHistory(searchQuery, '?s=' + searchQuery);
     }
 
     return {
@@ -42,8 +39,8 @@
     };
   };
 
-  O2m.Search = Search;
-}(window.O2m, document));
+  o2.Search = Search;
+}(window.o2, document));
 
 
 

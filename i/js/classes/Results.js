@@ -1,12 +1,9 @@
-(function(O2m, d){
+(function(o2, d){
   'use strict';
 
   var Results = function() {
     var self = this,
-        $ = O2m.$;
-
-    if (!(self instanceof Results))
-      return new Results();
+        $ = o2.$;
 
     function hideOmnibox() {
       if (document.getElementById('omni')) {
@@ -40,7 +37,7 @@
           // lastPlayed:   song.lastPlayed,
           // playCount:    song.playCount
         };
-        self.songResults += '<a data-songdata="' + self.jsonc.outStr(data) +'" href="#">' + song.album + '/' + song.artist + ' - ' + song.title + '</a>';
+        self.songResults += '<a data-songdata="' + self.Jsonc.outStr(data) +'" href="#">' + song.album + '/' + song.artist + ' - ' + song.title + '</a>';
       }
     }
 
@@ -53,11 +50,12 @@
       });
     }
 
-    var rLen, resultsItems = '';
+    var rLen, resultsItems = '', plural,
+        resultEl = $('results').getElementsByTagName('p')[0];
 
-    function resultCount(rLen) {
-      if (rLen >= 100) rLen = rLen + '+';
-      $('results').getElementsByTagName('p')[0].innerHTML = rLen + ' results for <span> ' + $('search').value + '</span>';
+    function resultCount() {
+      plural = (rLen >= 100) ? '+' : '';
+      resultEl.innerHTML = rLen + plural + ' result(s) for <span> ' + $('search').value + '</span>';
     }
 
     function publish(url) {
@@ -92,5 +90,5 @@
     };
   };
 
-  O2m.Results = Results;
-}(window.O2m, document));
+  o2.Results = Results;
+}(window.o2, document));

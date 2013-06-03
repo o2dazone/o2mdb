@@ -1,4 +1,4 @@
-(function(O2m, d){
+(function(o2, d){
   'use strict';
 
   function Jsonc() {
@@ -16,5 +16,5 @@
     };
   }
 
-  O2m.Jsonc = Jsonc;
-}(window.O2m, document));
+  o2.Jsonc = Jsonc;
+}(window.o2, document));

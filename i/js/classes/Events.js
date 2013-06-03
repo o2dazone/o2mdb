@@ -1,9 +1,9 @@
-(function(O2m, d, w){
+(function(o2, d, w){
   'use strict';
 
   var Events = function() {
     var self = this,
-        $ = O2m.$;
+        $ = o2.$;
 
     // window resize stuff
     var resizeTime, animTime,
@@ -174,5 +174,5 @@
     }
   };
 
-  O2m.Events = Events;
-}(window.O2m, document, window));
+  o2.Events = Events;
+}(window.o2, document, window));

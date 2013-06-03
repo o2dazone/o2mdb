@@ -1,12 +1,9 @@
-(function(O2m, d){
+(function(o2, d){
   'use strict';
 
   var Playlist = function() {
     var self = this,
-        $ = O2m.$;
-
-    if (!(self instanceof Playlist))
-      return new Playlist();
+        $ = o2.$;
 
     //playlist hover delegator
     var target;
@@ -40,5 +37,5 @@
     };
   };
 
-  O2m.Playlist = Playlist;
-}(window.O2m, document));
+  o2.Playlist = Playlist;
+}(window.o2, document));

@@ -20,8 +20,8 @@
 *
 */
 
-  var O2m = {};
-  O2m.dom = {};
+  var o2 = {};
+  o2.dom = {};
 
-  w.O2m = O2m;
+  w.o2 = o2;
 }(window));

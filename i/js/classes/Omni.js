@@ -1,12 +1,9 @@
-(function(O2m, d, w){
+(function(o2, d, w){
   'use strict';
 
   var Omni = function() {
     var self = this,
-        $ = O2m.$;
-
-    if (!(self instanceof Omni))
-      return new Omni();
+        $ = o2.$;
 
     if (!w.location.href.match(/\?/)) {
       $('omni').style.display = 'block';
@@ -19,5 +16,5 @@
     }
   };
 
-  O2m.Omni = Omni;
-}(window.O2m, document, window));
+  o2.Omni = Omni;
+}(window.o2, document, window));

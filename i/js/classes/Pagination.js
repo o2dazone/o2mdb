@@ -1,4 +1,4 @@
-(function(O2m, d){
+(function(o2, d){
   'use strict';
 
   var Pagination = function() {
@@ -56,8 +56,8 @@
     };
   };
 
-  O2m.Pagination = Pagination;
-}(window.O2m));
+  o2.Pagination = Pagination;
+}(window.o2));
 
 
 

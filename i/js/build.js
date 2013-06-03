@@ -9,15 +9,15 @@
   var soundManager = w.soundManager;
 
 
-  O2m.$ = function(el) {
-    if (!O2m.dom[el])
-      O2m.dom[el] = d.getElementById(el);
+  o2.$ = function(el) {
+    if (!o2.dom[el])
+      o2.dom[el] = d.getElementById(el);
 
-    return O2m.dom[el];
+    return o2.dom[el];
   };
 
 
-  O2m.getJSON = function (url, callback){
+  o2.getJSON = function (url, callback){
     var ajax = new XMLHttpRequest();
 
     ajax.onreadystatechange = function(){
@@ -38,17 +38,17 @@
   soundManager.debugMode = 0;
   soundManager.url ='i/';
 
-  O2m.Events = O2m.Events();
-  O2m.Jsonc = O2m.Jsonc();
-  O2m.Dropdown = O2m.Dropdown('dropdown');
-  O2m.Pagination = O2m.Pagination();
-  O2m.Song = O2m.Song();
-  O2m.History = O2m.History();
-  O2m.Results = O2m.Results();
-  O2m.Playlist = O2m.Playlist();
-  O2m.Search = O2m.Search();
-  O2m.Query = O2m.QueryParam();
-  O2m.Omni = O2m.Omni();
+  o2.Events = o2.Events();
+  o2.Jsonc = o2.Jsonc();
+  o2.Dropdown = o2.Dropdown('dropdown');
+  o2.Pagination = o2.Pagination();
+  o2.Song = o2.Song();
+  o2.History = o2.History();
+  o2.Results = o2.Results();
+  o2.Playlist = o2.Playlist();
+  o2.Search = o2.Search();
+  o2.Query = o2.QueryParam();
+  o2.Omni = o2.Omni();
 
 })(document, window);
 
