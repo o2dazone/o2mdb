@@ -3407,7 +3407,7 @@ function SoundManager(smURL, smID) {
   mixin = function(oMain, oAdd) {
 
     // non-destructive merge
-    var o1 = (oMain || {}), O2m, o;
+    var o1 = (oMain || {}), o2, o;
 
     // if unspecified, o2 is the default options object
     o2 = (oAdd === _undefined ? sm2.defaultOptions : oAdd);
