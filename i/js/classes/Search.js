@@ -1,9 +1,9 @@
-(function(o2, d){
+(function(O2m, d){
   'use strict';
 
   var Search = function() {
     var self = this,
-        $ = o2.$;
+        $ = O2m.$;
 
     if (!(self instanceof Search))
       return new Search();
@@ -24,7 +24,7 @@
     var searchQuery,
         defaultSearch = 'http://o2dazone.com/music/search/';
 
-    function query(callback) {
+    function query() {
       searchQuery = getFilter() + $('search').value;
       d.querySelectorAll('#results > p')[0].innerHTML = ''; //clear the resultCount box when a new query is done
 
@@ -32,9 +32,9 @@
         return;
 
       self.musicAjaxCall = defaultSearch + searchQuery;
-      self.pagination.reset();
-      self.publishResults();
-      self.History.writeHistory(searchQuery, '?s=' + searchQuery);
+      O2m.Pagination.reset();
+      O2m.Results.publish();
+      O2m.History.writeHistory(searchQuery, '?s=' + searchQuery);
     }
 
     return {
@@ -42,8 +42,8 @@
     };
   };
 
-  o2.Search = Search;
-}(window.o2, document));
+  O2m.Search = Search;
+}(window.O2m, document));
 
 
 

@@ -1,10 +1,9 @@
-(function(o2, d, w){
+(function(O2m, d, w){
   'use strict';
-
 
   var Omni = function() {
     var self = this,
-        $ = o2.$;
+        $ = O2m.$;
 
     if (!(self instanceof Omni))
       return new Omni();
@@ -20,5 +19,5 @@
     }
   };
 
-  o2.Omni = Omni;
-}(window.o2, document, window));
+  O2m.Omni = Omni;
+}(window.O2m, document, window));

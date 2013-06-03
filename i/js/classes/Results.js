@@ -1,9 +1,9 @@
-(function(o2, d){
+(function(O2m, d){
   'use strict';
 
   var Results = function() {
     var self = this,
-        $ = o2.$;
+        $ = O2m.$;
 
     if (!(self instanceof Results))
       return new Results();
@@ -78,7 +78,7 @@
         resultsItems = '';
 
         buildResults();
-        resultsItems += self.pagination.paging(rLen);
+        resultsItems += self.Pagination.paging(rLen);
         resultsItems += self.songResults;
 
         //appends all results to result window
@@ -92,5 +92,5 @@
     };
   };
 
-  o2.Results = Results;
-}(window.o2, document));
+  O2m.Results = Results;
+}(window.O2m, document));

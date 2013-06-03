@@ -1,9 +1,9 @@
-(function(o2, d){
+(function(O2m, d){
   'use strict';
 
   var QueryParam = function() {
     var self = this,
-        $ = o2.$;
+        $ = O2m.$;
 
     if (!(self instanceof QueryParam))
       return new QueryParam();
@@ -49,5 +49,5 @@
 
   };
 
-  o2.QueryParam = QueryParam;
-}(window.o2, document));
+  O2m.QueryParam = QueryParam;
+}(window.O2m, document));

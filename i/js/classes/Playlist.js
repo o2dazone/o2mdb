@@ -1,9 +1,9 @@
-(function(o2, d){
+(function(O2m, d){
   'use strict';
 
   var Playlist = function() {
     var self = this,
-        $ = o2.$;
+        $ = O2m.$;
 
     if (!(self instanceof Playlist))
       return new Playlist();
@@ -40,5 +40,5 @@
     };
   };
 
-  o2.Playlist = Playlist;
-}(window.o2, document));
+  O2m.Playlist = Playlist;
+}(window.O2m, document));

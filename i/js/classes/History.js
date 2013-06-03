@@ -1,4 +1,4 @@
-(function(o2, d, wh){
+(function(O2m, d, wh){
   'use strict';
 
   var History = function(id) {
@@ -16,5 +16,5 @@
     };
   };
 
-  o2.History = History;
-}(window.o2, document, window.history));
+  O2m.History = History;
+}(window.O2m, document, window.history));

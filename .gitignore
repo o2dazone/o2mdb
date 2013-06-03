@@ -2,6 +2,8 @@ todo.txt
 *.psd
 *.swf
 *.css
-.sass_cache/*
+.sass_cache/
+.sass_cache/**/*
+.sass-cache/*
 .htaccess
 *.ttf

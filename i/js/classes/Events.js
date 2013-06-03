@@ -1,9 +1,9 @@
-(function(o2, d, w){
+(function(O2m, d, w){
   'use strict';
 
   var Events = function() {
     var self = this,
-        $ = o2.$;
+        $ = O2m.$;
 
     // window resize stuff
     var resizeTime, animTime,
@@ -21,6 +21,7 @@
         },50);
 
         body.className = 'resize anim';
+
         if (!self.Playlist.isShowing()) return;
         if (w.innerWidth < 700 || w.innerHeight < 300) {
           if (body.id === 'minimize') return;
@@ -56,7 +57,7 @@
     d.body.addEventListener('click',function(e){
       target = e.target;
 
-      self.drop.hide(); //if dropdown is open, close it.
+      self.Dropdown.hide(); //if dropdown is open, close it.
 
       dataEl = target.getAttribute('data-el') || null;
 
@@ -75,9 +76,9 @@
 
     function facetDrop() {
       if (!dropdown.dataset.shown) {
-        self.drop.show();
+        self.Dropdown.show();
       } else {
-        self.drop.hide();
+        self.Dropdown.hide();
       }
     }
 
@@ -86,7 +87,7 @@
     function facets() {
       dropSelect.innerHTML = target.innerHTML;
       dropSelect.dataset.select = target.dataset.select;
-      self.drop.hide();
+      self.Dropdown.hide();
 
       if ((selectFilter = target.dataset.select)) {
         dropSelect.dataset.select = selectFilter;
@@ -108,11 +109,11 @@
     }
 
     function prevPage() {
-      self.pagination.previousPage();
+      self.Pagination.previousPage();
     }
 
     function nextPage() {
-      self.pagination.nextPage();
+      self.Pagination.nextPage();
     }
 
 
@@ -141,8 +142,8 @@
     function loadQuery() {
       console.log(dataEl());
 
-      self.publishResults();
-      self.replaceUrl(self.musicAjaxCall, w.location.pathname + '?s=' + omniDelegate[targetDelegate[target.tagName].getAttribute('data-el')]);
+      self.Results.publish();
+      self.History.writeHistory(self.musicAjaxCall, w.location.pathname + '?s=' + omniDelegate[targetDelegate[target.tagName].getAttribute('data-el')]);
     }
 
     function latest() {
@@ -173,5 +174,5 @@
     }
   };
 
-  o2.Events = Events;
-}(window.o2, document, window));
+  O2m.Events = Events;
+}(window.O2m, document, window));

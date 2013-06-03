@@ -1,4 +1,4 @@
-(function(o2, d){
+(function(O2m, d){
   'use strict';
 
   var Dropdown = function(id) {
@@ -27,5 +27,5 @@
     };
   };
 
-  o2.Dropdown = Dropdown;
-}(window.o2, document));
+  O2m.Dropdown = Dropdown;
+}(window.O2m, document));

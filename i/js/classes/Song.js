@@ -1,9 +1,9 @@
-(function(o2, d){
+(function(O2m, d){
   'use strict';
 
   var Song = function() {
     var self = this,
-        $ = o2.$;
+        $ = O2m.$;
 
     if (!(self instanceof Song))
       return new Song();
@@ -31,10 +31,10 @@
       album = track.album,
       albumArt = track.albumArtUrl || 'i/cover.png';
 
-      console.log('publish last played here');
+      console.log('publish "last played" somewhere around here');
 
       d.title = track.artist + " - " + track.title;
-      self.replaceUrl(track.id, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p=' + track.id);
+      self.History.writeHistory(track.id, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p=' + track.id);
 
       $('songInfo').innerHTML = '<div class="album" style="background-image:url(\'' + albumArt + '\')"></div><h2>' + track.title + '</h2><h3>' + track.artist + '</h3><h4>' + track.album + '</h4>';
     }
@@ -110,5 +110,5 @@
     };
   };
 
-  o2.Song = Song;
-}(window.o2, document));
+  O2m.Song = Song;
+}(window.O2m, document));
