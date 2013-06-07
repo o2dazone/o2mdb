@@ -26,20 +26,25 @@
     </fieldset>
   </form>
 </div>
-
-<div id="omni" data-el="omni">
-  <form action="index.html" method="get" id="omniSearchForm">
-    <fieldset>
-      <input id="omniSearch" type="text" value="" name="s" autocomplete="off" placeholder="Artist, Title, Album" />
-    </fieldset>
-  </form>
-  <div>
-    <p>Have no idea what to look for?</p>
-    <a href="#" data-el="latest">Check out the <span>latest uploads</span></a>
-    <a href="#" class="strike" data-el="random">Listen to something <span>random</span></a>
-    <a href="#" data-el="popular">Come see <span>what is popular</span></a>
+<script type="text/javascript">
+  //nice sloppy method of rendering omni or not when page loads
+  if (window.location.href.match(/\?/))
+    document.write('<noscript>');
+</script>
+  <div id="omni" data-el="omni">
+    <form action="index.html" method="get" id="omniSearchForm">
+      <fieldset>
+        <input id="omniSearch" type="text" value="" name="s" autocomplete="off" placeholder="Artist, Title, Album" />
+      </fieldset>
+    </form>
+    <div>
+      <p>Have no idea what to look for?</p>
+      <a href="#" data-el="latest">Check out the <span>latest uploads</span></a>
+      <a href="#" class="strike" data-el="random">Listen to something <span>random</span></a>
+      <a href="#" data-el="popular">Come see <span>what is popular</span></a>
+    </div>
   </div>
-</div>
+</noscript>
 
 <div id="results">
   <p></p>
@@ -74,11 +79,11 @@
 <script type="text/javascript" src="i/js/classes/Pagination.js"></script>
 <script type="text/javascript" src="i/js/classes/Results.js"></script>
 <script type="text/javascript" src="i/js/classes/Search.js"></script>
+<script type="text/javascript" src="i/js/classes/Omni.js"></script>
 <script type="text/javascript" src="i/js/classes/Dropdown.js"></script>
 <script type="text/javascript" src="i/js/classes/Song.js"></script>
 <script type="text/javascript" src="i/js/classes/Playlist.js"></script>
 <script type="text/javascript" src="i/js/classes/QueryParam.js"></script>
-<script type="text/javascript" src="i/js/classes/Omni.js"></script>
 <script type="text/javascript" src="i/js/classes/Events.js"></script>
 <script type="text/javascript" src="i/js/build.js"></script>
 

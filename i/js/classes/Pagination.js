@@ -2,13 +2,9 @@
   'use strict';
 
   var PaginationFactory = function() {
-    var page = 0,
-        addAll = [],
-        showPrev = '',
-        showNext = '';
+    var page = 0;
 
     function pageAround() {
-
       o2.Results.getInstance().publish(o2.musicAjaxCall + '/page/' + page);
     }
 
@@ -28,6 +24,8 @@
       page = 0;
     }
 
+
+    var addAll, showPrev, showNext;
     function paging(len) {
       addAll = [],
       showPrev = '',

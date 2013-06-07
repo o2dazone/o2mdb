@@ -89,13 +89,11 @@
       plural = [];
 
       plural.push(
-        rLen,
-        (rLen >= 100) ? '+' : '',
+        '<b>', rLen,
+        (rLen >= 100) ? '+' : '', '</b>',
         ' result',
         (rLen === 1) ? '' : 's',
-        ' for <span> ',
-        $('search').value,
-        '</span>'
+        ' for <span> ', $('search').value, '</span>'
       );
 
       resultEl.innerHTML = plural.join('');

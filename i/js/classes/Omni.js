@@ -6,10 +6,10 @@
   (function() {
     var $ = o2.$;
 
-    if (!w.location.href.match(/\?/)) {
-      $('omni').style.display = 'block';
+    var omniSearch = $('omniSearchForm') || null;
 
-      $('omniSearchForm').addEventListener('submit', function(e){
+    if (omniSearch) {
+      omniSearch.addEventListener('submit', function(e){
         e.preventDefault();
         $('search').value = $('omniSearch').value;
         search.query();
