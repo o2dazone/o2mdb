@@ -9,6 +9,7 @@
         showNext = '';
 
     function pageAround() {
+
       o2.Results.getInstance().publish(o2.musicAjaxCall + '/page/' + page);
     }
 

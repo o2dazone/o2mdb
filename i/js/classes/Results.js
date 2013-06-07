@@ -83,12 +83,23 @@
       });
     }
 
-    var rLen, resultsItems = '', plural,
+    var rLen, resultsItems = '', plural = [],
         resultEl = $('results').getElementsByTagName('p')[0];
 
     function resultCount() {
-      plural = (rLen >= 100) ? '+' : '';
-      resultEl.innerHTML = rLen + plural + ' result(s) for <span> ' + $('search').value + '</span>';
+      plural = [];
+
+      plural.push(
+        rLen,
+        (rLen >= 100) ? '+' : '',
+        ' result',
+        (rLen === 1) ? '' : 's',
+        ' for <span> ',
+        $('search').value,
+        '</span>'
+      );
+
+      resultEl.innerHTML = plural.join('');
     }
 
     function publish(url) {

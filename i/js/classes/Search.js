@@ -33,7 +33,8 @@
         return;
 
       pagination.reset();
-      results.publish(defaultSearch + searchQuery);
+      o2.musicAjaxCall = defaultSearch + searchQuery;
+      results.publish(o2.musicAjaxCall);
       historyC.writeHistory(searchQuery, '?s=' + searchQuery);
     }
 
