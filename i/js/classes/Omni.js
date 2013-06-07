@@ -1,8 +1,6 @@
 (function(o2, d, w){
   'use strict';
 
-  var search = o2.Search.getInstance();
-
   (function() {
     var $ = o2.$;
 
@@ -12,7 +10,7 @@
       omniSearch.addEventListener('submit', function(e){
         e.preventDefault();
         $('search').value = $('omniSearch').value;
-        search.query();
+        o2.Search.getInstance().query();
       });
     }
   }());

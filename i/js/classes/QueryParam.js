@@ -1,9 +1,6 @@
 (function(o2, d){
   'use strict';
 
-  var search = o2.Search.getInstance(),
-      playlist = o2.Playlist.getInstance();
-
   (function() {
     var $ = o2.$;
 
@@ -33,14 +30,14 @@
 
     function searchQuery() {
       $('search').value = unescape(getQueryString('s'));
-      search.query();
+      o2.Search.getInstance().query();
     }
 
     var track;
 
     function play() {
       track = unescape(getQueryString('p'));
-      playlist.show();
+      o2.Playlist.getInstance().show();
       $('playlistScroll').innerHTML = '<a href="' + track + '">' + track.replace(/(^o\/)|(.mp3)/g,'') + '</a>';
     }
 
