@@ -1,7 +1,7 @@
 (function(o2, d){
   'use strict';
 
-  function Jsonc() {
+  var JsoncFactory = function() {
     function outStr(arg) {
       return encodeURI(JSON.stringify(arg));
     }
@@ -14,7 +14,19 @@
       outStr: outStr,
       outObj: outObj
     };
+  };
+
+  var instances = {};
+
+  function getInstance(name) {
+    if (!instances[name]) {
+      instances[name] = new JsoncFactory(name);
+    }
+
+    return instances[name];
   }
 
-  o2.Jsonc = Jsonc;
+  o2.Jsonc = {
+    getInstance: getInstance
+  };
 }(window.o2, document));

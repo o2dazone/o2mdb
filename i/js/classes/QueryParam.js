@@ -1,7 +1,10 @@
 (function(o2, d){
   'use strict';
 
-  var QueryParam = function() {
+  var search = o2.Search.getInstance(),
+      playlist = o2.Playlist.getInstance();
+
+  (function() {
     var self = this,
         $ = o2.$;
 
@@ -14,7 +17,7 @@
         loc = window.location.href;
 
     var paramDelegator = {
-        s: search,
+        s: searchQuery,
         p: play,
         shuffle: shuffle
     };
@@ -29,14 +32,14 @@
       }
     }
 
-    function search() {
+    function searchQuery() {
       $('search').value = unescape(getQueryString('s'));
-      self.Search.query();
+      search.query();
     }
 
     function play() {
       var track = unescape(getQueryString('p'));
-      self.Playlist.show();
+      playlist.show();
       $('playlistScroll').innerHTML = '<a href="' + track + '">' + track.replace(/(^o\/)|(.mp3)/g,'') + '</a>';
     }
 
@@ -44,7 +47,5 @@
       d.querySelector('#playlist .shuffle').id = "on";
     }
 
-  };
-
-  o2.QueryParam = QueryParam;
+  }());
 }(window.o2, document));

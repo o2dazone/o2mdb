@@ -1,5 +1,3 @@
-(function(w){
-  'use strict';
 /*
 *                                                        ;
 *                  :                                     ED.
@@ -20,8 +18,25 @@
 *
 */
 
-  var o2 = {};
-  o2.dom = {};
+(function(w){
+  'use strict';
 
-  w.o2 = o2;
+  var o2 = function() {
+    var self = this;
+    var dom = {};
+
+    function selector(el) {
+      if (!dom[el])
+        dom[el] = document.getElementById(el);
+
+      return dom[el];
+    }
+
+    return {
+      dom: dom,
+      $: selector
+    };
+  };
+
+  w.o2 = o2();
 }(window));

@@ -1,7 +1,7 @@
 (function(o2, d, wh){
   'use strict';
 
-  var History = function(id) {
+  var HistoryFactory = function(id) {
     var self = this;
 
     function writeHistory(name, param) {
@@ -13,5 +13,17 @@
     };
   };
 
-  o2.History = History;
+  var instances = {};
+
+  function getInstance(name) {
+    if (!instances[name]) {
+      instances[name] = new HistoryFactory(name);
+    }
+
+    return instances[name];
+  }
+
+  o2.History = {
+    getInstance: getInstance
+  };
 }(window.o2, document, window.history));

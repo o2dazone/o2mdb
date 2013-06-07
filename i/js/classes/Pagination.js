@@ -1,7 +1,7 @@
 (function(o2, d){
   'use strict';
 
-  var Pagination = function() {
+  var PaginationFactory = function() {
     var self = this,
         page = 0,
         addAll = [],
@@ -9,7 +9,7 @@
         showNext = '';
 
     function pageAround() {
-      self.Results.publish(self.musicAjaxCall + '/page/' + page);
+      o2.Results.getInstance().publish(o2.musicAjaxCall + '/page/' + page);
     }
 
     function previousPage() {
@@ -56,7 +56,19 @@
     };
   };
 
-  o2.Pagination = Pagination;
+  var instances = {};
+
+  function getInstance(name) {
+    if (!instances[name]) {
+      instances[name] = new PaginationFactory(name);
+    }
+
+    return instances[name];
+  }
+
+  o2.Pagination = {
+    getInstance: getInstance
+  };
 }(window.o2));
 
 

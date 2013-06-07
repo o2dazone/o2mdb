@@ -1,7 +1,11 @@
 (function(o2, d){
   'use strict';
 
-  var Search = function() {
+  var pagination = o2.Pagination.getInstance(),
+      results = o2.Results.getInstance(),
+      historyC = o2.History.getInstance();
+
+  var SearchFactory = function() {
     var self = this,
         $ = o2.$;
 
@@ -28,10 +32,9 @@
       if (searchQuery === '')
         return;
 
-      self.musicAjaxCall = defaultSearch + searchQuery;
-      o2.Pagination.reset();
-      o2.Results.publish();
-      o2.History.writeHistory(searchQuery, '?s=' + searchQuery);
+      pagination.reset();
+      results.publish(defaultSearch + searchQuery);
+      historyC.writeHistory(searchQuery, '?s=' + searchQuery);
     }
 
     return {
@@ -39,7 +42,19 @@
     };
   };
 
-  o2.Search = Search;
+  var instances = {};
+
+  function getInstance(name) {
+    if (!instances[name]) {
+      instances[name] = new SearchFactory(name);
+    }
+
+    return instances[name];
+  }
+
+  o2.Search = {
+    getInstance: getInstance
+  };
 }(window.o2, document));
 
 

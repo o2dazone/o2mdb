@@ -1,7 +1,10 @@
 (function(o2, d){
   'use strict';
 
-  var Results = function() {
+  var jsonc = o2.Jsonc.getInstance(),
+      pagination = o2.Pagination.getInstance();
+
+  var ResultsFactory = function() {
     var self = this,
         $ = o2.$;
 
@@ -37,13 +40,15 @@
     }
 
 
-    var songs, i, len, song, data;
+    var songs, i, len, song, data, link;
 
     function buildResults() {
       songs = self.queryResults;
 
+
       for (i = 0, len = songs.length; i<len; i++) {
-        song = songs[i];
+        song = songs[i],
+        link = [],
         data = {
           album:        song.album,
           title:        song.title,
@@ -54,7 +59,18 @@
           // lastPlayed:   song.lastPlayed,
           // playCount:    song.playCount
         };
-        self.songResults += '<a data-el="s" data-songdata="' + self.Jsonc.outStr(data) +'" href="#">' + song.album + '/' + song.artist + ' - ' + song.title + '</a>';
+
+        console.log();
+        if (!(song.album === '' || song.album === '-'))
+          link.push(song.album, '/');
+
+        if (song.artist !== '')
+          link.push(song.artist, ' - ');
+
+        if (song.title !== '')
+          link.push(song.title);
+
+        self.songResults += '<a data-el="s" data-songdata="' + jsonc.outStr(data) +'" href="#">' + link.join('') + '</a>';
       }
     }
 
@@ -80,8 +96,7 @@
       showResultsWin();
 
       $('resultList').innerHTML = '<h5>Loading...</h5>';
-
-      getMusicQuery(url || self.musicAjaxCall, function(r){
+      getMusicQuery(url || o2.musicAjaxCall, function(r){
         rLen = r.length;
         resultCount();
         if (!rLen || r[0] === '') {
@@ -93,7 +108,7 @@
         resultsItems = '';
 
         buildResults();
-        resultsItems += self.Pagination.paging(rLen);
+        resultsItems += pagination.paging(rLen);
         resultsItems += self.songResults;
 
         //appends all results to result window
@@ -107,5 +122,17 @@
     };
   };
 
-  o2.Results = Results;
+  var instances = {};
+
+  function getInstance(name) {
+    if (!instances[name]) {
+      instances[name] = new ResultsFactory(name);
+    }
+
+    return instances[name];
+  }
+
+  o2.Results = {
+    getInstance: getInstance
+  };
 }(window.o2, document));

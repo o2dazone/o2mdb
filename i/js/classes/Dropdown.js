@@ -36,10 +36,3 @@
     getInstance: getInstance
   };
 }(window.o2, document));
-
-/*
-*   Alternatives to singletons here
-*   credits to Geoff Berger
-*   http://jsfiddle.net/nbdH7/
-*   http://jsfiddle.net/RPqKr/
-*/

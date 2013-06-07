@@ -1,7 +1,10 @@
 (function(o2, d, w){
   'use strict';
 
-  var Song = function() {
+  var jsonc = o2.Jsonc.getInstance(),
+      historyC = o2.History.getInstance();
+
+  var SongFactory = function() {
     var self = this,
         $ = o2.$;
 
@@ -21,7 +24,7 @@
     var title, artist, album, albumArt, track;
 
     function publishTrack() {
-      track = self.Jsonc.outObj(self.trackPlaying.dataset.songdata),
+      track = jsonc.outObj(o2.trackPlaying.dataset.songdata),
       title = track.title,
       artist = track.artist,
       album = track.album,
@@ -29,7 +32,7 @@
 
       console.log('publish "last played" somewhere around here');
       document.title = track.artist + " - " + track.title;
-      self.History.writeHistory(track.id, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p=' + track.id);
+      historyC.writeHistory(track.id, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p=' + track.id);
 
       $('songInfo').innerHTML = '<div class="album" style="background-image:url(\'' + albumArt + '\')"></div><h2>' + track.title + '</h2><h3>' + track.artist + '</h3><h4>' + track.album + '</h4>';
     }
@@ -63,7 +66,7 @@
       $('progressBar').style.width = '0%';
       $('time').innerHTML = '';
 
-      trackUrl = 'o/' + unescape(self.trackPlaying.href).replace(/^(.+?(\/o\/))/,'');
+      trackUrl = 'o/' + unescape(o2.trackPlaying.href).replace(/^(.+?(\/o\/))/,'');
 
       if (self.smSong) soundManager.destroySound('smObj');
       self.smSong = soundManager.createSound({
@@ -82,9 +85,9 @@
 
           if (isShuffled()) {
             trackList = $('playlistScroll').getElementsByTagName('A');
-            self.trackPlaying = trackList[Math.floor(Math.random() * trackList.length)];
+            o2.trackPlaying = trackList[Math.floor(Math.random() * trackList.length)];
           } else {
-            self.trackPlaying = currentTrack.nextSibling === null ? $('playlistScroll').getElementsByTagName('A')[0] : currentTrack.nextSibling;
+            o2.trackPlaying = currentTrack.nextSibling === null ? $('playlistScroll').getElementsByTagName('A')[0] : currentTrack.nextSibling;
           }
 
           trackPlaying.setAttribute('name','play');
@@ -94,8 +97,8 @@
       });
 
       publishTrack();
-      // self.History.writeHistory(id, )
-      // self.History.writeHistory(trackUrl, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p='+trackUrl);
+      // historyC.writeHistory(id, )
+      // historyC.writeHistory(trackUrl, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p='+trackUrl);
     }
 
     return {
@@ -104,5 +107,17 @@
     };
   };
 
-  o2.Song = Song;
+  var instances = {};
+
+  function getInstance(name) {
+    if (!instances[name]) {
+      instances[name] = new SongFactory(name);
+    }
+
+    return instances[name];
+  }
+
+  o2.Song = {
+    getInstance: getInstance
+  };
 }(window.o2, document, window));

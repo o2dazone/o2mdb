@@ -1,11 +1,16 @@
 (function(o2, d, w){
   'use strict';
 
-  var Events = function() {
+  var drop = o2.Dropdown.getInstance('dropdown'),
+      pagination = o2.Pagination.getInstance(),
+      results = o2.Results.getInstance(),
+      songC = o2.Song.getInstance(),
+      historyC = o2.History.getInstance(),
+      playlist = o2.Playlist.getInstance();
+
+  (function() {
     var self = this,
         $ = o2.$;
-
-    self.drop = o2.Dropdown.getInstance('dropdown');
 
     // window resize stuff
     var resizeTime, animTime,
@@ -24,7 +29,7 @@
 
         body.className = 'resize anim';
 
-        if (!self.Playlist.isShowing()) return;
+        if (!playlist.isShowing()) return;
         if (w.innerWidth < 700 || w.innerHeight < 300) {
           if (body.id === 'minimize') return;
           body.id = 'minimize';
@@ -59,7 +64,7 @@
     d.body.addEventListener('click',function(e){
       target = e.target;
 
-      self.drop.hide(); //if dropdown is open, close it.
+      drop.hide(); //if dropdown is open, close it.
 
       dataEl = target.getAttribute('data-el') || null;
 
@@ -78,9 +83,9 @@
 
     function facetDrop() {
       if (!dropdown.dataset.shown) {
-        self.drop.show();
+        drop.show();
       } else {
-        self.drop.hide();
+        drop.hide();
       }
     }
 
@@ -89,7 +94,7 @@
     function facets() {
       dropSelect.innerHTML = target.innerHTML;
       dropSelect.dataset.select = target.dataset.select;
-      self.drop.hide();
+      drop.hide();
 
       if ((selectFilter = target.dataset.select)) {
         dropSelect.dataset.select = selectFilter;
@@ -101,21 +106,21 @@
 
     function duration() {
       self.smSong.setPosition((e.offsetX/this.clientWidth*self.smSong.duration));
-      self.Song.scrubTime(self.smSong);
+      songC.scrubTime(self.smSong);
     }
 
 
     function addAllResults() {
-      self.Playlist.show();
+      playlist.show();
       $('playlistScroll').innerHTML += self.songResults;
     }
 
     function prevPage() {
-      self.Pagination.previousPage();
+      pagination.previousPage();
     }
 
     function nextPage() {
-      self.Pagination.nextPage();
+      pagination.nextPage();
     }
 
 
@@ -144,8 +149,8 @@
     function loadQuery() {
       console.log(dataEl());
 
-      self.Results.publish();
-      self.History.writeHistory(self.musicAjaxCall, w.location.pathname + '?s=' + omniDelegate[targetDelegate[target.tagName].getAttribute('data-el')]);
+      results.publish();
+      historyC.writeHistory(o2.musicAjaxCall, w.location.pathname + '?s=' + omniDelegate[targetDelegate[target.tagName].getAttribute('data-el')]);
     }
 
     function latest() {
@@ -164,20 +169,19 @@
     function song() {
       if (target.parentNode.id === 'resultList') {
         $('playlistScroll').innerHTML += target.outerHTML;
-        self.Playlist.show();
+        playlist.show();
       } else {
         //do stuff for playing song
-        if (self.trackPlaying) {
-          self.trackPlaying.removeAttribute('id');
-          self.trackPlaying.removeAttribute('name');
+        if (o2.trackPlaying) {
+          o2.trackPlaying.removeAttribute('id');
+          o2.trackPlaying.removeAttribute('name');
         }
 
-        self.trackPlaying = target;
+        o2.trackPlaying = target;
         target.id = 'playing';
-        self.Song.playSong();
+        songC.playSong();
       }
     }
-  };
+  }());
 
-  o2.Events = Events;
 }(window.o2, document, window));

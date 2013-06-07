@@ -1,7 +1,9 @@
 (function(o2, d, w){
   'use strict';
 
-  var Omni = function() {
+  var search = o2.Search.getInstance();
+
+  (function() {
     var self = this,
         $ = o2.$;
 
@@ -11,10 +13,8 @@
       $('omniSearchForm').addEventListener('submit', function(e){
         e.preventDefault();
         $('search').value = $('omniSearch').value;
-        self.Search.query();
+        search.query();
       });
     }
-  };
-
-  o2.Omni = Omni;
+  }());
 }(window.o2, document, window));
