@@ -6,8 +6,7 @@
       historyC = o2.History.getInstance();
 
   var SearchFactory = function() {
-    var self = this,
-        $ = o2.$;
+    var $ = o2.$;
 
     // search box submit delegators
     $('searchField').addEventListener('submit', function(e){
@@ -34,7 +33,7 @@
 
       pagination.reset();
       o2.musicAjaxCall = defaultSearch + searchQuery;
-      results.publish(o2.musicAjaxCall);
+      results.publish();
       historyC.writeHistory(searchQuery, '?s=' + searchQuery);
     }
 

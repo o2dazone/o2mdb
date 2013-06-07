@@ -4,13 +4,10 @@
   var songC = o2.Song.getInstance();
 
   var PlaylistFactory = function() {
-    var self = this,
-        $ = o2.$;
+    var $ = o2.$,
+        target;
 
     //playlist hover delegator
-    var target;
-
-
     $('playlistScroll').addEventListener('mouseover', function(e){
       target = e.target;
       if (target.tagName !== 'A' || target.getElementsByTagName('SPAN').length)

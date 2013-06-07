@@ -4,8 +4,7 @@
   var search = o2.Search.getInstance();
 
   (function() {
-    var self = this,
-        $ = o2.$;
+    var $ = o2.$;
 
     if (!w.location.href.match(/\?/)) {
       $('omni').style.display = 'block';

@@ -5,8 +5,7 @@
       pagination = o2.Pagination.getInstance();
 
   var ResultsFactory = function() {
-    var self = this,
-        $ = o2.$;
+    var $ = o2.$;
 
     function hideOmnibox() {
       if (document.getElementById('omni')) {
@@ -22,13 +21,13 @@
           $('results').style.opacity = '1';
     }
 
-
+    var ajax, r;
     function getJSON (url, callback){
-      var ajax = new XMLHttpRequest();
+      ajax = new XMLHttpRequest();
 
       ajax.onreadystatechange = function(){
         if(ajax.readyState === 4 && ajax.status === 200){
-          var r = ajax.response;
+          r = ajax.response;
 
           if (!r.match(/^(\[|\{)/)) return;
           callback(JSON.parse(r));
@@ -43,7 +42,7 @@
     var songs, i, len, song, data, link;
 
     function buildResults() {
-      songs = self.queryResults;
+      songs = o2.queryResults;
 
 
       for (i = 0, len = songs.length; i<len; i++) {
@@ -70,7 +69,7 @@
         if (song.title !== '')
           link.push(song.title);
 
-        self.songResults += '<a data-el="s" data-songdata="' + jsonc.outStr(data) +'" href="#">' + link.join('') + '</a>';
+        o2.songResults += '<a data-el="s" data-songdata="' + jsonc.outStr(data) +'" href="#">' + link.join('') + '</a>';
       }
     }
 
@@ -78,7 +77,7 @@
 
     function getMusicQuery(url, callback) {
       getJSON(url, function(r){
-        self.queryResults = r;
+        o2.queryResults = r;
         callback(r);
       });
     }
@@ -107,6 +106,7 @@
       showResultsWin();
 
       $('resultList').innerHTML = '<h5>Loading...</h5>';
+
       getMusicQuery(url || o2.musicAjaxCall, function(r){
         rLen = r.length;
         resultCount();
@@ -115,12 +115,12 @@
           return;
         }
 
-        self.songResults = '';
+        o2.songResults = '';
         resultsItems = '';
 
         buildResults();
         resultsItems += pagination.paging(rLen);
-        resultsItems += self.songResults;
+        resultsItems += o2.songResults;
 
         //appends all results to result window
         $('resultList').innerHTML = resultsItems;

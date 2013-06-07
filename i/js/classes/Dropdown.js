@@ -1,8 +1,8 @@
 (function(o2, d){
   'use strict';
 
-  var DropdownFactory = function(id) {
-    var el = d.getElementById(id);
+  var DropdownFactory = function(el) {
+    el = d.getElementById(el);
 
     function show() {
       el.setAttribute('data-shown',true);
@@ -24,9 +24,9 @@
 
   var instances = {};
 
-  function getInstance(id) {
-    if (!instances[id]) {
-      instances = new DropdownFactory(id);
+  function getInstance(name) {
+    if (!instances[name]) {
+      instances = new DropdownFactory(name);
     }
 
     return instances;

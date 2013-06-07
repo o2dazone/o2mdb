@@ -9,8 +9,7 @@
       playlist = o2.Playlist.getInstance();
 
   (function() {
-    var self = this,
-        $ = o2.$;
+    var $ = o2.$;
 
     // window resize stuff
     var resizeTime, animTime,
@@ -105,14 +104,14 @@
 
 
     function duration() {
-      self.smSong.setPosition((e.offsetX/this.clientWidth*self.smSong.duration));
-      songC.scrubTime(self.smSong);
+      o2.smSong.setPosition((e.offsetX/this.clientWidth*o2.smSong.duration));
+      songC.scrubTime(o2.smSong);
     }
 
 
     function addAllResults() {
       playlist.show();
-      $('playlistScroll').innerHTML += self.songResults;
+      $('playlistScroll').innerHTML += o2.songResults;
     }
 
     function prevPage() {

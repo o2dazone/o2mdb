@@ -5,8 +5,7 @@
       playlist = o2.Playlist.getInstance();
 
   (function() {
-    var self = this,
-        $ = o2.$;
+    var $ = o2.$;
 
     //written by DextOr from stackoverflow.com [ http://stackoverflow.com/a/901144 ]
     function getQueryString(a){a=a.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");a=(new RegExp("[\\?&]"+a+"=([^&#]*)")).exec(location.search);return a===null?"":decodeURIComponent(a[1].replace(/\+/g," "));}
@@ -37,8 +36,10 @@
       search.query();
     }
 
+    var track;
+
     function play() {
-      var track = unescape(getQueryString('p'));
+      track = unescape(getQueryString('p'));
       playlist.show();
       $('playlistScroll').innerHTML = '<a href="' + track + '">' + track.replace(/(^o\/)|(.mp3)/g,'') + '</a>';
     }

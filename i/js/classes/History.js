@@ -2,8 +2,6 @@
   'use strict';
 
   var HistoryFactory = function(id) {
-    var self = this;
-
     function writeHistory(name, param) {
       wh.replaceState('searchResults', name, param);
     }

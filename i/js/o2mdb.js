@@ -22,7 +22,6 @@
   'use strict';
 
   var o2 = function() {
-    var self = this;
     var dom = {};
 
     function selector(el) {

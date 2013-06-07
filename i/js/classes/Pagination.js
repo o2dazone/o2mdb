@@ -2,8 +2,7 @@
   'use strict';
 
   var PaginationFactory = function() {
-    var self = this,
-        page = 0,
+    var page = 0,
         addAll = [],
         showPrev = '',
         showNext = '';
