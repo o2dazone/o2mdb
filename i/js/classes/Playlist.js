@@ -19,13 +19,19 @@
       return !!$('playlist').style.opacity;
     }
 
+    var checkForTrack, firstTrack;
     function show() {
-      if (!isShowing()) $('playlist').style.opacity = '1';
-      setTimeout(function(){
-        o2.trackPlaying = $('playlistScroll').getElementsByTagName('A')[0];
-        o2.trackPlaying.id = 'playing';
-        songC.playSong();
-      },0);
+      if (!isShowing()) {
+        $('playlist').style.opacity = '1';
+        checkForTrack = setInterval(function(){
+          firstTrack = $('playlistScroll').getElementsByTagName('A')[0] || null;
+          if (firstTrack) {
+            o2.isPlaying(firstTrack);
+            songC.playSong();
+            clearInterval(checkForTrack);
+          }
+        }, 25);
+      }
     }
 
     return {

@@ -6,10 +6,17 @@
       results = o2.Results.getInstance(),
       songC = o2.Song.getInstance(),
       historyC = o2.History.getInstance(),
-      playlist = o2.Playlist.getInstance();
+      playlist = o2.Playlist.getInstance(),
+      search = o2.Search.getInstance();
 
   (function() {
     var $ = o2.$;
+
+    // search box submit delegators
+    $('searchField').addEventListener('submit', function(e){
+      e.preventDefault();
+      search.query();
+    }, 0);
 
     // window resize stuff
     var resizeTime, animTime,
@@ -148,7 +155,7 @@
     function loadQuery() {
       console.log(dataEl());
 
-      results.publish();
+      results.publishToResults();
       historyC.writeHistory(o2.musicAjaxCall, w.location.pathname + '?s=' + omniDelegate[targetDelegate[target.tagName].getAttribute('data-el')]);
     }
 
@@ -165,20 +172,24 @@
     }
 
 
-    function song() {
-      if (target.parentNode.id === 'resultList') {
-        $('playlistScroll').innerHTML += target.outerHTML;
-        playlist.show();
-      } else {
-        //do stuff for playing song
-        if (o2.trackPlaying) {
-          o2.trackPlaying.removeAttribute('id');
-          o2.trackPlaying.removeAttribute('name');
-        }
+    function resultClick() {
+      $('playlistScroll').innerHTML += target.outerHTML;
+      playlist.show();
+    }
 
-        o2.trackPlaying = target;
-        target.id = 'playing';
-        songC.playSong();
+    var current;
+    function playlistClick() {
+      o2.isPlaying(target);
+      songC.playSong();
+    }
+
+    var songParent;
+    function song() {
+      songParent = target.parentNode;
+      if (songParent.id === 'resultList') {
+        resultClick.call(target);
+      } else if (songParent.id === 'playlistScroll') {
+        playlistClick.call(target);
       }
     }
   }());

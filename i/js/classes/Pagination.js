@@ -5,7 +5,7 @@
     var page = 0;
 
     function pageAround() {
-      o2.Results.getInstance().publish(o2.musicAjaxCall + '/page/' + page);
+      o2.Results.getInstance().publishToResults(o2.musicAjaxCall + '/page/' + page);
     }
 
     function previousPage() {

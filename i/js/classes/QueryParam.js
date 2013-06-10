@@ -21,14 +21,15 @@
     while ((paramMatch = regex.exec(loc)) !== null)
       paramList.push(paramMatch[1]);
 
-    for (i = 0, len = paramList.length; i < len; i++) {
-      paramKey = paramList[i];
+    for (i = paramList.length, len = 0; i > len; i--) {
+      paramKey = paramList[i-1];
       if (paramDelegator[paramKey]) {
         paramDelegator[paramKey]();
       }
     }
 
     function searchQuery() {
+      if (unescape(getQueryString('p'))) return;
       $('search').value = unescape(getQueryString('s'));
       o2.Search.getInstance().query();
     }
@@ -37,8 +38,11 @@
 
     function play() {
       track = unescape(getQueryString('p'));
+      o2.Results.getInstance().publishToPlaylist(o2.defaultSearch + 'id:' + track, function() { //this is the same as searchQuery, clean this part up
+        $('search').value = unescape(getQueryString('s'));
+        o2.Search.getInstance().query();
+      });
       o2.Playlist.getInstance().show();
-      $('playlistScroll').innerHTML = '<a href="' + track + '">' + track.replace(/(^o\/)|(.mp3)/g,'') + '</a>';
     }
 
     function shuffle() {

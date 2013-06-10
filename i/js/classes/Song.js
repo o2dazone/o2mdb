@@ -23,7 +23,7 @@
     var title, artist, album, albumArt, track;
 
     function publishTrack() {
-      track = jsonc.outObj(o2.trackPlaying.dataset.songdata),
+      track = jsonc.outObj(o2.playing.dataset.songdata),
       title = track.title,
       artist = track.artist,
       album = track.album,
@@ -31,7 +31,7 @@
 
       console.log('publish "last played" somewhere around here');
       document.title = track.artist + " - " + track.title;
-      historyC.writeHistory(track.id, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p=' + track.id);
+      historyC.writeHistory(track.id, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p="' + track.id + '"');
 
       $('songInfo').innerHTML = '<div class="album" style="background-image:url(\'' + albumArt + '\')"></div><h2>' + track.title + '</h2><h3>' + track.artist + '</h3><h4>' + track.album + '</h4>';
     }
@@ -58,15 +58,14 @@
       $('time').innerHTML = ((hr > 0 ? hr + ":" : "") + (min > 0 ? (hr > 0 && min < 10 ? "0" : "") + min + ":" : "0:") + (sec < 10 ? "0" : "") + sec);
     }
 
-
-    var trackUrl, currentTrack, trackList;
+    var trackUrl, trackList;
 
     function playSong() {
       $('progressBar').style.width = '0%';
       $('time').innerHTML = '';
 
-      trackUrl = 'o/' + unescape(o2.trackPlaying.href).replace(/^(.+?(\/o\/))/,'');
 
+      /*
       if (o2.smSong) soundManager.destroySound('smObj');
       o2.smSong = soundManager.createSound({
         id: 'smObj',
@@ -77,27 +76,22 @@
           scrubTime(this);
         },
         onfinish: function(){
-          currentTrack = document.getElementById('playing') || $('playlistScroll').getElementsByTagName('A')[0] || null;
-          if (!currentTrack) return; //no songs in the playlist
-          currentTrack.removeAttribute('id');
-          currentTrack.removeAttribute('name');
+          o2.isPlaying(o2.isPlaying() || $('playlistScroll').getElementsByTagName('A')[0]);
 
           if (isShuffled()) {
             trackList = $('playlistScroll').getElementsByTagName('A');
-            o2.trackPlaying = trackList[Math.floor(Math.random() * trackList.length)];
+            o2.isPlaying(trackList[Math.floor(Math.random() * trackList.length)]);
           } else {
-            o2.trackPlaying = currentTrack.nextSibling === null ? $('playlistScroll').getElementsByTagName('A')[0] : currentTrack.nextSibling;
+            o2.isPlaying(currentTrack.nextSibling === null ? $('playlistScroll').getElementsByTagName('A')[0] : currentTrack.nextSibling);
           }
 
-          trackPlaying.setAttribute('name','play');
           w.location = '#play';
           playSong();
         }
       });
+      */
 
       publishTrack();
-      // historyC.writeHistory(id, )
-      // historyC.writeHistory(trackUrl, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p='+trackUrl);
     }
 
     return {

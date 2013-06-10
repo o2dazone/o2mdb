@@ -22,7 +22,8 @@
   'use strict';
 
   var o2 = function() {
-    var dom = {};
+    var dom = {},
+        defaultSearch = 'http://o2dazone.com/music/search/';
 
     function selector(el) {
       if (!dom[el])
@@ -31,9 +32,31 @@
       return dom[el];
     }
 
+    //messy
+    var current;
+    function isPlaying(el) {
+      var self = this;
+
+      if (el) {
+        self.playing = el || null;
+        if ((current = document.getElementById('playing'))) {
+          current.removeAttribute('id');
+          current.removeAttribute('name');
+        }
+
+        el.id = 'playing';
+        el.name = 'play';
+        return el;
+      } else {
+        return document.getElementById('playing') || self.playing || null;
+      }
+    }
+
     return {
       dom: dom,
-      $: selector
+      $: selector,
+      defaultSearch: defaultSearch,
+      isPlaying: isPlaying
     };
   };
 

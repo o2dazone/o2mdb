@@ -8,21 +8,13 @@
   var SearchFactory = function() {
     var $ = o2.$;
 
-    // search box submit delegators
-    $('searchField').addEventListener('submit', function(e){
-      e.preventDefault();
-      query();
-    }, 0);
-
-
     function getFilter() {
       var filter = $('dropSelect');
       var filterParam = (filter.dataset.select) ? filter.dataset.select + ':' : '';
       return filterParam;
     }
 
-    var searchQuery,
-        defaultSearch = 'http://o2dazone.com/music/search/';
+    var searchQuery;
 
     function query() {
       searchQuery = getFilter() + $('search').value;
@@ -32,9 +24,11 @@
         return;
 
       pagination.reset();
-      o2.musicAjaxCall = defaultSearch + searchQuery;
-      results.publish();
-      historyC.writeHistory(searchQuery, '?s=' + searchQuery);
+      o2.musicAjaxCall = o2.defaultSearch + searchQuery;
+      results.publishToResults();
+
+      if (window.location.href.indexOf('&p=') === -1) // if there is no 'play' query, then do a search query
+        historyC.writeHistory(searchQuery, '?s=' + searchQuery);
     }
 
     return {

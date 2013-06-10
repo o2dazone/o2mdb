@@ -7,22 +7,16 @@
   var ResultsFactory = function() {
     var $ = o2.$;
 
-    function hideOmnibox() {
-      if (document.getElementById('omni')) {
-        $('omni').style.opacity = 0;
-        setTimeout(function(){
-          $('omni').parentNode.removeChild($('omni'));
-        },500);
-      }
-    }
-
     function showResultsWin() {
       if (!$('results').style.opacity)
           $('results').style.opacity = '1';
     }
 
-    var ajax, r;
-    function getJSON (url, callback){
+    var ajax, r, getJSON;
+    getJSON = function getJSON (url, callback){
+      if (!(this instanceof getJSON))
+        return new getJSON(url, callback);
+
       ajax = new XMLHttpRequest();
 
       ajax.onreadystatechange = function(){
@@ -36,14 +30,13 @@
 
       ajax.open('GET', url, !0);
       ajax.send();
-    }
+    };
 
 
     var songs, i, len, song, data, link;
 
     function buildResults() {
       songs = o2.queryResults;
-
 
       for (i = 0, len = songs.length; i<len; i++) {
         song = songs[i],
@@ -59,7 +52,6 @@
           // playCount:    song.playCount
         };
 
-        console.log();
         if (!(song.album === '' || song.album === '-'))
           link.push(song.album, '/');
 
@@ -99,8 +91,7 @@
       resultEl.innerHTML = plural.join('');
     }
 
-    function publish(url) {
-      hideOmnibox();
+    function publishToResults(url) {
       showResultsWin();
 
       $('resultList').innerHTML = '<h5>Loading...</h5>';
@@ -125,9 +116,23 @@
       });
     }
 
+    function publishToPlaylist(url, callback) {
+      getMusicQuery(url || o2.musicAjaxCall, function(r){
+        rLen = r.length;
+        o2.songResults = '';
+        buildResults();
+
+        //appends query to playlist window, for autoplay
+        $('playlistScroll').innerHTML = o2.songResults;
+        if (callback)
+          callback();
+      });
+    }
+
 
     return {
-      publish: publish
+      publishToResults: publishToResults,
+      publishToPlaylist: publishToPlaylist
     };
   };
 
