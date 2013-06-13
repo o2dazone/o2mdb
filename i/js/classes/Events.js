@@ -7,8 +7,7 @@
       songC = o2.Song.getInstance(),
       historyC = o2.History.getInstance(),
       playlist = o2.Playlist.getInstance(),
-      search = o2.Search.getInstance(),
-      omni = o2.Omni.getInstance();
+      search = o2.Search.getInstance();
 
   (function() {
     var $ = o2.$;
@@ -154,27 +153,20 @@
     var date = new Date(),
         omniQuery;
 
-    function loadQuery() {
-      results.publishToResults(omniQuery);
-      historyC.writeHistory(o2.musicAjaxCall, w.location.pathname + '?s=' + omniQuery);
-      omni.hide();
-    }
-
     function latest() {
-      omniQuery = 'creationDate:[' + (date-2592000000)*1000 + '%20TO%20' + date*1000 + ']';
-      loadQuery();
+      $('search').value = 'creationDate:[' + (date-2592000000)*1000 + '%20TO%20' + date*1000 + ']';
+      search.query();
     }
 
     function random() {
-      omniQuery = 'playCount:>3%20AND%20lastPlayed:[' + (date-2592000000*4)*1000 + '%20TO%20' + date*1000 + ']';
-      loadQuery();
+      $('search').value = 'playCount:>3%20AND%20lastPlayed:[' + (date-2592000000*4)*1000 + '%20TO%20' + date*1000 + ']';
+      search.query();
     }
 
     function popular() {
-      omniQuery = 'playCount:>2%20AND%20lastPlayed:[' + (date-2592000000*12)*1000 + '%20TO%20' + date*1000 + ']';
-      loadQuery();
+      $('search').value = 'playCount:>2%20AND%20lastPlayed:[' + (date-2592000000*12)*1000 + '%20TO%20' + date*1000 + ']';
+      search.query();
     }
-
 
     function resultClick() {
       $('playlistScroll').innerHTML += target.outerHTML;

@@ -3,7 +3,8 @@
 
   var pagination = o2.Pagination.getInstance(),
       results = o2.Results.getInstance(),
-      historyC = o2.History.getInstance();
+      historyC = o2.History.getInstance(),
+      omni = o2.Omni.getInstance();
 
   var SearchFactory = function() {
     var $ = o2.$;
@@ -16,16 +17,14 @@
 
     var searchQuery;
 
-    function query() {
+    function query(url) {
+      omni.hide();
       searchQuery = getFilter() + $('search').value;
       d.querySelectorAll('#results > p')[0].innerHTML = ''; //clear the resultCount box when a new query is done
 
-      if (searchQuery === '')
-        return;
-
       pagination.reset();
       o2.musicAjaxCall = searchQuery;
-      results.publishToResults();
+      results.publishToResults(url);
 
       if (window.location.href.indexOf('&p=') === -1) // if there is no 'play' query, then do a search query
         historyC.writeHistory(searchQuery, '?s=' + searchQuery);

@@ -4,24 +4,29 @@
   var omniFactory = function() {
     var $ = o2.$;
 
-    var omniSearch = $('omniSearchForm') || null;
-
+    var omniShown = document.getElementById('omni') ? true : false; // does this object exist? assign to boolean
+    /*
+    * is omni on the dom? dynamically check this value
+    */
     function hide() {
-      if (document.getElementById('omni')) {
-        $('omni').style.opacity = 0;
+      if (omniShown) {
+        omniShown = false;
+        $('omni').style.opacity = 0; //fade out
+        omniSearch.removeEventListener('submit'); //remove submit event
         setTimeout(function(){
-          $('omni').parentNode.removeChild($('omni'));
+          $('omni').parentNode.removeChild($('omni')); //remove from dom
         },500);
       }
     }
 
-    if (omniSearch) {
-      omniSearch.addEventListener('submit', function(e){
+    /*
+    * if the omni search box is on the dom, bind an event to it.
+    */
+    if (omniShown) {
+      $('omniSearchForm').addEventListener('submit', function(e){
         e.preventDefault();
         $('search').value = $('omniSearch').value;
         o2.Search.getInstance().query();
-
-        hide();
       });
     }
 
