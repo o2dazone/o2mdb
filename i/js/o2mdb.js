@@ -22,8 +22,7 @@
   'use strict';
 
   var o2 = function() {
-    var dom = {},
-        defaultSearch = 'http://o2dazone.com/music/search/';
+    var dom = {};
 
     function selector(el) {
       if (!dom[el])
@@ -55,7 +54,6 @@
     return {
       dom: dom,
       $: selector,
-      defaultSearch: defaultSearch,
       isPlaying: isPlaying
     };
   };

@@ -1,12 +1,12 @@
 (function(o2, d, w){
   'use strict';
 
-  (function() {
+  var omniFactory = function() {
     var $ = o2.$;
 
     var omniSearch = $('omniSearchForm') || null;
 
-    function hideOmnibox() {
+    function hide() {
       if (document.getElementById('omni')) {
         $('omni').style.opacity = 0;
         setTimeout(function(){
@@ -21,8 +21,26 @@
         $('search').value = $('omniSearch').value;
         o2.Search.getInstance().query();
 
-        hideOmnibox();
+        hide();
       });
     }
-  }());
+
+    return {
+      hide: hide
+    };
+  };
+
+  var instances = {};
+
+  function getInstance(name) {
+    if (!instances[name]) {
+      instances[name] = new omniFactory(name);
+    }
+
+    return instances[name];
+  }
+
+  o2.Omni = {
+    getInstance: getInstance
+  };
 }(window.o2, document, window));

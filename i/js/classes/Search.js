@@ -24,7 +24,7 @@
         return;
 
       pagination.reset();
-      o2.musicAjaxCall = o2.defaultSearch + searchQuery;
+      o2.musicAjaxCall = searchQuery;
       results.publishToResults();
 
       if (window.location.href.indexOf('&p=') === -1) // if there is no 'play' query, then do a search query

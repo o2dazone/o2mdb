@@ -66,9 +66,9 @@
     }
 
 
-
-    function getMusicQuery(url, callback) {
-      getJSON(url, function(r){
+    function getMusicQuery(query, callback) {
+      query = 'http://o2dazone.com/music/search/' + (query || o2.musicAjaxCall); //append default search query and either use query arg or o2.musicAjaxCall (for global passarounds)
+      getJSON(query, function(r){
         o2.queryResults = r;
         callback(r);
       });
@@ -91,12 +91,12 @@
       resultEl.innerHTML = plural.join('');
     }
 
-    function publishToResults(url) {
+    function publishToResults(query) {
       showResultsWin();
 
       $('resultList').innerHTML = '<h5>Loading...</h5>';
 
-      getMusicQuery(url || o2.musicAjaxCall, function(r){
+      getMusicQuery(query, function(r){
         rLen = r.length;
         resultCount();
         if (!rLen || r[0] === '') {
@@ -116,8 +116,8 @@
       });
     }
 
-    function publishToPlaylist(url, callback) {
-      getMusicQuery(url || o2.musicAjaxCall, function(r){
+    function publishToPlaylist(query, callback) {
+      getMusicQuery(query, function(r){
         rLen = r.length;
         o2.songResults = '';
         buildResults();
