@@ -35,7 +35,6 @@
     }
 
     var track;
-
     function play() {
       track = unescape(getQueryString('p'));
       o2.Results.getInstance().publishToPlaylist('id:' + track, function() { //this is the same as searchQuery, clean this part up

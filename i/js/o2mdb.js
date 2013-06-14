@@ -31,30 +31,26 @@
       return dom[el];
     }
 
-    //messy
-    var current;
-    function isPlaying(el) {
-      var self = this;
+    var ajax, r;
+    function getJSON(url, callback){
+      ajax = new XMLHttpRequest();
+      ajax.onreadystatechange = function(){
+        if(ajax.readyState === 4 && ajax.status === 200){
+          r = ajax.response;
 
-      if (el) {
-        self.playing = el || null;
-        if ((current = document.getElementById('playing'))) {
-          current.removeAttribute('id');
-          current.removeAttribute('name');
+          if (!r.match(/^(\[|\{)/)) return;
+          callback(JSON.parse(r));
         }
+      };
 
-        el.id = 'playing';
-        el.name = 'play';
-        return el;
-      } else {
-        return document.getElementById('playing') || self.playing || null;
-      }
+      ajax.open('GET', url, !0);
+      ajax.send();
     }
 
     return {
       dom: dom,
       $: selector,
-      isPlaying: isPlaying
+      getJSON: getJSON
     };
   };
 

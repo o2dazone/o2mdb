@@ -12,27 +12,6 @@
           $('results').style.opacity = '1';
     }
 
-    var ajax, r, getJSON;
-    getJSON = function getJSON (url, callback){
-      if (!(this instanceof getJSON))
-        return new getJSON(url, callback);
-
-      ajax = new XMLHttpRequest();
-
-      ajax.onreadystatechange = function(){
-        if(ajax.readyState === 4 && ajax.status === 200){
-          r = ajax.response;
-
-          if (!r.match(/^(\[|\{)/)) return;
-          callback(JSON.parse(r));
-        }
-      };
-
-      ajax.open('GET', url, !0);
-      ajax.send();
-    };
-
-
     var songs, i, len, song, data, link;
 
     function buildResults() {
@@ -48,18 +27,15 @@
           id:           song.id,
           // year:         song.year,
           albumArtUrl:  song.albumArtUrl
-          // lastPlayed:   song.lastPlayed,
+          // lastPlayed:   song.lastPlayed
           // playCount:    song.playCount
         };
 
-        if (!(song.album === '' || song.album === '-'))
+        if (!(song.album === ''))
           link.push(song.album, '/');
 
-        if (song.artist !== '')
-          link.push(song.artist, ' - ');
-
-        if (song.title !== '')
-          link.push(song.title);
+        link.push(song.artist, ' - ');
+        link.push(song.title);
 
         o2.songResults += '<a data-el="s" data-songdata="' + jsonc.outStr(data) +'" href="#">' + link.join('') + '</a>';
       }
@@ -68,15 +44,14 @@
 
     function getMusicQuery(query, callback) {
       query = 'http://o2dazone.com/music/search/' + (query || o2.musicAjaxCall); //append default search query and either use query arg or o2.musicAjaxCall (for global passarounds)
-      getJSON(query, function(r){
+      o2.getJSON(query, function(r){
         o2.queryResults = r;
         callback(r);
       });
     }
 
     var rLen, resultsItems = '', plural = [],
-        resultEl = $('results').getElementsByTagName('p')[0];
-
+        resultEl = d.querySelector('#results p');
     function resultCount() {
       plural = [];
 

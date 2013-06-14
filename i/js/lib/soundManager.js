@@ -3394,7 +3394,7 @@ function SoundManager(smURL, smID) {
 
   getDocument = function() {
 
-    return (doc.body || doc._docElement || doc.getElementsByTagName('div')[0]);
+    return (doc.body || doc._docElement || doc.querySelector('div'));
 
   };
 
@@ -5168,7 +5168,7 @@ function SoundManager(smURL, smID) {
     oTarget = getDocument(),
     extraClass = getSWFCSS(),
     isRTL = null,
-    html = doc.getElementsByTagName('html')[0],
+    html = doc.querySelector('html'),
     oEmbed, oMovie, tmp, movieHTML, oEl, s, x, sClass;
 
     isRTL = (html && html.dir && html.dir.match(/rtl/i));

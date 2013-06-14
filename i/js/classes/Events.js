@@ -53,8 +53,8 @@
       facets: facets,
       facetDrop: facetDrop,
       addAllResults: addAllResults,
-      prevPage: prevPage,
-      nextPage: nextPage,
+      prevPage: pagination.previousPage,
+      nextPage: pagination.nextPage,
       clearPlaylist: clearPlaylist,
       shufflePlaylist: shufflePlaylist,
       deleteTrack: deleteTrack,
@@ -65,27 +65,32 @@
       s: song
     };
 
-    var target, ref, dataEl;
-
+    var evt, target, ref, dataEl;
     d.body.addEventListener('click',function(e){
-      target = e.target;
+      evt    = e,                                      //set global event
+      target = e.target,                               //set global target
+      dataEl = target.getAttribute('data-el') || null; //set global dataEl
 
       drop.hide(); //if dropdown is open, close it.
 
-      dataEl = target.getAttribute('data-el') || null;
-
       if ((ref = eventDelegator[dataEl])) {
         e.preventDefault();
-        ref(e, target, dataEl);
+        ref();
       }
     });
 
+    var smSong;
+    function duration() {
+      //messy, fix going back on timeline
+      smSong = o2.smSong;
+      smSong.setPosition(evt.offsetX/target.clientWidth*smSong.duration);
+      songC.scrubTime(smSong);
+    }
 
     function togglePlayPause() {
       target.className = target.className === 'play' ? 'pause' : 'play';
       soundManager.togglePause('smObj');
     }
-
 
     function facetDrop() {
       if (!dropdown.dataset.shown) {
@@ -96,7 +101,6 @@
     }
 
     var selectFilter;
-
     function facets() {
       dropSelect.innerHTML = target.innerHTML;
       dropSelect.dataset.select = target.dataset.select;
@@ -109,33 +113,14 @@
       }
     }
 
-
-    function duration() {
-      o2.smSong.setPosition((e.offsetX/this.clientWidth*o2.smSong.duration));
-      songC.scrubTime(o2.smSong);
-    }
-
-
     function addAllResults() {
       playlist.show();
       $('playlistScroll').innerHTML += o2.songResults;
     }
 
-    function prevPage() {
-      pagination.previousPage();
-    }
-
-    function nextPage() {
-      pagination.nextPage();
-    }
-
-
-
     function clearPlaylist() {
       $('playlistScroll').innerHTML = '';
     }
-
-
 
     function shufflePlaylist() {
       if (target.id) {
@@ -151,20 +136,19 @@
 
 
     var date = new Date(),
-        omniQuery;
-
+        thirtyDays = 2592000000;
     function latest() {
-      $('search').value = 'creationDate:[' + (date-2592000000)*1000 + '%20TO%20' + date*1000 + ']';
+      $('search').value = 'creationDate:[' + (date-thirtyDays)*1000 + '%20TO%20' + date*1000 + ']';
       search.query();
     }
 
     function random() {
-      $('search').value = 'playCount:>3%20AND%20lastPlayed:[' + (date-2592000000*4)*1000 + '%20TO%20' + date*1000 + ']';
+      $('search').value = 'playCount:>3%20AND%20lastPlayed:[' + (date-thirtyDays*4)*1000 + '%20TO%20' + date*1000 + ']';
       search.query();
     }
 
     function popular() {
-      $('search').value = 'playCount:>2%20AND%20lastPlayed:[' + (date-2592000000*12)*1000 + '%20TO%20' + date*1000 + ']';
+      $('search').value = 'playCount:>2%20AND%20lastPlayed:[' + (date-thirtyDays*12)*1000 + '%20TO%20' + date*1000 + ']';
       search.query();
     }
 
@@ -173,9 +157,8 @@
       playlist.show();
     }
 
-    var current;
     function playlistClick() {
-      o2.isPlaying(target);
+      songC.isPlaying(target);
       songC.playSong();
     }
 

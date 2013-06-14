@@ -10,7 +10,7 @@
     //playlist hover delegator
     $('playlistScroll').addEventListener('mouseover', function(e){
       target = e.target;
-      if (target.tagName !== 'A' || target.getElementsByTagName('SPAN').length)
+      if (target.tagName !== 'A' || target.querySelector('span'))
           return;
       target.innerHTML += '<span style="display:none;" data-el="deleteTrack">Remove</span>';
     });
@@ -23,10 +23,10 @@
     function show() {
       if (!isShowing()) {
         $('playlist').style.opacity = '1';
-        checkForTrack = setInterval(function(){
-          firstTrack = $('playlistScroll').getElementsByTagName('A')[0] || null;
+        checkForTrack = setInterval(function(){ //messy
+          firstTrack = d.querySelector('#playlistScroll a') || null;
           if (firstTrack) {
-            o2.isPlaying(firstTrack);
+            songC.isPlaying(firstTrack);
             songC.playSong();
             clearInterval(checkForTrack);
           }

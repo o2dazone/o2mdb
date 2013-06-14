@@ -26,8 +26,7 @@
       o2.musicAjaxCall = searchQuery;
       results.publishToResults(url);
 
-      if (window.location.href.indexOf('&p=') === -1) // if there is no 'play' query, then do a search query
-        historyC.writeHistory(searchQuery, '?s=' + searchQuery);
+      historyC.writeHistory(searchQuery, '?s=' + searchQuery);
     }
 
     return {

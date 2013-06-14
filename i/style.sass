@@ -177,6 +177,7 @@ h1
     background-color: #e1e1e1
     > a
       color: #a1a1a1
+      padding: 10px 0
       &:hover
         color: $c-pink !important
   > a
@@ -184,14 +185,13 @@ h1
     &:hover
       @include anchorHover
       padding-right: 75px
-  .prev
+  .prev, .next
     position: absolute
-    left: 5px
-    top: 10px
+    top: 0
   .next
-    position: absolute
-    right: 5px
-    top: 10px
+    right: 10px
+  .prev
+    left: 10px
 
 #playlistScroll a
   @include anchorNormal
@@ -249,7 +249,7 @@ h1
     height: 98px
     background-size: 98px 98px
 
-h2, h3, h4
+h2, h3, h4, #player span
   position: absolute
   left: 155px
   right: 15px
