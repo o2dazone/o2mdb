@@ -24,7 +24,6 @@
       page = 0;
     }
 
-
     var addAll, showPrev, showNext;
     function paging(len) {
       addAll = [],

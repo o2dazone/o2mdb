@@ -20,7 +20,7 @@
     function query(url) {
       omni.hide();
       searchQuery = getFilter() + $('search').value;
-      d.querySelectorAll('#results > p')[0].innerHTML = ''; //clear the resultCount box when a new query is done
+      d.querySelector('#results p').innerHTML = ''; //clear the resultCount box when a new query is done
 
       pagination.reset();
       o2.musicAjaxCall = searchQuery;
