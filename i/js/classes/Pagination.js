@@ -2,10 +2,14 @@
   'use strict';
 
   var PaginationFactory = function() {
-    var page = 0;
+    var page = 0, search, results = null;
 
     function pageAround() {
-      o2.Results.getInstance().publishToResults(o2.musicAjaxCall + '/page/' + page);
+      if (!results) { //adhoc define results and search instances
+        results = o2.Results.getInstance();
+        search = o2.Search.getInstance();
+      }
+      results.publishToResults(search.getLastQuery() + '/page/' + page);
     }
 
     function previousPage() {

@@ -58,7 +58,7 @@
       clearPlaylist: clearPlaylist,
       shufflePlaylist: shufflePlaylist,
       deleteTrack: deleteTrack,
-      duration: duration,
+      duration: songC.durationTracking,
       latest: latest,
       random: random,
       popular: popular,
@@ -75,17 +75,9 @@
 
       if ((ref = eventDelegator[dataEl])) {
         e.preventDefault();
-        ref();
+        ref(e, target, dataEl);
       }
     });
-
-    var smSong;
-    function duration() {
-      //messy, fix going back on timeline
-      smSong = o2.smSong;
-      smSong.setPosition(evt.offsetX/target.clientWidth*smSong.duration);
-      songC.scrubTime(smSong);
-    }
 
     function togglePlayPause() {
       target.className = target.className === 'play' ? 'pause' : 'play';
@@ -115,7 +107,7 @@
 
     function addAllResults() {
       playlist.show();
-      $('playlistScroll').innerHTML += o2.songResults;
+      $('playlistScroll').innerHTML += results.getAllResults();
     }
 
     function clearPlaylist() {

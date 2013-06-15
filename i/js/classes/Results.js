@@ -7,16 +7,16 @@
   var ResultsFactory = function() {
     var $ = o2.$;
 
+    var songs, allResults = '';
+
     function showResultsWin() {
       if (!$('results').style.opacity)
           $('results').style.opacity = '1';
     }
 
-    var songs, i, len, song, data, link;
+    var i, len, song, data, link;
 
     function buildResults() {
-      songs = o2.queryResults;
-
       for (i = 0, len = songs.length; i<len; i++) {
         song = songs[i],
         link = [],
@@ -37,15 +37,14 @@
         link.push(song.artist, ' - ');
         link.push(song.title);
 
-        o2.songResults += '<a data-el="s" data-songdata="' + jsonc.outStr(data) +'" href="#">' + link.join('') + '</a>';
+        allResults += '<a data-el="s" data-songdata="' + jsonc.outStr(data) +'" href="#">' + link.join('') + '</a>';
       }
     }
 
-
     function getMusicQuery(query, callback) {
-      query = 'http://o2dazone.com/music/search/' + (query || o2.musicAjaxCall); //append default search query and either use query arg or o2.musicAjaxCall (for global passarounds)
+      query = 'http://o2dazone.com/music/search/' + (query); //append default search query and either use query arg or o2.musicAjaxCall (for global passarounds)
       o2.getJSON(query, function(r){
-        o2.queryResults = r;
+        songs = r;
         callback(r);
       });
     }
@@ -79,26 +78,29 @@
           return;
         }
 
-        o2.songResults = '';
+        allResults = '';
         resultsItems = '';
 
         buildResults();
         resultsItems += pagination.paging(rLen);
-        resultsItems += o2.songResults;
+        resultsItems += allResults;
 
         //appends all results to result window
         $('resultList').innerHTML = resultsItems;
       });
     }
 
+    function getAllResults() {
+      return allResults;
+    }
+
     function publishToPlaylist(query, callback) {
       getMusicQuery(query, function(r){
-        rLen = r.length;
-        o2.songResults = '';
+        allResults = '';
         buildResults();
 
         //appends query to playlist window, for autoplay
-        $('playlistScroll').innerHTML = o2.songResults;
+        $('playlistScroll').innerHTML = allResults;
         if (callback)
           callback();
       });
@@ -107,7 +109,8 @@
 
     return {
       publishToResults: publishToResults,
-      publishToPlaylist: publishToPlaylist
+      publishToPlaylist: publishToPlaylist,
+      getAllResults: getAllResults
     };
   };
 

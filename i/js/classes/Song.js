@@ -1,4 +1,4 @@
-(function(o2, doc, w){
+(function(o2, d, w){
   'use strict';
 
   var jsonc = o2.Jsonc.getInstance(),
@@ -7,20 +7,20 @@
   var SongFactory = function() {
     var $ = o2.$;
 
-    var playing;
+    var playing, smSong;
 
     //written by Phrogz from stackoverflow.com [ http://stackoverflow.com/a/4673990 ]
     Date.prototype.customFormat=function(k){var d,e,a,f,g,b,h,m,n,c,i,j,l,o;e=((d=this.getFullYear())+"").slice(-2);g=(b=this.getMonth()+1)<10?"0"+b:b;f=(a=["January","February","March","April","May","June","July","August","September","October","November","December"][b-1]).substring(0,3);n=(c=this.getDate())<10?"0"+c:c;m=(h=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][this.getDay()]).substring(0,3);o=c>=10&&c<=20?"th":(l=c%10)==1?"st":l==2?"nd":l==3?"rd":"th";k=k.replace("#YYYY#",d).replace("#YY#",e).replace("#MMMM#",a).replace("#MMM#",f).replace("#MM#",g).replace("#M#",b).replace("#DDDD#",h).replace("#DDD#",m).replace("#DD#",n).replace("#D#",c).replace("#th#",o);a=d=this.getHours();if(a===0)a=24;if(a>12)a-=12;e=a<10?"0"+a:a;h=(b=d<12?"am":"pm").toUpperCase();f=(i=this.getMinutes())<10?"0"+i:i;g=(j=this.getSeconds())<10?"0"+j:j;return k.replace("#hhh#",d).replace("#hh#",e).replace("#h#",a).replace("#mm#",f).replace("#m#",i).replace("#ss#",g).replace("#s#",j).replace("#ampm#",b).replace("#AMPM#",h);};
 
     var date, formattedDate;
     function convertnsToDate(ms) {
-      date = new Date(Math.round(ms/1000)),
+      date = new Date(ms/1000>>0),
       formattedDate = date.customFormat('#MMM# #D#, #YYYY#') + ' at ' + date.customFormat('#h#:#mm##ampm#');
 
       return formattedDate;
     }
 
-    //messy
+    //messy, somewhat duplicate to 'playing'
     var current;
     function isPlaying(el) {
       var self = this;
@@ -64,11 +64,17 @@
       $('songInfo').innerHTML = pub.join('');
     }
 
+    function durationTracking(e, target) {
+      //messy, fix going back on timeline
+      smSong.setPosition(e.offsetX/target.clientWidth*smSong.duration);
+      scrubTime(smSong);
+    }
+
     function isShuffled() {
       return document.getElementById('on');
     }
 
-    var t, d, hr, min, sec, timeInterval;
+    var t, dur, hr, min, sec, timeInterval;
     function scrubTime(song) {
       time();
       if (timeInterval) {
@@ -82,9 +88,9 @@
 
       function time() {
         t = song.position,
-        d = song.duration;
+        dur = song.duration;
 
-        $('progressBar').style.width = (t/d*100).toFixed(1) + '%';
+        $('progressBar').style.width = (t/dur*100).toFixed(1) + '%';
 
         t = t/1000;
         hr =  t / 3600>>0;
@@ -103,11 +109,11 @@
       $('time').innerHTML = '';
       publishTrack();
 
-      if (o2.smSong) {
+      if (smSong) {
         soundManager.destroySound('smObj');
       }
 
-      o2.smSong = soundManager.createSound({
+      smSong = soundManager.createSound({
         id: 'smObj',
         url: 'testSong.mp3',
         autoPlay: 0,
@@ -116,13 +122,13 @@
           scrubTime(this);
         },
         onfinish: function(){
-          //messy
-          isPlaying(isPlaying() || doc.querySelector('#playlistScroll a'));
+          //messy, isplaying and playing dupe central
+          isPlaying(isPlaying() || d.querySelector('#playlistScroll a'));
           if (isShuffled()) {
-            trackList = doc.querySelectorAll('#playlistScroll a');
+            trackList = d.querySelectorAll('#playlistScroll a');
             isPlaying(trackList[Math.floor(Math.random() * trackList.length)]);
           } else {
-            isPlaying(playing.nextSibling === null ? doc.querySelector('#playlistScroll a') : playing.nextSibling);
+            isPlaying(playing.nextSibling === null ? d.querySelector('#playlistScroll a') : playing.nextSibling);
           }
 
           playSong();
@@ -136,7 +142,8 @@
     return {
       playSong: playSong,
       scrubTime: scrubTime,
-      isPlaying: isPlaying
+      isPlaying: isPlaying,
+      durationTracking: durationTracking
     };
   };
 

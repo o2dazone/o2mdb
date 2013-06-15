@@ -16,21 +16,23 @@
     }
 
     var searchQuery;
-
-    function query(url) {
+    function query() {
       omni.hide();
       searchQuery = getFilter() + $('search').value;
       d.querySelector('#results p').innerHTML = ''; //clear the resultCount box when a new query is done
 
       pagination.reset();
-      o2.musicAjaxCall = searchQuery;
-      results.publishToResults(url);
-
+      results.publishToResults(searchQuery);
       historyC.writeHistory(searchQuery, '?s=' + searchQuery);
     }
 
+    function getLastQuery() {
+      return searchQuery;
+    }
+
     return {
-      query: query
+      query: query,
+      getLastQuery: getLastQuery
     };
   };
 

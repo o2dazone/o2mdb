@@ -23,7 +23,7 @@
     function show() {
       if (!isShowing()) {
         $('playlist').style.opacity = '1';
-        checkForTrack = setInterval(function(){ //messy
+        checkForTrack = setInterval(function(){ //messy, refiring like crazy
           firstTrack = d.querySelector('#playlistScroll a') || null;
           if (firstTrack) {
             songC.isPlaying(firstTrack);
