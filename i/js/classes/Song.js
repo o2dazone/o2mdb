@@ -48,20 +48,23 @@
       title    = track.title,
       artist   = track.artist,
       album    = track.album,
-      albumArt = track.albumArtUrl || 'i/cover.png';
+      albumArt = track.albumArtUrl || null;
 
       document.title = track.artist + " - " + track.title;
       historyC.writeHistory(track.id, '?' + w.location.href.split('?')[1].split('&p')[0] + '&p="' + track.id + '"');
 
       pub.push(
         '<div class="album" style="background-image:url(\'',
-        albumArt,     '\')"></div><h2>',
+        albumArt || 'i/cover.png', '\')"></div><h2>',
         track.title,  '</h2><h3>',
         track.artist, '</h3><h4>',
         track.album,  '</h4>'
       );
 
       $('songInfo').innerHTML = pub.join('');
+
+      albumArt = (albumArt) ? albumArt.replace('s130','s1300') : 'i/coverBig.png'; // set albumArt to something bigger
+      $('player').style.backgroundImage = "url('" + albumArt + "')";
     }
 
     function durationTracking(e, target) {
@@ -99,7 +102,7 @@
         t = t % 60;
         sec = t>>0;
 
-        $('time').innerHTML = ((hr > 0 ? hr + ":" : "") + (min > 0 ? (hr > 0 && min < 10 ? "0" : "") + min + ":" : "0:") + (sec < 10 ? "0" : "") + sec);
+        $('time').innerHTML = ((hr > 0 ? hr + ':' : '') + (min > 0 ? (hr > 0 && min < 10 ? '0' : '') + min + ':' : '0:') + (sec < 10 ? '0' : '') + sec);
       }
     }
 
@@ -117,7 +120,8 @@
         id: 'smObj',
         url: 'testSong.mp3',
         autoPlay: 0,
-        volume:100,
+        // volume:100,
+        volume:0,
         onplay: function(){
           scrubTime(this);
         },

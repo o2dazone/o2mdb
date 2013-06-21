@@ -19,7 +19,7 @@
   @include border-radius(4px)
 
 /*rounded corners*/
-#results, #results > div, #omniSearchForm, #omni, #omni > div, #player
+#results, #results > div, #omniSearchForm, #omni, #omni > div
   @include border-radius(5px)
 
 /*input shadow and outer glow*/
@@ -224,11 +224,15 @@ h1
     background-position: -51px -108px
 
 #player
+  z-index: 1
   position: relative
+  overflow: hidden
   color: $c-white
   height: 108px
   padding: 10px
   margin: 0 0 7px 0
+  background-size: 100% !important
+  background-position: 0 50% !important
   @include background($c-dkgrey linear-gradient(#262626, $c-dkgrey))
   h2
     font-size: 16px
@@ -248,6 +252,13 @@ h1
     width: 98px
     height: 98px
     background-size: 98px 98px
+  &:before
+    z-index: -1
+    position: absolute
+    left: 0
+    top: 0
+    content: $i-albumOpacity
+    opacity: .7
 
 h2, h3, h4, #player span
   position: absolute
@@ -291,7 +302,7 @@ h5
     top: 2px
     left: 35px
     color: $c-white
-    @include transition(color .35 linear)
+    @include transition(color .35s linear)
 
 #durationBar
   width: inherit !important
@@ -299,12 +310,13 @@ h5
   left: 30px
   right: 45px
   top: 0
-  background: #2c2c2c
+  background: rgba(120,120,120,.4)
 
 #progressBar
   background: $c-white
   width: 0
   height: 16px
+  @include transition(width 1s linear)
 
 #time
   font-size: 13px
