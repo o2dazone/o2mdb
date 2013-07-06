@@ -19,19 +19,13 @@
       return !!$('playlist').style.opacity;
     }
 
-    var checkForTrack, firstTrack;
+    var firstTrack;
     function show() {
       if (!isShowing()) {
         $('playlist').style.opacity = '1';
         songC.readjustWidth();
-        checkForTrack = setInterval(function(){ //messy, refiring like crazy
-          firstTrack = d.querySelector('#playlistScroll a') || null;
-          if (firstTrack) {
-            clearInterval(checkForTrack);
-            songC.isPlaying(firstTrack);
-            songC.playSong();
-          }
-        }, 25);
+        songC.isPlaying(d.querySelector('#playlistScroll a'));
+        songC.playSong();
       }
     }
 

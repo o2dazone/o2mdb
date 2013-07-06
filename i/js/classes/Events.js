@@ -107,8 +107,8 @@
     }
 
     function addAllResults() {
-      playlist.show();
       $('playlistScroll').innerHTML += results.getAllResults();
+      playlist.show();
     }
 
     function clearPlaylist() {

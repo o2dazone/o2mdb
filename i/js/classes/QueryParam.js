@@ -40,8 +40,8 @@
       o2.Results.getInstance().publishToPlaylist('id:' + track, function() { //this is the same as searchQuery, clean this part up
         $('search').value = unescape(getQueryString('s'));
         o2.Search.getInstance().query();
+        o2.Playlist.getInstance().show();
       });
-      o2.Playlist.getInstance().show();
     }
 
     function shuffle() {
