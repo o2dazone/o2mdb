@@ -22,7 +22,8 @@
   'use strict';
 
   var o2 = function() {
-    var dom = {};
+    var dom = {},
+        url = 'http://o2dazone.com/music';
 
     function selector(el) {
       if (!dom[el])
@@ -31,15 +32,18 @@
       return dom[el];
     }
 
-    var ajax, r;
     function getJSON(url, callback){
-      ajax = new XMLHttpRequest();
+      var ajax = new XMLHttpRequest();
       ajax.onreadystatechange = function(){
         if(ajax.readyState === 4 && ajax.status === 200){
-          r = ajax.response;
+          var r = ajax.response;
 
-          if (!r.match(/^(\[|\{)/)) return;
-          callback(JSON.parse(r));
+          // parse to json if "string" json
+          if (r.match(/^(\[|\{)/)) {
+            r = JSON.parse(r);
+          }
+
+          callback(r);
         }
       };
 
@@ -49,6 +53,7 @@
 
     return {
       dom: dom,
+      url: url,
       $: selector,
       getJSON: getJSON
     };

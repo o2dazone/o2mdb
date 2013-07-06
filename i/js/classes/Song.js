@@ -67,10 +67,14 @@
       $('player').style.backgroundImage = "url('" + albumArt + "')";
     }
 
-    function durationTracking(e, target) {
-      //messy, fix going back on timeline
-      smSong.setPosition(e.offsetX/target.clientWidth*smSong.duration);
+    var durBarWidth;
+    function durationTracking(e) {
+      smSong.setPosition(e.offsetX/durBarWidth*smSong.duration);
       scrubTime(smSong);
+    }
+
+    function readjustWidth() {
+      durBarWidth = $('durationBar').clientWidth;
     }
 
     function isShuffled() {
@@ -107,21 +111,17 @@
     }
 
     var trackList;
-    function playSong() {
-      $('progressBar').style.width = '0%';
-      $('time').innerHTML = '';
-      publishTrack();
-
+    function injectSongObj() {
       if (smSong) {
         soundManager.destroySound('smObj');
       }
 
       smSong = soundManager.createSound({
         id: 'smObj',
-        url: 'testSong.mp3',
-        autoPlay: 0,
-        // volume:100,
-        volume:0,
+        url: streamUrl,
+        autoPlay: 1,
+        volume:100,
+        // volume:0,
         onplay: function(){
           scrubTime(this);
         },
@@ -139,12 +139,23 @@
           w.location = '#play';
         }
       });
+    }
 
-      soundManager.togglePause('smObj'); //messy , work around autoplay 0 because of double playing tracks
+    var streamUrl;
+    function playSong() {
+      $('progressBar').style.width = '0%';
+      $('time').innerHTML = '';
+      publishTrack();
+
+      o2.getJSON(o2.url + '/song/stream-url/' + track.id, function(r){
+        streamUrl = r;
+        injectSongObj();
+      });
     }
 
     return {
       playSong: playSong,
+      readjustWidth: readjustWidth,
       scrubTime: scrubTime,
       isPlaying: isPlaying,
       durationTracking: durationTracking

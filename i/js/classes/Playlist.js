@@ -23,12 +23,13 @@
     function show() {
       if (!isShowing()) {
         $('playlist').style.opacity = '1';
+        songC.readjustWidth();
         checkForTrack = setInterval(function(){ //messy, refiring like crazy
           firstTrack = d.querySelector('#playlistScroll a') || null;
           if (firstTrack) {
+            clearInterval(checkForTrack);
             songC.isPlaying(firstTrack);
             songC.playSong();
-            clearInterval(checkForTrack);
           }
         }, 25);
       }

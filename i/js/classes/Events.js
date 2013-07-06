@@ -30,7 +30,8 @@
           body.className = body.className.match(/anim/,'');
           animTime = setTimeout(function(){
             body.removeAttribute('class');
-          },500);
+            songC.readjustWidth();
+          },600);
         },50);
 
         body.className = 'resize anim';

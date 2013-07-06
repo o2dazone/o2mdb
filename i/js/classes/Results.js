@@ -42,7 +42,7 @@
     }
 
     function getMusicQuery(query, callback) {
-      query = 'http://o2dazone.com/music/search/' + (query); //append default search query and either use query arg or o2.musicAjaxCall (for global passarounds)
+      query = o2.url + '/search/' + (query); //TODO: append default search query and either use query arg or o2.musicAjaxCall (for global passarounds)
       o2.getJSON(query, function(r){
         songs = r;
         callback(r);
