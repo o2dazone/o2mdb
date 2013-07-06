@@ -7,7 +7,7 @@
   var SongFactory = function() {
     var $ = o2.$;
 
-    var playing, smSong;
+    var smSong;
 
     //written by Phrogz from stackoverflow.com [ http://stackoverflow.com/a/4673990 ]
     Date.prototype.customFormat=function(k){var d,e,a,f,g,b,h,m,n,c,i,j,l,o;e=((d=this.getFullYear())+"").slice(-2);g=(b=this.getMonth()+1)<10?"0"+b:b;f=(a=["January","February","March","April","May","June","July","August","September","October","November","December"][b-1]).substring(0,3);n=(c=this.getDate())<10?"0"+c:c;m=(h=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][this.getDay()]).substring(0,3);o=c>=10&&c<=20?"th":(l=c%10)==1?"st":l==2?"nd":l==3?"rd":"th";k=k.replace("#YYYY#",d).replace("#YY#",e).replace("#MMMM#",a).replace("#MMM#",f).replace("#MM#",g).replace("#M#",b).replace("#DDDD#",h).replace("#DDD#",m).replace("#DD#",n).replace("#D#",c).replace("#th#",o);a=d=this.getHours();if(a===0)a=24;if(a>12)a-=12;e=a<10?"0"+a:a;h=(b=d<12?"am":"pm").toUpperCase();f=(i=this.getMinutes())<10?"0"+i:i;g=(j=this.getSeconds())<10?"0"+j:j;return k.replace("#hhh#",d).replace("#hh#",e).replace("#h#",a).replace("#mm#",f).replace("#m#",i).replace("#ss#",g).replace("#s#",j).replace("#ampm#",b).replace("#AMPM#",h);};
@@ -20,13 +20,9 @@
       return formattedDate;
     }
 
-    //messy, somewhat duplicate to 'playing'
     var current;
     function isPlaying(el) {
-      var self = this;
-
       if (el) {
-        playing = el || null;
         if ((current = document.getElementById('playing'))) {
           current.removeAttribute('id');
           current.removeAttribute('name');
@@ -34,16 +30,14 @@
 
         el.id = 'playing';
         el.name = 'play';
-        return el;
-      } else {
-        return document.getElementById('playing') || playing || null;
       }
+      return document.getElementById('playing') || el;
     }
 
     var title, id, artist, album, albumArt, track, pub=[];
     function publishTrack() {
       pub      = [],
-      track    = jsonc.outObj(playing.dataset.songdata),
+      track    = jsonc.outObj(isPlaying().dataset.songdata),
       id       = track.id,
       title    = track.title,
       artist   = track.artist,
@@ -110,7 +104,7 @@
       }
     }
 
-    var trackList;
+    var trackList, playNext;
     function injectSongObj() {
       if (smSong) {
         soundManager.destroySound('smObj');
@@ -119,26 +113,28 @@
       smSong = soundManager.createSound({
         id: 'smObj',
         url: streamUrl,
-        autoPlay: 1,
+        autoPlay: 0,
         volume:100,
         // volume:0,
         onplay: function(){
           scrubTime(this);
         },
         onfinish: function(){
-          //messy, isplaying and playing dupe central
           isPlaying(isPlaying() || d.querySelector('#playlistScroll a'));
           if (isShuffled()) {
             trackList = d.querySelectorAll('#playlistScroll a');
             isPlaying(trackList[Math.floor(Math.random() * trackList.length)]);
           } else {
-            isPlaying(playing.nextSibling === null ? d.querySelector('#playlistScroll a') : playing.nextSibling);
+            playNext = isPlaying().nextSibling === null ? d.querySelector('#playlistScroll a') : isPlaying().nextSibling;
+            isPlaying(playNext);
           }
 
           playSong();
           w.location = '#play';
         }
       });
+
+      soundManager.togglePause('smObj'); //messy , work around autoplay 0 because of double playing tracks
     }
 
     var streamUrl;
