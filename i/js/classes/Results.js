@@ -8,7 +8,7 @@
     var $ = o2.$;
 
     var songs, allResults = '',
-        searchUrl = 'http://o2dazone.com/music/search';
+        searchUrl = 'http://o2dazone.com/music/search/';
 
     function showResultsWin() {
       if (!$('results').style.opacity)

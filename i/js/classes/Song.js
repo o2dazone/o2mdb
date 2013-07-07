@@ -73,9 +73,17 @@
     var durBarWidth, microJump;
     function durationTracking(e) {
       microJump = (((e.offsetX/durBarWidth) * songDuration) | 0);
-      getStreamUrl(streamPath + track.id, function(r) {
-        injectSongObj(r);
-      }, '&begin=' + microJump);
+
+      if (streamUrl) {
+        injectSongObj(streamUrl + '&begin=' + microJump);
+      } else {
+        getStreamUrl(streamPath + track.id, function(r) {
+          streamUrl = r;
+          streamTimebomb();
+          injectSongObj(r + '&begin=' + microJump);
+        });
+      }
+
     }
 
     var t, hr, min, sec, timeInterval;
@@ -91,7 +99,7 @@
 
       function time() {
         t = smSong.position + microJump;
-        $('progressBar').style.width = (t/songDuration*100).toFixed(2) + '%';
+        $('progressBar').style.width = (t/songDuration*100).toFixed(2) + '%'; //messy: cache "songDuration*100"
 
         t = t/1000;
         hr =  t / 3600>>0;
@@ -105,38 +113,34 @@
     }
 
     var trackList, playNext, songDuration;
-    function injectSongObj(streamUrl) {
-      if (smSong) {
-        soundManager.destroySound('smObj');
-      }
+    function injectSongObj(stream) {
+      soundManager.unload('smObj');
 
-      smSong = soundManager.createSound({
-        id: 'smObj',
-        url: streamUrl,
-        autoPlay: 0,
-        volume:100,
-        // volume:0,
-        onload: function() {
-          scrubTime();
-          if (!songDuration)
-            songDuration = this.duration;
-        },
-        onfinish: function(){
-          isPlaying(isPlaying() || d.querySelector('#playlistScroll a'));
-          if (isShuffled()) {
-            trackList = d.querySelectorAll('#playlistScroll a');
-            isPlaying(trackList[Math.floor(Math.random() * trackList.length)]);
-          } else {
-            playNext = isPlaying().nextSibling === null ? d.querySelector('#playlistScroll a') : isPlaying().nextSibling;
-            isPlaying(playNext);
-          }
-
-          playSong();
-          w.location = '#play';
-        }
+      smSong = soundManager.load('smObj', {
+        url: stream
       });
 
       soundManager.togglePause('smObj'); //messy , work around autoplay 0 because of double playing tracks
+    }
+
+    function onLoading() {
+      scrubTime();
+      if (!songDuration)
+        songDuration = smSong.duration;
+    }
+
+    function onFinish() {
+      isPlaying(isPlaying() || d.querySelector('#playlistScroll a'));
+      if (isShuffled()) {
+        trackList = d.querySelectorAll('#playlistScroll a');
+        isPlaying(trackList[Math.floor(Math.random() * trackList.length)]);
+      } else {
+        playNext = isPlaying().nextSibling === null ? d.querySelector('#playlistScroll a') : isPlaying().nextSibling;
+        isPlaying(playNext);
+      }
+
+      playSong();
+      w.location = '#play';
     }
 
     var streamUrl;
@@ -148,22 +152,24 @@
       $('time').innerHTML = '';
       $('controls').className = 'pause';
 
-      if (smSong) {
-        soundManager.destroySound('smObj');
-      }
-
       publishTrack();
 
       getStreamUrl(streamPath + track.id, function(r){
+        streamUrl = r;
         injectSongObj(r);
       });
+
+      streamTimebomb();
     }
 
-    function getStreamUrl(query, callback, options) {
+    function streamTimebomb() {
+      setTimeout(function(){
+        streamUrl = null; //expire the stream url so we can fetch a new one.
+      },(30000)); //1000 * 30
+    }
+
+    function getStreamUrl(query, callback) {
       o2.getJSON(query, function(url) {
-        if (options) {
-          url = url + options;
-        }
         callback(url);
       });
     }
@@ -171,7 +177,8 @@
     return {
       playSong: playSong,
       readjustWidth: readjustWidth,
-      scrubTime: scrubTime,
+      onLoading: onLoading,
+      onFinish: onFinish,
       isPlaying: isPlaying,
       durationTracking: durationTracking
     };
