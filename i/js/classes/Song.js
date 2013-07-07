@@ -104,14 +104,14 @@
     }
 
     var trackList, playNext, songDuration;
-    function injectSongObj(partial) {
+    function injectSongObj(streamUrl) {
       if (smSong) {
         soundManager.destroySound('smObj');
       }
 
       smSong = soundManager.createSound({
         id: 'smObj',
-        url: partial || streamUrl,
+        url: streamUrl,
         autoPlay: 0,
         volume:100,
         // volume:0,
