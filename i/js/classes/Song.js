@@ -73,8 +73,8 @@
     function durationTracking(e) {
       microJump = (((e.offsetX/durBarWidth) * songDuration) | 0);
       getStreamUrl(o2.url + '/song/stream-url/' + track.id, function(r) {
-        injectSongObj(r + '&begin=' + microJump);
-      });
+        injectSongObj(r);
+      }, '&begin=' + microJump);
     }
 
     var t, hr, min, sec, timeInterval;
@@ -155,14 +155,16 @@
       publishTrack();
 
       getStreamUrl(o2.url + '/song/stream-url/' + track.id, function(r){
-        streamUrl = r;
-        injectSongObj();
+        injectSongObj(r);
       });
     }
 
-    function getStreamUrl(query, callback) {
-      o2.getJSON(query, function(r) {
-        callback(r);
+    function getStreamUrl(query, callback, options) {
+      o2.getJSON(query, function(url) {
+        if (options) {
+          url = url + options;
+        }
+        callback(url);
       });
     }
 
