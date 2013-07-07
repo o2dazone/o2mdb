@@ -78,8 +78,6 @@
         injectSongObj(streamUrl + '&begin=' + microJump);
       } else {
         getStreamUrl(streamPath + track.id, function(r) {
-          streamUrl = r;
-          streamTimebomb();
           injectSongObj(r + '&begin=' + microJump);
         });
       }
@@ -120,7 +118,7 @@
         url: stream
       });
 
-      soundManager.togglePause('smObj'); //messy , work around autoplay 0 because of double playing tracks
+      soundManager.togglePause('smObj');
     }
 
     function onLoading() {
@@ -155,21 +153,18 @@
       publishTrack();
 
       getStreamUrl(streamPath + track.id, function(r){
-        streamUrl = r;
         injectSongObj(r);
       });
-
-      streamTimebomb();
-    }
-
-    function streamTimebomb() {
-      setTimeout(function(){
-        streamUrl = null; //expire the stream url so we can fetch a new one.
-      },(30000)); //1000 * 30
     }
 
     function getStreamUrl(query, callback) {
       o2.getJSON(query, function(url) {
+        streamUrl = url;
+
+        setTimeout(function(){
+          streamUrl = null; //expire the stream url so we can fetch a new one.
+        },(30000)); //1000 * 30
+
         callback(url);
       });
     }

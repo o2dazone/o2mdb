@@ -66,6 +66,14 @@
       s: song
     };
 
+    d.body.addEventListener('keypress', function(e){
+      if (e.target.tagName !== 'INPUT') {
+        if (e.keyCode === 32) {
+          togglePlayPause();
+        }
+      }
+    });
+
     var evt, target, ref, dataEl;
     d.body.addEventListener('click',function(e){
       evt    = e,                                      //set global event
@@ -81,7 +89,7 @@
     });
 
     function togglePlayPause() {
-      target.className = target.className === 'play' ? 'pause' : 'play';
+      $('controls').className = $('controls').className === 'play' ? 'pause' : 'play';
       soundManager.togglePause('smObj');
     }
 
