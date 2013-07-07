@@ -7,7 +7,8 @@
   var ResultsFactory = function() {
     var $ = o2.$;
 
-    var songs, allResults = '';
+    var songs, allResults = '',
+        searchUrl = 'http://o2dazone.com/music/search';
 
     function showResultsWin() {
       if (!$('results').style.opacity)
@@ -42,7 +43,7 @@
     }
 
     function getMusicQuery(query, callback) {
-      query = o2.url + '/search/' + (query); //TODO: append default search query and either use query arg or o2.musicAjaxCall (for global passarounds)
+      query = searchUrl + query;
       o2.getJSON(query, function(r){
         songs = r;
         callback(r);

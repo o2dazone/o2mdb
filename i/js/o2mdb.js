@@ -22,8 +22,7 @@
   'use strict';
 
   var o2 = function() {
-    var dom = {},
-        url = 'http://o2dazone.com/music';
+    var dom = {};
 
     function selector(el) {
       if (!dom[el])
@@ -53,7 +52,6 @@
 
     return {
       dom: dom,
-      url: url,
       $: selector,
       getJSON: getJSON
     };
