@@ -61,23 +61,24 @@
       $('player').style.backgroundImage = "url('" + albumArt + "')";
     }
 
-    var durBarWidth;
-    function durationTracking(e) {
-      smSong.setPosition(e.offsetX/durBarWidth*smSong.duration);
-      scrubTime(smSong);
+    function isShuffled() {
+      return document.getElementById('on');
     }
 
     function readjustWidth() {
       durBarWidth = $('durationBar').clientWidth;
     }
 
-    function isShuffled() {
-      return document.getElementById('on');
+    var durBarWidth, microJump;
+    function durationTracking(e) {
+      microJump = (((e.offsetX/durBarWidth) * songDuration) | 0);
+      getStreamUrl(o2.url + '/song/stream-url/' + track.id, function(r) {
+        injectSongObj(r + '&begin=' + microJump);
+      });
     }
 
-    var t, dur, hr, min, sec, timeInterval;
-    function scrubTime(song) {
-      time();
+    var t, hr, min, sec, timeInterval;
+    function scrubTime() {
       if (timeInterval) {
         clearInterval(timeInterval);
         timeInterval = null;
@@ -85,13 +86,11 @@
 
       timeInterval = setInterval(function(){
         time();
-      },1000);
+      },100);
 
       function time() {
-        t = song.position,
-        dur = song.duration;
-
-        $('progressBar').style.width = (t/dur*100).toFixed(1) + '%';
+        t = smSong.position + microJump;
+        $('progressBar').style.width = (t/songDuration*100).toFixed(2) + '%';
 
         t = t/1000;
         hr =  t / 3600>>0;
@@ -104,20 +103,22 @@
       }
     }
 
-    var trackList, playNext;
-    function injectSongObj() {
+    var trackList, playNext, songDuration;
+    function injectSongObj(partial) {
       if (smSong) {
         soundManager.destroySound('smObj');
       }
 
       smSong = soundManager.createSound({
         id: 'smObj',
-        url: streamUrl,
+        url: partial || streamUrl,
         autoPlay: 0,
         volume:100,
         // volume:0,
-        onplay: function(){
-          scrubTime(this);
+        onload: function() {
+          scrubTime();
+          if (!songDuration)
+            songDuration = this.duration;
         },
         onfinish: function(){
           isPlaying(isPlaying() || d.querySelector('#playlistScroll a'));
@@ -139,13 +140,29 @@
 
     var streamUrl;
     function playSong() {
+      /* reset all song stuff */
+      songDuration = null;
+      microJump = 0;
       $('progressBar').style.width = '0%';
       $('time').innerHTML = '';
+      $('controls').className = 'pause';
+
+
+      if (smSong) {
+        soundManager.destroySound('smObj');
+      }
+
       publishTrack();
 
-      o2.getJSON(o2.url + '/song/stream-url/' + track.id, function(r){
+      getStreamUrl(o2.url + '/song/stream-url/' + track.id, function(r){
         streamUrl = r;
         injectSongObj();
+      });
+    }
+
+    function getStreamUrl(query, callback) {
+      o2.getJSON(query, function(r) {
+        callback(r);
       });
     }
 

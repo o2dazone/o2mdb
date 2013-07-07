@@ -307,6 +307,7 @@ h5
 #durationBar
   width: inherit !important
   position: absolute
+  overflow: hidden
   left: 30px
   right: 45px
   top: 0
@@ -316,6 +317,7 @@ h5
   background: $c-white
   width: 0
   height: 16px
+  @include transition(width 0s linear)
 
 #time
   font-size: 13px
