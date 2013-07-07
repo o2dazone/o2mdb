@@ -6,8 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>o2 Music Player</title>
   <link type="text/css" rel="stylesheet" href="i/style.css"/>
+
+  <script type="text/javascript">
+    var page;
+    if ((page = sessionStorage.getItem('page'))) {
+      document.write('</head><body>' + page + '<noscript>');
+    }
+  </script>
 </head>
 <body>
+
 <script type="text/javascript">if (navigator.userAgent.match(/iPhone/i)) {document.body.className = "resize anim"; window.isMobile = true;}</script>
 <div id="topNav">
   <h1><a href="index.html">o2mdb</a></h1>
@@ -25,25 +33,7 @@
     </fieldset>
   </form>
 </div>
-<script type="text/javascript">
-  //nice sloppy method of rendering omni or not when page loads
-  if (window.location.href.match(/\?/))
-    document.write('<noscript>');
-</script>
-  <div id="omni" data-el="omni">
-    <form action="index.html" method="get" id="omniSearchForm">
-      <fieldset>
-        <input id="omniSearch" type="text" value="" name="s" autocomplete="off" placeholder="Artist, Title, Album" />
-      </fieldset>
-    </form>
-    <div>
-      <p>Have no idea what to look for?</p>
-      <a href="#" data-el="latest">Check out the <span data-el="latest">latest uploads</span></a>
-      <a href="#" class="strike">Listen to something <span>random</span></a>
-      <a href="#" class="strike">Come see <span>what is popular</span></a>
-    </div>
-  </div>
-</noscript>
+
 
 <div id="results">
   <p></p>
@@ -82,8 +72,9 @@
 <script type="text/javascript" src="i/js/setup.js"></script>
 <script type="text/javascript" src="i/js/classes/Song.js"></script>
 <script type="text/javascript" src="i/js/classes/Playlist.js"></script>
+<script type="text/javascript" src="i/js/classes/Storage.js"></script>
 <script type="text/javascript" src="i/js/classes/QueryParam.js"></script>
 <script type="text/javascript" src="i/js/classes/Events.js"></script>
-
+</noscript>
 </body>
 </html>

@@ -147,7 +147,6 @@
       $('time').innerHTML = '';
       $('controls').className = 'pause';
 
-
       if (smSong) {
         soundManager.destroySound('smObj');
       }
