@@ -456,3 +456,22 @@ h1 a, #results > a, #resultList > a:hover, #playlist > a, #playlistScroll a span
   background-repeat: no-repeat
   text-indent: -9999px
   overflow: hidden
+
+
+@media only screen and (max-device-width: 960px)
+  *
+    @include transition-duration(0s !important)
+    @include border-radius(0px !important)
+    @include box-shadow(none !important)
+
+  #playlist
+    top: 50px
+    bottom: 25px
+    right: 10px
+
+  .album
+    display: none
+
+  h2, h3, h4, #player span, #musicPlayer
+    left: 10px
+
