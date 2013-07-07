@@ -10,9 +10,7 @@
     var paramMatch, i, paramKey, len,
         regex = /[\?&]([^=]+)=/g,
         paramList = [],
-        loc = window.location.href,
-        lsRefresh = o2.Storage.getInstance().get('page');
-
+        loc = window.location.href;
     var paramDelegator = {
         s: searchQuery,
         p: play,
@@ -32,19 +30,16 @@
     function searchQuery() {
       $('search').value = unescape(getQueryString('s'));
       if (unescape(getQueryString('p'))) return;
-      if (!lsRefresh)
-        o2.Search.getInstance().query();
+      o2.Search.getInstance().query();
     }
 
     var track;
     function play() {
       track = unescape(getQueryString('p'));
-      if (!lsRefresh) {
-        o2.Results.getInstance().publishToPlaylist('id:' + track, function() { //this is the same as searchQuery, clean this part up
-          o2.Search.getInstance().query();
-          o2.Playlist.getInstance().show();
-        });
-      }
+      o2.Results.getInstance().publishToPlaylist('id:' + track, function() { //this is the same as searchQuery, clean this part up
+        o2.Search.getInstance().query();
+        o2.Playlist.getInstance().show();
+      });
     }
 
     function shuffle() {

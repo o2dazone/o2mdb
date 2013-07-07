@@ -38,17 +38,3 @@
     getInstance: getInstance
   };
 }(window.o2));
-
-
-/* stuff for auto generate playlist from local storage
-o2.$('playlistScroll').innerHTML = ls_playlist;
-if (!isShowing()) {
-  $('playlist').style.opacity = '1';
-  if (songC.isPlaying()) {
-    songC.playSong();
-    w.location = '#play';
-    return true;
-  }
-}
-
-*/

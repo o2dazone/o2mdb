@@ -7,8 +7,7 @@
       songC = o2.Song.getInstance(),
       historyC = o2.History.getInstance(),
       playlist = o2.Playlist.getInstance(),
-      search = o2.Search.getInstance(),
-      storage = o2.Storage.getInstance();
+      search = o2.Search.getInstance();
 
   (function() {
     var $ = o2.$;
@@ -80,24 +79,6 @@
         ref(e, target, dataEl);
       }
     });
-
-
-    setInterval(function(){
-      storage.set('page',d.body.innerHTML); // storing all things.
-      storage.set('url', window.location.href); //stores url
-    },1000);
-
-    (function invokeLSRefresh(){
-      if (storage.get('page')) {
-        storage.get('url', function(data){
-          historyC.writeHistory('url', data);
-        });
-        if (songC.isPlaying()) {
-          songC.playSong();
-          w.location = '#play';
-        }
-      }
-    }());
 
     function togglePlayPause() {
       target.className = target.className === 'play' ? 'pause' : 'play';
