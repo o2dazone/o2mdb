@@ -12,7 +12,7 @@
       if (omniShown) {
         omniShown = false;
         $('omni').style.opacity = 0; //fade out
-        omniSearch.removeEventListener('submit'); //remove submit event
+        omniSearch.removeEventListener('submit', function(){}, false); //remove submit event
         setTimeout(function(){
           $('omni').parentNode.removeChild($('omni')); //remove from dom
         },500);

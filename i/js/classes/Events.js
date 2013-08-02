@@ -66,9 +66,10 @@
       s: song
     };
 
-    d.body.addEventListener('keypress', function(e){
+    d.body.addEventListener('keydown', function(e){
       if (e.target.tagName !== 'INPUT') {
         if (e.keyCode === 32) {
+          e.preventDefault();
           togglePlayPause();
         }
       }
