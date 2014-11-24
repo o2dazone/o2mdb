@@ -1,7 +1,7 @@
 @import "./variables"
 
+/* zero stuff out */
 *
-  font-family: $f-droidSans
   text-indent: 0
   padding: 0
   margin: 0
@@ -9,469 +9,450 @@
   border: 0
   outline: none
   list-style: none
+  box-sizing: border-box
 
-/*styled scrollbars*/
-#playlistScroll::-webkit-scrollbar, #resultList::-webkit-scrollbar, #playlistScroll::-moz-scrollbar, #resultList::-moz-scrollbar
-  width: 6px
+/* make all anchor tags inherit the color of their parents, what could go wrong? */
+a
+  color: inherit
 
-#playlistScroll::-webkit-scrollbar-thumb:vertical, #resultList::-webkit-scrollbar-thumb:vertical, #playlistScroll::-moz-scrollbar-thumb:vertical, #resultList::-moz-scrollbar-thumb:vertical
-  background: $c-almostBlack
-  @include border-radius(4px)
+/* wicked scrollbars*/
+songs::-webkit-scrollbar, songs::-moz-scrollbar
+  width: 60px
 
-/*rounded corners*/
-#results, #results > div, #omniSearchForm, #omni, #omni > div
-  @include border-radius(5px)
+songs::-webkit-scrollbar-thumb:vertical, songs::-moz-scrollbar-thumb:vertical
+  background: #f00
 
-/*input shadow and outer glow*/
-#searchField fieldset, #omniSearchForm fieldset, #results > div
-  @include box-shadow($p-shadow1, $p-shadow2, $p-shadow3, $p-shadow4, $p-shadow5)
+/* flexbox stuff */
+html, body
+  height: 100%
+  margin: 0
+  padding: 0
+  box-sizing: border-box
 
-/*shadows*/
-#results, #playlist, #omniSearchForm
-  position: absolute
-  @include box-shadow(3px 3px 20px rgba(0, 0, 0, 1))
-  @include transition-property(opacity, left, right, top, bottom)
-  @include transition-duration(.5s)
+body
+  display: flex
+  flex-direction: column
+  justify-content: center
 
-#topNav
-  min-width: 610px
-  z-index: 6
-  position: absolute
-  top: 0
-  left: 0
+header, footer
+  display: flex
+  align-items: center
+  flex: 0 0
+
+container
+  display: flex
+  flex: 1
+  flex-direction: row
+
+sidebar
+  display: flex
+  flex-direction: column
+  order: 1
+  flex: none
+
+[songlist]
+  flex: 1 0 auto
+  order: 2
+  display: flex
+  flex-direction: column
   width: 100%
-  @include background($c-darkbg linear-gradient($c-darkbg, $c-almostBlack))
-  @include slightShadow
 
-h1
-  float: left
-  margin-right: 50px
-  a
-    width: 73px
-    height: 38px
-    display: inline-block
+songlegends, song, sectionhead
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  align-items: center
 
-#searchField
-  min-width: 400px
-  $fieldset-height: 27px
-  $input-height: $fieldset-height - 2
-  label
-    float: left
-    text-indent: -9999px
-  fieldset
-    margin: 5px 2px
-    float: left
-    width: 400px
-    height: $fieldset-height
-    position: relative
-    @include background($c-offwhite linear-gradient(#bbb, $c-white))
-    @include border-radius(3px)
-  input
-    background: none
-    color: $c-grey
-    font-size: 19px
-    margin: 1px 0 0 30px
-    line-height: $input-height
-    height: $input-height
-    display: block
-    width: 275px
-    border: 1px solid rgba(255,255,255,.2)
-    border-width: 0 0 0 1px
-    text-indent: 12px
 
-#dropSelect
-  float: left
-  font-size: 18px
-  color: $c-grey
-  text-indent: 30px !important
-  height: 23px
-  padding: 0 10px 0 0
-  margin: 2px 0 0 2px
-  border: 1px solid rgba(0,0,0,.1)
-  border-width: 0 1px 0 0
-  background-color: #ccc
-  background-position: -88px -6px
-  @include border-corner-radius(top, left, 3px)
-  &:hover
-    @include background-image(linear-gradient(#ccc, #eee))
 
-#dropdown
-  position: absolute
-  width: 150px
-  z-index: 4
-  top: 30px
-  left: 0
-  padding: 5px 10px
-  @include border-radius(3px)
-  @include background(linear-gradient($c-white, #dadada))
-  @include slightShadow
-  a
-    font-size: 20px
-    padding: 6px 0
-    border-top: 1px solid $c-white
-    border-bottom: 1px solid rgba(0,0,0,.2)
-    display: block
-    color: #666
-    &:first-child
-      border-top: 0
-    &:last-child
-      border-bottom: 0
-    &:hover
-      color: $c-grey
 
-.hidden
-  visibility: hidden
 
-#results
-  width: 50%
-  background: $c-almostBlack
-  z-index: 3
-  padding: 45px 0 0 0
-  top: 0px
-  bottom: 15px
-  left: 15px
-  opacity: 0
-  b
-    color: $c-lightBlue
-  > p
-    float: left
-    margin: 0 0 0 15px
-    color: $c-white
-    font-size: 13px
-    span
-      color: $c-pink
-      font-style: italic
-      font-family: $f-serif
-  > a
-    float: right
-    margin: 0 15px 0 0
-    width: 21px
-    height: 16px
-    background-position: -63px -43px
-  > div
-    background: $c-offwhite
-    padding: 5px 0 0 0
-    margin: 22px 15px 15px 15px
-    position: absolute
-    left: 0
-    right: 0
-    bottom: 0
-    top: 45px
 
-#resultList
-  margin: 3px 5px 5px 2px
-  overflow: auto
-  position: absolute
-  top: 0
-  left: 0
-  bottom: 0
-  right: 0
-  > span
-    text-transform: uppercase
-    font-size: 10px
-    font-weight: bold
-    color: #aaa
-    display: block
-    text-align: center
-    padding: 10px 0
-    background-color: #e1e1e1
-    > a
-      color: #a1a1a1
-      padding: 10px 0
-      &:hover
-        color: $c-pink !important
-  > a
-    @include anchorNormal
-    &:hover
-      @include anchorHover
-      padding-right: 75px
-  .prev, .next
-    position: absolute
-    top: 0
-  .next
-    right: 10px
-  .prev
-    left: 10px
 
-#playlistScroll a
-  @include anchorNormal
-  &:hover
-    @include anchorHover
-    padding-right: 30px
 
-#playlist
-  background: $c-offwhite
-  z-index: 2
-  top: 60px
-  bottom: 35px
-  right: 15px
-  left: 50%
-  margin: 0 0 0 15px
-  padding: 10px
-  @include border-right-radius(5px)
-  opacity: 0
-  > a
-    float: right
-    height: 15px
-    margin: 0 8px 0 0
-  .shuffle
-    width: 19px
-    background-position: -15px -108px
-  #on.shuffle
-    background-position: -15px -123px
-  .clear
-    width: 15px
-    background-position: -51px -108px
 
-#player
-  z-index: 1
-  position: relative
+
+
+
+/* styling */
+html
+  background: #141517
+
+body
+  font-family: $font-sans
+  @include font-smoothing
+  min-width: 640px
   overflow: hidden
-  color: $c-white
-  height: 108px
-  padding: 10px
-  margin: 0 0 7px 0
-  background-size: 100% !important
-  background-position: 0 50% !important
-  @include background($c-dkgrey linear-gradient(#262626, $c-dkgrey))
-  h2
-    font-size: 16px
-    top: 12px
-  h3
-    font-size: 14px
-    top: 34px
-  h4
-    font-size: 12px
-    top: 56px
-  > div > a
-    position: absolute
-  .album
-    float: left
-    margin: 0 10px 0 0
-    border: 3px solid $c-white
-    width: 98px
-    height: 98px
-    background-size: 98px 98px
-  &:before
-    z-index: -1
-    position: absolute
-    left: 0
-    top: 0
-    content: $i-albumOpacity
-    opacity: .7
 
-h2, h3, h4, #player span
+/* context menu */
+contextmenu
   position: absolute
-  left: 155px
-  right: 15px
+  background-color: $color-sagan
+  border-radius: 3px
+  padding: 3px 5px
+  > *:hover
+    cursor: pointer
+
+/* header */
+$header-height: 65px
+header
+  background: $color-kinsey
+  min-height: $header-height
+  padding-right: 20px
+  h1
+    @extend .spriteProperties
+    background-size: 100%
+    min-width: 131px
+    margin-right: 10px
+    min-height: $header-height
+  form
+    width: 100%
+
+/* sidebar */
+$sidebar-menu-height: 36px
+sidebar
+  min-width: 160px
+  color: $color-gauss
+  background: $color-newton
+  a, pl
+    &:hover
+      background: $color-highlight
+  a
+    font-size: 18px
+    line-height: $sidebar-menu-height
+    font-weight: 300
+    text-indent: 20px
+  [selected]
+    text-indent: 16px
+    &:before
+      content: " "
+      float: left
+      background: $color-primary
+      width: 4px
+      height: $sidebar-menu-height
+  pl
+    font-size: 12px
+    font-weight: bold
+    text-indent: 30px
+    line-height: 24px
+    &:hover
+      cursor: pointer
+    &:last-child
+      text-decoration: line-through
+
+container
+  overflow: hidden
+
+/* results and queue */
+$song-height: 34px
+[songlist]
+  albumart
+    max-width: $song-height
+    position: relative
+  name
+    width: 30%
+    text-indent: 8px
+  artist
+    width: 20%
+  album
+    width: 35%
+
+
+/* list of songs in search results and music queue */
+songs
+  overflow: auto
+
+/* sectionhead */
+sectionhead
+  color: $color-gauss
+  background: $color-highlight
+  max-height: 45px
+  font-size: 22px
+  min-height: 45px
+  flex: 1 0 auto
+  flex-flow: row
+  font-weight: 300
+  padding: 6px 0
+  text-indent: 15px
+  white-space: nowrap
+
+addall
+  float: right
+  cursor: pointer
+  width: 30%
+  text-align: left
+  font-size: 14px
+
+term
+  margin-left: 5px
+  margin-right: 15px
   overflow: hidden
   white-space: nowrap
   text-overflow: ellipsis
-  font-weight: normal
+  color: $color-primary
 
-h5
-  position: absolute
-  width: 32px
-  height: 32px
-  left: 50%
-  top: 10%
-  margin: -16px 0 0 -16px
-  background: $i-loading no-repeat
-  text-indent: -9999px
+/* song listing */
+songlegends
+  min-height: 28px
+  font-size: 12px
+  font-weight: bold
+  color: $color-sagan
 
-#musicPlayer
-  height: 20px
-  overflow: hidden
-  position: absolute
-  bottom: 15px
-  left: 125px
-  right: 15px
-  > a
-    width: 13px
-    height: 18px
-    float: left
-  .play
-    background-position: -21px -79px
-  .pause
-    background-position: -49px -79px
-  .loading
-    display: none
-    z-index: 5
-    font-size: 12px
-    position: absolute
-    top: 2px
-    left: 35px
-    color: $c-white
-    @include transition(color .35s linear)
+songs
+  color: $color-leland
+  display: flex
+  flex-flow: column
+  font-size: 14px
+  justify-content: flex-start
 
-#durationBar
-  width: inherit !important
-  position: absolute
-  overflow: hidden
-  left: 30px
-  right: 45px
-  top: 0
-  background: rgba(120,120,120,.4)
+[songlist]
+  albumart, name, artist, album
+    flex: 1 0 auto
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+    line-height: $song-height
+    min-height: $song-height
 
-#progressBar
-  background: $c-white
-  width: 0
-  height: 16px
+song, info
+  albumart
+    @extend .cover
 
-#time
-  font-size: 13px
-  float: right
-
-#playlistScroll
-  overflow: auto
-  position: absolute
-  top: 170px
-  bottom: 10px
-  left: 0
-  right: 0px
-  > a
-    padding: 6px 25px 6px 22px
-    position: relative
-    margin-right: 10px
-  span
-    display: none
-  #playing
-    background-color: $c-almostBlack
-    color: $c-pink
-    &:hover
-      color: #ff6df3
-  a
-    &:hover span
-      display: block !important
-      width: 19px
-      height: 19px
-      background-position: -87px -104px
+song
+  min-height: $song-height
+  albumart
+    width: $song-height
+    height: $song-height
+    background-size: $song-height
+  &:hover
+    cursor: pointer
+    background: $color-highlight
+    albumart:before
+      @extend .spriteProperties
+      background-size: 200px
+      content: " "
+      background-position: -65px -126px
       position: absolute
-      top: 50%
-      margin-top: -10px
-      right: 13px
-      &:hover
-        display: block
-        background-position: -87px -78px
-        width: 1000 !important
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
 
-#omni
-  z-index: 5
-  position: absolute
-  max-width: 580px
-  width: 95%
-  min-width: 283px
-  height: 100px
-  top: 50%
-  left: 50%
-  margin: -95px 0 0 -290px
-  @include transition(opacity .5s linear)
-  > div
-    position: absolute
-    top: 120px
-    left: 0
-    right: 0
-    background: rgba(0,0,0,.6)
-    z-index: 3
-    padding: 10px 20px
-  p
-    font-weight: bold
-    font-size: 36px
-    text-transform: uppercase
-    color: #eee
+[playing]
+  background: $color-highlight
+
+
+/* search box  */
+form
+  $input-height: 25px
+  label
     float: left
-    width: 257px
-    line-height: 32px
-  a
-    float: right
-    clear: right
-    margin: 15px 0 0 0
-    font-weight: bold
-    font-size: 11px
-    color: #d6d6d6
-    text-transform: uppercase
-  span
-    color: $c-pink
-  .strike
-    text-decoration: line-through
+    text-indent: -999em
 
-#omniSearchForm
-  background: $c-almostBlack
+  input
+    padding: 17px 0
+    border-radius: 3px
+    background: #000
+    width: 100%
+    color: $color-gauss
+    font-size: 18px
+    line-height: $input-height
+    height: $input-height
+    text-indent: 8px
+    &:focus
+      box-shadow: 0px 0px 5px 2px $color-primary inset
+
+
+
+/* footer */
+$info-album-height: 60px
+footer
+  background: $color-newton
+  position: relative
+  min-height: $info-album-height
+  > *
+    text-align: left
+
+$progress-bar-height: 10px
+info
+  width: 50%
+  font-weight: 300
+  albumart
+    width: $info-album-height
+    height: $info-album-height
+    background-size: $info-album-height
+    float: left
+    margin-right: 10px
+  name, artistalbum
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
+  name
+    margin-top: $progress-bar-height
+    display: block
+    font-size: 19px
+    color: $color-sagan
+  artistalbum
+    font-size: 16px
+    color: $color-leland
+
+player
+  width: 50%
+  min-width: 240px
+  white-space: nowrap
+  overflow: hidden
+  padding-top: $progress-bar-height
+  > *
+    float: left
+
+previous, next, shuffle, playpause, pause
+  @extend .spriteProperties
+  background-size: 275px
+  width: 60px
+  height: $info-album-height
+  &:hover
+    cursor: pointer
+    background-color: $color-highlight
+
+previous
+  background-position: 6px -170px
+
+next
+  background-position: -138px -170px
+
+shuffle
+  background-position: -196px -170px
+  &[on]
+    background-position: -196px -214px
+
+playpause
+  background-position: -43px -170px
+
+[pause]
+  background-position: -86px -170px
+
+[active]
+  background-color: $color-primary
+
+duration, elapsed
+  position: absolute
+  right: 0
+  top: 0
+  height: $progress-bar-height
+  cursor: pointer
+
+duration
+  background: #000
+  left: $info-album-height
+
+elapsed
+  background: $color-primary
+  left: 0
+  width: 0%
+time
+  color: $color-wht
+  font-size: 10px
+  background: inherit
+  position: absolute
+  right: -17px
+  height: $progress-bar-height + 6px
+  width: 35px
+  text-align: center
+  line-height: $progress-bar-height + 6px
+  top: -3px
+  background: $color-primary
+  border-radius: 3px
+
+help
+  background-size: 100% 100%
+  z-index: 1
+  position: absolute
   top: 0
   left: 0
   right: 0
   bottom: 0
-  fieldset
-    padding: 0px 15px
-    position: absolute
-    top: 15px
-    bottom: 15px
-    left: 15px
-    right: 15px
-    z-index: 6
-    background-color: $c-offwhite
-    @include background($c-darkbg linear-gradient(#bbb, $c-white))
-    @include border-radius(5px)
-  input
-    color: $c-grey
-    width: 100%
-    height: 100%
-    font-size: 36px
-    background: transparent
-  input::-webkit-input-placeholder, #omniSearchForm input::-moz-placeholder
-    color: #a7a7a7
+  background-image: url('help.png')
+  close
+    cursor: pointer
+    padding: 4px 8px
+    display: inline-block
+    margin: 10px
+    background-color: #e7e7e7
+    border-radius: 3px
 
-.resize
-  #topNav, #searchField fieldset, #results > div, #results, #player, #omniSearchForm, #omniSearchForm fieldset, #playlist
-    @include box-shadow($c-noBoxShadow !important)
-    @include border-radius(0px)
-  #topNav, #results, #omniSearchForm
-    background: $c-almostBlack !important
-  #omni > div
-    background: #000 !important
-  #searchField fieldset, #omniSearchForm fieldset
-    background: $c-offwhite !important
-
-.anim *
-  @include transition-duration(0s !important)
-
-#minimize.anim *
-  @include transition-duration(.5s !important)
-
-#minimize
-  #topNav, #results, #resultList, #playlist > *
-    display: none
-  #playlist
-    min-width: 200px
-    top: 0 !important
-    left: 0 !important
-    background: transparent
-    @include box-shadow($c-noBoxShadow !important)
-  #player
+error
+  position: absolute
+  cursor: pointer
+  right: 10px
+  top: 10px
+  font-size: 12px
+  text-overflow: nowrap
+  padding: 5px
+  color: #fff
+  background: #a20
+  errMsg, linefile
     display: block
+  errMsg
+    font-size: 16px
+  linefile
+    font-size: 12px
 
-/*the sprite is right*/
-h1 a, #results > a, #resultList > a:hover, #playlist > a, #playlistScroll a span, #player > div > a, #musicTrack > a, #dropSelect, #dropSelect:hover
-  background-image: $i-sprite
-  background-repeat: no-repeat
-  text-indent: -9999px
-  overflow: hidden
+/* misc */
+[hide]
+  display: none
+  visibility: hidden
+
+[glow], [fade]
+  transition: background-color 0.35s ease
+
+[glow]
+  background-color: $color-primary !important
 
 
-@media only screen and (max-device-width: 960px)
-  *
-    @include transition-duration(0s !important)
-    @include border-radius(0px !important)
-    @include box-shadow(none !important)
 
-  #playlist
-    top: 50px
-    bottom: 25px
-    right: 10px
 
-  .album
+@media all and (max-width: 640px)
+  body
+    justify-content: flex-start
+
+  container
+    flex-flow: column
+
+  [songlist]
+    flex: 0 1 auto
+
+  sidebar
+    width: 100%
+    flex-direction: row
+    justify-content: center
+    a
+      width: 33%
+      text-align: center
+    pl
+      display: none
+  song
+    min-height: 60px
+    font-size: 20px
+    albumart
+      width: 60px
+      min-width: 60px
+      height: 60px
+      background-size: 60px
+    &:hover albumart:before
+      background: $color-highlight
+  sectionhead term
+    width: 40%
+  footer info
+    width: 70%
+
+@media all and (max-height: 250px)
+  sidebar, header, container
     display: none
+  footer
+    margin-top: 3px
+    flex: 1 0
+    flex-flow: column
+    info, player
+      width: 100%
 
-  h2, h3, h4, #player span, #musicPlayer
-    left: 10px
 

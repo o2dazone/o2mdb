@@ -5,7 +5,7 @@ todo
 *.mp3
 *.ttf
 *.otf
-.sass_cache/
+*.sassc
 .sass_cache/**/*
 .sass-cache/*
 .htaccess

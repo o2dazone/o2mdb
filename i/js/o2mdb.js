@@ -22,38 +22,37 @@
   'use strict';
 
   var o2 = function() {
-    var dom = {};
+    var dom = {},
+        fn = {};
 
     function selector(el) {
       if (!dom[el])
-        dom[el] = document.getElementById(el);
+        dom[el] = document.querySelector(el);
 
       return dom[el];
     }
 
-    function getJSON(url, callback){
-      var ajax = new XMLHttpRequest();
-      ajax.onreadystatechange = function(){
-        if(ajax.readyState === 4 && ajax.status === 200){
-          var r = ajax.response;
+    function selectors(els) {
+      if (!dom[els])
+        dom[els] = document.querySelectorAll(els);
 
-          // parse to json if "string" json
-          if (r.match(/^(\[|\{)/)) {
-            r = JSON.parse(r);
-          }
+      return dom[els];
+    }
 
-          callback(r);
-        }
-      };
+    var searchUrl = 'http://o2dazone.com/music/search/',
+        streamUrl = 'http://o2dazone.com/music/song/stream-url/';
 
-      ajax.open('GET', url, !0);
-      ajax.send();
+    function querySelect(selector) {
+      return document.querySelector(selector);
     }
 
     return {
-      dom: dom,
       $: selector,
-      getJSON: getJSON
+      $$: selectors,
+      searchUrl: searchUrl,
+      streamUrl: streamUrl,
+      _: querySelect,
+      fn: fn
     };
   };
 

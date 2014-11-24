@@ -1,90 +1,105 @@
 <!doctype html>
-<style>html{background:#000 url("i/bg.jpg");}</style>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>o2 Music Player</title>
-  <link type="text/css" rel="stylesheet" href="i/style.css"/>
+  <title>o2dazone's Music Player</title>
+  <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+  <link type="text/css" rel="stylesheet" href="i/style.css" />
 </head>
 <body>
 
-<script type="text/javascript">if (navigator.userAgent.match(/iPhone/i)) {window.isMobile = true;}</script>
-<div id="topNav">
+<help hide><close data-dele-click="help.close">Close this help window</close></help>
+
+<header>
   <h1><a href="index.html">o2mdb</a></h1>
-  <form action="index.html" method="get" id="searchField">
+  <form action="index.html" method="get">
     <fieldset>
       <label>Search</label>
-      <a id="dropSelect" data-el="facetDrop" href="#">all</a>
-      <div id="dropdown" class="hidden">
-        <a data-el="facets" href="#">all</a>
-        <a data-el="facets" data-select="artist" href="#">artist</a>
-        <a data-el="facets" data-select="title" href="#">song</a>
-        <a data-el="facets" data-select="album" href="#">album</a>
-      </div>
-      <input id="search" type="text" value="" name="s" autocomplete="off" />
+      <input type="text" placeholder="Search for songs" name="s" autocomplete="off" />
     </fieldset>
   </form>
-</div>
+</header>
 
-<script type="text/javascript">
-  //nice sloppy method of rendering omni or not when page loads
-  if (window.location.href.match(/\?/))
-    document.write('<noscript>');
-</script>
-  <div id="omni" data-el="omni">
-    <form action="index.html" method="get" id="omniSearchForm">
-      <fieldset>
-        <input id="omniSearch" type="text" value="" name="s" autocomplete="off" placeholder="Artist, Title, Album" />
-      </fieldset>
-    </form>
-    <div>
-      <p>Have no idea what to look for?</p>
-      <a href="#" data-el="latest">Check out the <span data-el="latest">latest uploads</span></a>
-      <a href="#" class="strike">Listen to something <span>random</span></a>
-      <a href="#" class="strike">Come see <span>what is popular</span></a>
-    </div>
-  </div>
-</noscript>
+<container>
 
-<div id="results">
-  <p></p>
-  <div>
-    <div id="resultList" data-el="results"></div>
-  </div>
-</div>
+  <sidebar>
+    <a href="#" results data-dele-click="nav.showResults" selected>Search Results</a>
+    <a href="#" queue data-dele-click="nav.showQueue">Music Queue</a>
+    <a href="#" playlist data-dele-click="nav.showPlaylist">Playlists</a>
+    <pl data-dele-click="search.latest">Latest Additions</pl>
+    <pl data-dele-click="search.random">Start Listening</pl>
+  </sidebar>
 
-<div id="playlist" data-el="playlist">
-  <div id="player">
-    <div id="songInfo"></div>
+  <results songlist>
+    <sectionhead></sectionhead>
 
-    <div id="musicPlayer">
-      <a href="#" class="pause" data-el="controls" id="controls">Play/Pause</a>
-      <div id="durationBar" data-el="duration">
-        <div id="progressBar" data-el="duration"></div>
-      </div>
-      <p id="time"></p>
-    </div>
-  </div>
+    <songlegends>
+      <albumart></albumart>
+      <name>Name</name>
+      <artist>Artist</artist>
+      <album>Album</album>
+    </songlegends>
 
-  <a href="#" class="clear" data-el="clearPlaylist">Clear Playlist</a>
-  <a href="#" class="shuffle" data-el="shufflePlaylist">Shuffle</a>
-  <div id="playlistScroll"></div>
-</div>
+    <songs data-dele-scroll="paging.scrollEvt" data-dele-click="search.addSongToQueue"></songs>
 
+    <!-- <songs data-dele-scroll="paging.scrollEvt" data-dele-click="queue.prepareSong"></songs> -->
+  </results>
+
+
+  <queue hide songlist>
+    <sectionhead>You have 0 songs in your queue</sectionhead>
+
+    <songlegends>
+      <albumart></albumart>
+      <name>Name</name>
+      <artist>Artist</artist>
+      <album>Album</album>
+    </songlegends>
+
+    <songs data-dele-click="queue.prepareSong" data-dele-change="queue.counter"></songs>
+
+  </queue>
+
+</container>
+
+<footer>
+
+  <info>
+    <albumart></albumart>
+    <name></name>
+    <artistalbum></artistalbum>
+  </info>
+
+  <player>
+    <previous data-dele-click="controls.previous">Previous Track</previous>
+    <playpause pause data-dele-click="controls.playpause">Play/Pause</playpause>
+    <next data-dele-click="controls.next">Next Track</next>
+    <shuffle data-dele-click="controls.shuffle">Shuffle</shuffle>
+  </player>
+
+  <duration data-dele-click="controls.skip">
+    <elapsed data-dele-click="controls.skip">
+      <time></time>
+    </elapsed>
+  </duration>
+
+</footer>
+
+<script type="text/javascript" src="_libs/delegant.js"></script>
+<script type="text/javascript" src="_libs/sonic.js"></script>
 <script type="text/javascript" src="i/js/o2mdb.js"></script>
-<script type="text/javascript" src="i/js/classes/Jsonc.js"></script>
-<script type="text/javascript" src="i/js/classes/History.js"></script>
-<script type="text/javascript" src="i/js/classes/Pagination.js"></script>
-<script type="text/javascript" src="i/js/classes/Results.js"></script>
-<script type="text/javascript" src="i/js/classes/Omni.js"></script>
+<script type="text/javascript" src="i/js/classes/Errors.js"></script>
+<script type="text/javascript" src="i/js/classes/Json.js"></script>
+<script type="text/javascript" src="i/js/classes/Navigation.js"></script>
 <script type="text/javascript" src="i/js/classes/Search.js"></script>
-<script type="text/javascript" src="i/js/classes/Dropdown.js"></script>
-<script type="text/javascript" src="i/js/lib/soundManager.js"></script>
-<script type="text/javascript" src="i/js/setup.js"></script>
+<script type="text/javascript" src="i/js/classes/Queue.js"></script>
 <script type="text/javascript" src="i/js/classes/Song.js"></script>
-<script type="text/javascript" src="i/js/classes/Playlist.js"></script>
-<script type="text/javascript" src="i/js/classes/QueryParam.js"></script>
-<script type="text/javascript" src="i/js/classes/Events.js"></script>
+<script type="text/javascript" src="i/js/classes/Pagination.js"></script>
+<script type="text/javascript" src="i/js/lib/soundManager.js"></script>
+<script type="text/javascript" src="i/js/classes/Controls.js"></script>
+<script type="text/javascript" src="i/js/classes/Query.js"></script>
+<script type="text/javascript" src="i/js/classes/Cookie.js"></script>
+<script type="text/javascript" src="i/js/classes/Help.js"></script>
+<script type="text/javascript" src="i/js/setup.js"></script>
 </body>
 </html>

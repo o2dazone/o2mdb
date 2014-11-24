@@ -1,76 +1,59 @@
-(function(o2, d){
+(function(w,d, o2){
   'use strict';
 
-  var PaginationFactory = function() {
-    var page = 0, search, results = null;
+  var fn = o2.fn,
+      $$ = o2.$$,
+      $ = o2.$;
 
-    function pageAround() {
-      if (!results) { //adhoc define results and search instances
-        results = o2.Results.getInstance();
-        search = o2.Search.getInstance();
-      }
-      results.publishToResults(search.getLastQuery() + '/page/' + page);
+  fn.paging = (function(){
+
+    var page = 1,
+        pagingNum = 100;
+
+    // this is like fn.search.getSongs, except its a little different...maybe conslidate them somehow?
+    function getMoreSongs(query, callback) {
+      query = o2.searchUrl + query + '/page/' + (page + 1);
+
+      fn.json.get(query, function(r){
+        callback(r);
+        page++;
+      });
     }
 
-    function previousPage() {
-      if (page > 0) {
-        page--;
-        pageAround();
-      }
+    function loadMoreResults() {
+      console.log('loading more songs');
+      getMoreSongs(o2.currentQuery, function(r){
+        if (!r.length || r[0] === '') return; // dont load if no results come back (for results divisable by exactly 100)
+
+        //appends all results to result window
+        $('results songs').innerHTML += fn.search.buildResults(r);
+      });
     }
 
-    function nextPage() {
-      page++;
-      pageAround();
+    var scrollTimer,
+        results = $('results songs');
+    function scrollEvt(el, e) {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function(){
+        if ((d.querySelectorAll('results songs song').length === pagingNum * page) && (results.scrollHeight - results.scrollTop - 500) < results.clientHeight) {
+          loadMoreResults();
+        }
+      },500);
     }
 
     function reset() {
-      page = 0;
-    }
-
-    var addAll, showPrev, showNext;
-    function paging(len) {
-      addAll = [],
-      showPrev = '',
-      showNext = '';
-
-      if (page > 0) showPrev = '<a class="prev" data-el="prevPage" href="#">Prev Page</a>';
-      if (len >= 100) showNext = '<a class="next" data-el="nextPage" href="#">Next Page</a>';
-
-      if (len > 0) {
-        addAll.push('<span><a href="#" class="addAll" data-el="addAllResults">Add all these results to your playlist</a>');
-
-        addAll.push(showPrev);
-        addAll.push(showNext);
-
-        addAll.push('</span>');
-      }
-
-      return addAll.join('');
+      page = 1;
     }
 
     return {
-      previousPage: previousPage,
-      nextPage: nextPage,
-      paging: paging,
+      scrollEvt: scrollEvt,
       reset: reset
     };
-  };
 
-  var instances = {};
+  }());
 
-  function getInstance(name) {
-    if (!instances[name]) {
-      instances[name] = new PaginationFactory(name);
-    }
+}(window, document, window.o2));
 
-    return instances[name];
-  }
-
-  o2.Pagination = {
-    getInstance: getInstance
-  };
-}(window.o2));
 
 
 

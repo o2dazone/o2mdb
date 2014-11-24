@@ -1,7 +1,7 @@
-(function(o2, d){
+(function(w,d, o2){
   'use strict';
 
-  var StorageFactory = function() {
+  o2.fn.storage = (function(){
 
     var data;
     function get(key, callback) {
@@ -22,19 +22,7 @@
       get: get,
       set: set
     };
-  };
 
-  var instances = {};
+  }());
 
-  function getInstance(name) {
-    if (!instances[name]) {
-      instances[name] = new StorageFactory(name);
-    }
-
-    return instances[name];
-  }
-
-  o2.Storage = {
-    getInstance: getInstance
-  };
-}(window.o2));
+}(window, document, window.o2));

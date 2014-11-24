@@ -7,51 +7,43 @@ $experimental-support-for-opera:        false !default
 $experimental-support-for-microsoft:    false !default
 $experimental-support-for-khtml:        false !default
 
-@include font-face('Droid Sans', font-files("DroidSans.ttf", truetype), 'DroidSans.ttf', normal)
-@include font-face('Droid Sans', font-files("DroidSans-Bold.ttf", truetype), 'DroidSansBold.ttf', bold)
+@mixin font-smoothing($value: antialiased)
+  @if $value == antialiased
+    -webkit-font-smoothing: antialiased
+    -moz-osx-font-smoothing: grayscale
+  @else
+    -webkit-font-smoothing: subpixel-antialiased
+    -moz-osx-font-smoothing: auto
 
-// $c- = color
-// $p- = property
-// $f- = font
-// $i- = image
 
-$c-darkbg:        #323232
-$c-white:         #fff
-$c-offwhite:      #efefef
-$c-grey:          #393939
-$c-dkgrey:        #171717
-$c-almostBlack:   #1a1a1a
-$c-pink:          #e60ed4
-$c-lightBlue:     #77ddff
-$c-semiBlack:     rgba(0, 0, 0, .7)
-$c-noBoxShadow:   none
+$color-wht:    #fff
+$color-blk:    #000
+$color-gauss:  #A9A9A9
+$color-kinsey: #33353A
+$color-newton: #232427
+$color-sagan:  #DCDCDC
+$color-leland: #9C9C9C
+$color-primary: #3179A1
+$color-highlight: rgba(255,255,255,.05)
 
-$p-shadow1: 0 0 2px $c-white
-$p-shadow2: inset 0 1px 2px $c-semiBlack
-$p-shadow3: inset 0 -1px 2px $c-semiBlack
-$p-shadow4: inset 1px 0 2px $c-semiBlack
-$p-shadow5: inset -1px 0 2px $c-semiBlack
+$font-sans: 'Roboto', Helvetica, Arial, sans-serif
+$font-serif: 'Georgia', serif
 
-$f-droidSans: 'Droid Sans', Helvetica, Arial, sans-serif
-$f-serif: 'Georgia', serif
 
-$i-sprite: inline-image('sprite.png')
-$i-loading: inline-image('ajax.gif')
-$i-albumOpacity: inline-image('opacity.png')
+/* images */
+.sprite
+  background-image: inline-image('sprite.png') !important
 
-@mixin anchorNormal
-  color: $c-grey
-  text-decoration: none
-  font-size: 12px
-  padding: 6px 25px 6px 15px
-  display: block
-  white-space: nowrap
-  text-overflow: ellipsis
+.cover
+  background-image: inline-image('cover.png')
+
+.prop
+  background-repeat: no-repeat
+  text-indent: -999em
   overflow: hidden
 
-@mixin anchorHover
-  background: #d9d9d9 right -143px no-repeat
-  text-indent: 0 !important
+.spriteProperties
+  @extend .sprite
+  @extend .prop
 
-@mixin slightShadow
-  @include box-shadow(0 1px 7px $c-semiBlack)
+

@@ -1,5 +1,8 @@
-(function(sm){
+(function(sm, o2){
   'use strict';
+
+  var $ = o2.$,
+      fn = o2.fn;
 
   sm.useHTML5Audio = 1;
   sm.preferFlash = 0;
@@ -12,11 +15,51 @@
       autoPlay: 0,
       volume:100,
       onload: function() {
-        o2.Song.getInstance().onLoading();
+        fn.song.onLoading();
       },
       onfinish: function(){
-        o2.Song.getInstance().onFinish();
+        fn.song.onFinish();
       }
     });
   });
-})(window.soundManager);
+
+  delegant.bind('body', ['click','scroll','contextmenu']);
+
+  /* navigation */
+  delegant.register('nav.showResults', fn.navigation.showResults);
+  delegant.register('nav.showQueue', fn.navigation.showQueue);
+  delegant.register('nav.showPlaylist', fn.navigation.showPlaylist);
+
+  /* song controls */
+  delegant.register('controls.previous', fn.controls.previous);
+  delegant.register('controls.playpause', fn.controls.playpause);
+  delegant.register('controls.next', fn.controls.next);
+  delegant.register('controls.shuffle', fn.controls.shuffle);
+  delegant.register('controls.skip', fn.controls.skip);
+
+  /* song results */
+  delegant.register('search.addSongToQueue', fn.search.addSongToQueue);
+  delegant.register('paging.scrollEvt', fn.paging.scrollEvt);
+  delegant.register('search.addAll', fn.search.addAll);
+  delegant.register('search.context', fn.search.context);
+  delegant.register('search.latest', fn.search.latest);
+  delegant.register('search.random', fn.search.random);
+
+  /* song queue */
+  delegant.register('queue.prepareSong', fn.queue.prepareSong);
+
+  /* help and errors */
+  delegant.register('help.close', fn.help.close);
+  delegant.register('errors.close', fn.errors.close);
+
+  /* searching, can't use delegant for this yet...make delegant better */
+  $('input').addEventListener('keydown', function(e){
+    o2.fn.search.search(e);
+  });
+
+  /* bind hotkeys */
+  $('body').addEventListener('keydown',function(e){
+    fn.controls.hotkeys(e);
+  });
+
+})(window.soundManager, window.o2);
