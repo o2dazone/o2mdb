@@ -38,7 +38,7 @@
     });
 
     function search(e) {
-      if (e.keyCode == 13) {
+      if (e.keyCode === 13) {
         e.preventDefault();
         displayResults(e.target.value);
       }

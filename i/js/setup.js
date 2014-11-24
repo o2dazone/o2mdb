@@ -23,7 +23,7 @@
     });
   });
 
-  delegant.bind('body', ['click','scroll','contextmenu']);
+  delegant.bind('body', ['click','scroll']);
 
   /* navigation */
   delegant.register('nav.showResults', fn.navigation.showResults);
