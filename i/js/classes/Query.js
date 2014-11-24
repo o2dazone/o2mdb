@@ -3,6 +3,7 @@
 
 
   var fn = o2.fn,
+      _ = o2._,
       $ = o2.$;
 
   fn.query = (function(){
@@ -42,9 +43,15 @@
       return unescape(getQueryString('p')) || '';
     }
 
+    var auto;
     function search() {
+      auto = !!getQueryString('a');
       $('input').value = getSearchQuery();
       fn.search.displayResults($('input').value);
+
+      setTimeout(function(){
+        if (auto) fn.queue.prepareSong(_('results song'));
+      },1000);
     }
 
     function play() {
