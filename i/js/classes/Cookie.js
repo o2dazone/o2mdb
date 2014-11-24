@@ -14,7 +14,9 @@
     }
 
     function set(key, value) {
-      document.cookie = key + '=' + value;
+      var cookieDate = new Date;
+      cookieDate.setFullYear(cookieDate.getFullYear( ) +10);
+      document.cookie = key + '=' + value +';expires='+ cookieDate +';path=/';
     }
 
     return {

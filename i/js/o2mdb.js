@@ -32,13 +32,6 @@
       return dom[el];
     }
 
-    function selectors(els) {
-      if (!dom[els])
-        dom[els] = document.querySelectorAll(els);
-
-      return dom[els];
-    }
-
     var searchUrl = 'http://o2dazone.com/music/search/',
         streamUrl = 'http://o2dazone.com/music/song/stream-url/';
 
@@ -48,7 +41,6 @@
 
     return {
       $: selector,
-      $$: selectors,
       searchUrl: searchUrl,
       streamUrl: streamUrl,
       _: querySelect,

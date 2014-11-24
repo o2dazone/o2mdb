@@ -3,7 +3,6 @@
 
   var $ = o2.$,
       _ = o2._,
-      $$ = o2.$$,
       fn = o2.fn;
 
   fn.queue = (function(){
@@ -12,7 +11,7 @@
 
     function counter(num) {
       if (!count)
-        count = $$('queue songs song').length;
+        count = d.querySelectorAll('queue songs song').length;
       else {
         if (!num)
           count++;
