@@ -7,25 +7,20 @@
 
   fn.errors = (function(){
 
-    var errBox, errContent;
-    function showError(err) {
-      if (_('error')) _('error').remove();
-      errContent = [];
-      errBox = document.createElement('error');
-      errBox.dataset.deleClick = 'errors.close';
-      errContent.push(
-        '<errMsg>', err[0], '</errMsg>',
-        '<linefile>Line ', err[2], ' : ', err[1], '</linefile>'
-      );
+    var errs;
+    function sendError(err) {
+      errs = {
+        'error': err[0],
+        'file': err[1],
+        'line': err[2]
+      };
 
-      errBox.innerHTML = errContent.join('');
-      $('body').appendChild(errBox);
+      fn.json.post('/errors', JSON.stringify(errs));
     }
 
     function init() {
-      console.error = function(){};
       window.onerror = function() {
-        showError(arguments);
+        sendError(arguments);
         return true;
       };
     }

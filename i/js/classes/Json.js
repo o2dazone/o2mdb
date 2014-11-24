@@ -29,10 +29,21 @@
       ajax.send();
     }
 
+    function post(url, data, callback) {
+      var r = new XMLHttpRequest();
+      r.open("POST", url, true);
+      r.onreadystatechange = function () {
+        if (r.readyState != 4 || r.status != 200) return;
+        console.log(r.responseText);
+      };
+      r.send(data);
+    }
+
     return {
       toStr: toStr,
       toObj: toObj,
-      get: get
+      get: get,
+      post: post
     };
 
   }());
