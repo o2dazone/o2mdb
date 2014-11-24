@@ -66,9 +66,10 @@
     }
 
 
-    var resultsItems, i, len, song, data, link;
-    function buildResults(songs) {
-      resultsItems = '';
+    var resultsItems, i, len, song, data, link, indSong;
+    function buildResults(songs, reverse) {
+      resultsItems = [];
+
       for (i = 0, len = songs.length; i<len; i++) {
         song = songs[i],
         link = [],
@@ -85,16 +86,18 @@
         link.push('<artist>',song.artist, '</artist>');
         link.push('<album>',song.album || '', '</album>');
 
-        resultsItems += '<song data-songdata="' + fn.json.toStr(data) + '">' + link.join('') + '</song>';
+        indSong = '<song data-songdata="' + fn.json.toStr(data) + '">' + link.join('') + '</song>';
+
+        reverse ? resultsItems.unshift(indSong) : resultsItems.push(indSong);
       }
 
-      return resultsItems;
+      return resultsItems.join('');
     }
 
 
     var rLen, searchHead = [];
 
-    function resultCount() {
+    function resultCount(query) {
       searchHead = [];
 
       searchHead.push(
@@ -102,7 +105,7 @@
         (rLen >= 100) ? '+' : '',
         ' result',
         (rLen === 1) ? '' : 's',
-        ' for <term> ', $('input').value, '</term>'
+        ' for <term> ', query || $('input').value, '</term>'
       );
 
       searchHead.push('<addall data-dele-click="search.addAll">Add all results to queue</addall>');
@@ -112,7 +115,7 @@
     }
 
     var searchQuery, songIdQuery, tmpDecode;
-    function displayResults(query) {
+    function displayResults(query, reverse) {
       fn.navigation.showResults();
 
       loader.play();
@@ -121,14 +124,14 @@
 
       getSongs(query, function(r){
         rLen = r.length;
-        resultCount();
+        resultCount(query);
         if (!rLen || r[0] === '') {
           $('results songs').innerHTML = '<span>No results found.</span>';
           return;
         }
 
         //appends all results to result window
-        addResults(buildResults(songs));
+        addResults(buildResults(songs, reverse));
 
         searchQuery = '?s=' + query;
         if ((songIdQuery = fn.query.getSongIdQuery()))
@@ -158,20 +161,7 @@
     var songTar;
     function addSongToQueue(el, e) {
       songTar = e.target;
-
       resultClick(e, songTar);
-
-      // if (songTar.tagName === 'ALBUMART') {
-      //   fn.queue.prepareSong(el, e);
-      //   return;
-      // } else if (songTar.tagName !== 'SONG')
-      //   songTar = songTar.parentNode; // jump up one if its not the element youre looking for
-
-      // $('queue songs').innerHTML += songTar.outerHTML;
-      // fn.queue.counter(1);
-
-      // glow(songTar);
-      // glow($('sidebar [queue]'));
     }
 
     var resultQuery;
@@ -204,7 +194,7 @@
 
     var allCount, allSongs;
     function addAll(el) {
-      $('queue songs').innerHTML += resultsItems;
+      $('queue songs').innerHTML += resultsItems.join('');
       glow(el);
       glow($('sidebar [queue]'));
       allCount = d.querySelectorAll('results songs song').length;
@@ -214,7 +204,7 @@
     var date = new Date(),
         lookBack = 31536000000; //year
     function latest() {
-      displayResults('creationDate:[' + (date-lookBack) + ' ' + date*1 + ']');
+      displayResults('creationDate:[' + (date-lookBack) + ' ' + date*1 + ']', true);
     }
 
     function random() {
