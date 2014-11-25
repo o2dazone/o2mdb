@@ -7,18 +7,6 @@
 
   fn.controls = (function(){
 
-    var playPrevious;
-    function previous() {
-      if (isShuffled()) {
-        playPrevious = pickShuffled();
-      } else {
-        playPrevious = currentPane().querySelector('song[playing]').previousSibling === null ? currentPane().querySelector('song') : currentPane().querySelector('song[playing]').previousSibling;
-      }
-
-      fn.queue.prepareSong(playPrevious);
-      w.location = '#play';
-    }
-
     function hotkeys(e) {
       switch (e.keyCode) {
       case 32:
@@ -39,13 +27,12 @@
     }
 
     // clean this up...
-    var status;
     function playpause(el,e) {
       if (e.target.tagName === 'INPUT') return; // dont do anything if input is focused
 
       if(e.type === 'keydown') e.preventDefault(); // if its a keydown (and not a click), keep page from scrolling by hitting spacebar
 
-      o2._('playpause[pause]') ? play() : pause();
+      _('playpause[pause]') ? play() : pause();
     }
 
     function play() {
@@ -64,16 +51,21 @@
       return trackList[Math.floor(Math.random() * trackList.length)];
     }
 
-    var isPlaying, playNext;
-    function next() {
-      if (isShuffled()) {
-        playNext = pickShuffled();
-      } else {
-        playNext = (!_('[playing]') || _('[playing]').nextSibling === null) ? currentPane().querySelector('song') : _('[playing]').nextSibling;
-      }
+    var song;
+    function previous() {
+      song = currentPane().querySelector('song[playing]').previousSibling === null ? currentPane().querySelector('song') : currentPane().querySelector('song[playing]').previousSibling;
+      prevNext(song);
+    }
 
-      fn.queue.prepareSong(playNext);
-      w.location = '#play';
+    function next() {
+      song = (!_('[playing]') || _('[playing]').nextSibling === null) ? currentPane().querySelector('song') : _('[playing]').nextSibling;
+      prevNext(song);
+    }
+
+    function prevNext(song) {
+      song = isShuffled() ? pickShuffled() : song;
+      fn.queue.prepareSong(song);
+      song.scrollIntoView(true);
     }
 
     function shuffle(el) {

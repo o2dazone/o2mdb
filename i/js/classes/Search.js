@@ -60,7 +60,7 @@
     function albumArt(url) {
       if (url) {
         url = url.replace('https:https','https'); //this is for something weird in the data...remove when getting proper album art
-        return '<albumart style="background-image:url(\'' + url + '\');"></albumart>'
+        return '<albumart style="background-image:url(\'' + url + '=w120-c-h120-e100\');"></albumart>'
       }
       return '<albumart></albumart>'
     }
@@ -83,8 +83,8 @@
 
         link.push(albumArt(song.albumArtUrl));
         link.push('<name>', song.title, '</name>');
-        link.push('<artist>',song.artist, '</artist>');
-        link.push('<album>',song.album || '', '</album>');
+        link.push('<artist>', song.artist, '</artist>');
+        link.push('<album>', song.album || '', '</album>');
 
         indSong = '<song data-songdata="' + fn.json.toStr(data) + '">' + link.join('') + '</song>';
 
@@ -95,7 +95,7 @@
     }
 
 
-    var rLen, searchHead = [];
+    var rLen, searchHead;
 
     function resultCount(query) {
       searchHead = [];
@@ -126,7 +126,7 @@
         rLen = r.length;
         resultCount(query);
         if (!rLen || r[0] === '') {
-          $('results songs').innerHTML = '<span>No results found.</span>';
+          $('results songs').innerHTML = '<noresults>No results found.</noresults>';
           return;
         }
 

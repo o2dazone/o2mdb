@@ -67,13 +67,6 @@ songlegends, song, sectionhead
 
 
 
-
-
-
-
-
-
-
 /* styling */
 html
   background: #141517
@@ -91,11 +84,16 @@ header
   min-height: $header-height
   padding-right: 20px
   h1
-    @extend .spriteProperties
-    background-size: 100%
-    min-width: 131px
     margin-right: 10px
+    min-width: 131px
+  a
+    @extend .spriteProperties
+    display: block
+    background-size: 100%
+    width: 100%
+    background-position: 7px 0
     min-height: $header-height
+
   form
     width: 100%
 
@@ -147,6 +145,11 @@ $song-height: 34px
     width: 20%
   album
     width: 35%
+  noresults
+    width: 100%
+    font-size: 20px
+    font-weight: 300
+    padding: 10px 0 0 15px
 
 
 /* list of songs in search results and music queue */

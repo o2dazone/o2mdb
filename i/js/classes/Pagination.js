@@ -2,7 +2,6 @@
   'use strict';
 
   var fn = o2.fn,
-      $$ = o2.$$,
       $ = o2.$;
 
   fn.paging = (function(){
@@ -10,7 +9,6 @@
     var page = 1,
         pagingNum = 100;
 
-    // this is like fn.search.getSongs, except its a little different...maybe conslidate them somehow?
     function getMoreSongs(query, callback) {
       query = o2.searchUrl + query + '/page/' + (page + 1);
 
@@ -21,7 +19,6 @@
     }
 
     function loadMoreResults() {
-      console.log('loading more songs');
       getMoreSongs(o2.currentQuery, function(r){
         if (!r.length || r[0] === '') return; // dont load if no results come back (for results divisable by exactly 100)
 

@@ -30,13 +30,12 @@
     }
 
     function post(url, data, callback) {
-      var r = new XMLHttpRequest();
-      r.open("POST", url, true);
-      r.onreadystatechange = function () {
-        if (r.readyState != 4 || r.status != 200) return;
-        console.log(r.responseText);
+      var ajax = new XMLHttpRequest();
+      ajax.open("POST", url, true);
+      ajax.onreadystatechange = function () {
+        if (ajax.readyState != 4 || ajax.status != 200) return;
       };
-      r.send(data);
+      ajax.send(data);
     }
 
     return {

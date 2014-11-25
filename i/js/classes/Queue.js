@@ -10,15 +10,8 @@
     var count = null;
 
     function counter(num) {
-      if (!count)
-        count = d.querySelectorAll('queue songs song').length;
-      else {
-        if (!num)
-          count++;
-        else
-          count += num;
-      }
-
+      if (!count) count = d.querySelectorAll('queue songs song').length;
+      else count += (!num) ? 1 : num;
       $('queue sectionhead').innerHTML = 'You have '+ count + ' songs in your queue.';
     }
 

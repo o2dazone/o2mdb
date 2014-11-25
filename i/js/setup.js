@@ -50,7 +50,6 @@
 
   /* help and errors */
   delegant.register('help.close', fn.help.close);
-  delegant.register('errors.close', fn.errors.close);
 
   /* searching, can't use delegant for this yet...make delegant better */
   $('input').addEventListener('keydown', function(e){

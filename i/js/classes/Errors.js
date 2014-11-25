@@ -1,9 +1,7 @@
 (function(w,d, o2){
   'use strict';
 
-  var fn = o2.fn,
-      _ = o2._,
-      $ = o2.$;
+  var fn = o2.fn;
 
   fn.errors = (function(){
 
@@ -25,17 +23,8 @@
       };
     }
 
-    function close(el) {
-      console.log(el);
-      el.remove();
-    }
 
     init();
-
-    return {
-      close: close
-    }
-
 
   }());
 
