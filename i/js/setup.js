@@ -44,6 +44,7 @@
   delegant.register('search.context', fn.search.context);
   delegant.register('search.latest', fn.search.latest);
   delegant.register('search.random', fn.search.random);
+  delegant.register('search.sort', fn.search.sort);
 
   /* song queue */
   delegant.register('queue.prepareSong', fn.queue.prepareSong);

@@ -40,6 +40,7 @@
     function search(e) {
       if (e.keyCode === 13) {
         e.preventDefault();
+        o2.sort = null;
         displayResults(e.target.value);
       }
     }
@@ -50,7 +51,7 @@
       // query = (window.host) ? o2.searchUrl + query : 'testobj.json';
       query = o2.searchUrl + query;
 
-      fn.json.get(query, function(r){
+      fn.json.get(query + '/sort/' + (o2.sort || o2.defaultSort), function(r){
         songs = r;
         callback(r);
       }, function(){
@@ -118,14 +119,14 @@
     }
 
     var searchQuery, songIdQuery, tmpDecode;
-    function displayResults(query, sorting) {
+    function displayResults(query) {
       fn.navigation.showResults();
 
       loader.play();
       $('results sectionhead').innerHTML = '';
       $('results sectionhead').appendChild(loader.canvas);
 
-      getSongs(query + (sorting || '/sort/creationDate/desc'), function(r){
+      getSongs(query, function(r){
         rLen = r.length;
         resultCount(query);
         if (!rLen || r[0] === '') {
@@ -195,6 +196,12 @@
       }
     }
 
+
+    function sort(el, e) {
+      o2.sort = el.tagName.toLowerCase() + '/desc';
+      displayResults($('input').value);
+    }
+
     var allCount, allSongs;
     function addAll(el) {
       $('queue songs').innerHTML += resultsItems.join('');
@@ -207,6 +214,7 @@
     var date = new Date(),
         lookBack = 31536000000; //year
     function latest() {
+      o2.sort = null;
       displayResults('creationDate:[' + (date-lookBack) + ' ' + date*1 + ']');
     }
 
@@ -217,6 +225,7 @@
     return {
       search: search,
       getSongs: getSongs,
+      sort: sort,
       albumArt: albumArt,
       buildResults: buildResults,
       displayResults: displayResults,

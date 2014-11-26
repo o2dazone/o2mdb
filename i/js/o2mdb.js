@@ -34,7 +34,8 @@
     }
 
     var searchUrl = 'http://o2dazone.com/music/search/',
-        streamUrl = 'http://o2dazone.com/music/song/stream-url/';
+        streamUrl = 'http://o2dazone.com/music/song/stream-url/',
+        defaultSort = 'creationDate/desc'
 
     function querySelect(selector) {
       return document.querySelector(selector);
@@ -44,6 +45,7 @@
       $: selector,
       searchUrl: searchUrl,
       streamUrl: streamUrl,
+      defaultSort: defaultSort,
       _: querySelect,
       fn: fn
     };
