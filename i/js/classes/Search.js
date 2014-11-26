@@ -120,6 +120,7 @@
 
     var searchQuery, songIdQuery, tmpDecode;
     function displayResults(query) {
+      if (!query) return;
       fn.navigation.showResults();
 
       loader.play();
@@ -219,11 +220,10 @@
       fn.queue.counter(allCount);
     }
 
-    var date = new Date(),
-        lookBack = 31536000000; //year
+    var date = new Date()*1
     function latest() {
       o2.sort = null;
-      displayResults('creationDate:[' + (date-lookBack) + ' ' + date*1 + ']');
+      displayResults('creationDate:[1 ' + date + ']');
     }
 
     function random() {
