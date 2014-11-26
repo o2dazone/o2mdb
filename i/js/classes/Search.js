@@ -207,7 +207,7 @@
 
     function sort(el, e) {
       o2.sort = el.tagName.toLowerCase() + '/desc';
-      displayResults($('input').value);
+      displayResults(o2.currentQuery);
     }
 
     var allCount, allSongs;
