@@ -48,12 +48,15 @@
       o2.currentQuery = query; // sets the "current" query for pagination
 
       // query = (window.host) ? o2.searchUrl + query : 'testobj.json';
-
       query = o2.searchUrl + query;
 
       fn.json.get(query, function(r){
         songs = r;
         callback(r);
+      }, function(){
+        loader.stop();
+        $('results sectionhead').innerHTML = 'Oh noez!!!!11111oneoneoneone';
+        $('results songs').innerHTML = '<noresults>There was an error with your query...try something else?</noresults>'
       });
     }
 
@@ -67,7 +70,7 @@
 
 
     var resultsItems, i, len, song, data, link, indSong;
-    function buildResults(songs, reverse) {
+    function buildResults(songs) {
       resultsItems = [];
 
       for (i = 0, len = songs.length; i<len; i++) {
@@ -88,7 +91,7 @@
 
         indSong = '<song data-songdata="' + fn.json.toStr(data) + '">' + link.join('') + '</song>';
 
-        reverse ? resultsItems.unshift(indSong) : resultsItems.push(indSong);
+        resultsItems.push(indSong);
       }
 
       return resultsItems.join('');
@@ -115,14 +118,14 @@
     }
 
     var searchQuery, songIdQuery, tmpDecode;
-    function displayResults(query, reverse) {
+    function displayResults(query, sorting) {
       fn.navigation.showResults();
 
       loader.play();
       $('results sectionhead').innerHTML = '';
       $('results sectionhead').appendChild(loader.canvas);
 
-      getSongs(query, function(r){
+      getSongs(query + (sorting || '/sort/creationDate/desc'), function(r){
         rLen = r.length;
         resultCount(query);
         if (!rLen || r[0] === '') {
@@ -131,7 +134,7 @@
         }
 
         //appends all results to result window
-        addResults(buildResults(songs, reverse));
+        addResults(buildResults(songs));
 
         searchQuery = '?s=' + query;
         if ((songIdQuery = fn.query.getSongIdQuery()))
@@ -204,7 +207,7 @@
     var date = new Date(),
         lookBack = 31536000000; //year
     function latest() {
-      displayResults('creationDate:[' + (date-lookBack) + ' ' + date*1 + ']', true);
+      displayResults('creationDate:[' + (date-lookBack) + ' ' + date*1 + ']');
     }
 
     function random() {

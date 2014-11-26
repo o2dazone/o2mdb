@@ -11,7 +11,7 @@
       return JSON.parse(decodeURI(arg));
     }
 
-    function get(url, callback){
+    function get(url, callback, onfail){
       var ajax = new XMLHttpRequest();
       ajax.onreadystatechange = function(){
         if(ajax.readyState === 4 && ajax.status !== 404){
@@ -22,6 +22,8 @@
           }
 
           callback(r);
+        } else {
+          onfail();
         }
       };
 
