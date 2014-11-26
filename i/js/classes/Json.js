@@ -14,16 +14,16 @@
     function get(url, callback, onfail){
       var ajax = new XMLHttpRequest();
       ajax.onreadystatechange = function(){
-        if(ajax.readyState === 4 && ajax.status !== 404){
-          var r = ajax.response;
-          // parse to json if "string" json
-          if (r.match(/^(\[|\{)/)) {
-            r = JSON.parse(r);
-          }
+        if(ajax.readyState === 4) {
+          if(ajax.status !== 404) {
+            var r = ajax.response;
+            // parse to json if "string" json
+            if (r.match(/^(\[|\{)/)) {
+              r = JSON.parse(r);
+            }
 
-          callback(r);
-        } else {
-          onfail();
+            callback(r);
+          } else onfail();
         }
       };
 
