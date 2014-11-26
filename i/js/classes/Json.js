@@ -15,7 +15,7 @@
       var ajax = new XMLHttpRequest();
       ajax.onreadystatechange = function(){
         if(ajax.readyState === 4) {
-          if(ajax.status !== 404) {
+          if(ajax.status < 400) { // lol ghetto 404 or 500 check
             var r = ajax.response;
             // parse to json if "string" json
             if (r.match(/^(\[|\{)/)) {
@@ -31,20 +31,10 @@
       ajax.send();
     }
 
-    function post(url, data, callback) {
-      var ajax = new XMLHttpRequest();
-      ajax.open("POST", url, true);
-      ajax.onreadystatechange = function () {
-        if (ajax.readyState != 4 || ajax.status != 200) return;
-      };
-      ajax.send(data);
-    }
-
     return {
       toStr: toStr,
       toObj: toObj,
-      get: get,
-      post: post
+      get: get
     };
 
   }());
