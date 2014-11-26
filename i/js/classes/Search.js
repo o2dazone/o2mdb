@@ -90,7 +90,7 @@
         link.push('<artist>', song.artist, '</artist>');
         link.push('<album>', song.album || '', '</album>');
 
-        indSong = '<song data-songdata="' + fn.json.toStr(data) + '">' + link.join('') + '</song>';
+        indSong = '<song id="' + song.id + '" data-songdata="' + fn.json.toStr(data) + '">' + link.join('') + '</song>';
 
         resultsItems.push(indSong);
       }
@@ -142,7 +142,15 @@
           songIdQuery = '&p=' + songIdQuery;
 
         fn.query.write(query, searchQuery + songIdQuery);
+        selectPlayingSong();
       });
+    }
+
+    var lastPlaying;
+    function selectPlayingSong() {
+      if (!!fn.query.getSongIdQuery()) {
+        if((lastPlaying = _('song[id="' + fn.query.getSongIdQuery() + '"]'))) lastPlaying.setAttribute('playing','');
+      }
     }
 
     function addResults(results) {

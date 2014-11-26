@@ -284,7 +284,7 @@ info
     white-space: nowrap
     text-overflow: ellipsis
   name
-    margin-top: $progress-bar-height
+    margin-top: 4px
     display: block
     font-size: 19px
     color: $color-sagan
@@ -297,7 +297,6 @@ player
   min-width: 240px
   white-space: nowrap
   overflow: hidden
-  padding-top: $progress-bar-height
   > *
     float: left
 
@@ -333,13 +332,13 @@ playpause
 duration, elapsed
   position: absolute
   right: 0
-  top: 0
   height: $progress-bar-height
   cursor: pointer
 
 duration
   background: #000
-  left: $info-album-height
+  left: 0
+  top: -$progress-bar-height
 
 elapsed
   background: $color-primary
