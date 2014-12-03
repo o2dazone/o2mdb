@@ -21,8 +21,6 @@
       fn.cookie.set('shownHelp',true);
     }
 
-    init();
-
     return {
       close: close
     }
