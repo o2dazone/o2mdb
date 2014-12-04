@@ -29,7 +29,7 @@
 
     function search() {
       $('input').value = fn.query.getSearchQuery();
-      fn.search.displayResults($('input').value, 'creationDate', true);
+      fn.search.displayResults($('input').value, true);
     }
 
     function play() {

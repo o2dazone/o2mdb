@@ -42,7 +42,7 @@
         e.preventDefault();
         e.target.blur();
         fn.query.write(e.target.value, e.target.value, 'creationDate');
-        displayResults(e.target.value, 'creationDate');
+        displayResults(e.target.value);
       }
     }
 
@@ -120,7 +120,7 @@
     }
 
     var tmpDecode;
-    function displayResults(query, sort, scrollToSong) {
+    function displayResults(query, scrollToSong) {
       if (!query) return;
       fn.navigation.showResults();
 
@@ -194,7 +194,7 @@
           resultQuery = 'artist:"' + el.firstChild.nodeValue + '"';
           $('input').value = resultQuery;
           fn.query.write(resultQuery, resultQuery, 'creationDate');
-          displayResults(resultQuery, 'creationDate');
+          displayResults(resultQuery);
         }
         break;
       case 'ALBUM':
@@ -202,7 +202,7 @@
           resultQuery = 'album:"' + el.firstChild.nodeValue + '"';
           $('input').value = resultQuery;
           fn.query.write(resultQuery, resultQuery, 'creationDate');
-          displayResults(resultQuery, 'creationDate');
+          displayResults(resultQuery);
         }
         break;
       default:
@@ -212,7 +212,7 @@
 
     function sort(el, e) {
       fn.query.write(resultQuery, null, el.tagName.toLowerCase(), null)
-      displayResults(o2.currentQuery, el.tagName.toLowerCase());
+      displayResults(o2.currentQuery);
     }
 
     var allCount, allSongs;
