@@ -155,6 +155,7 @@
 
     function addResults(results) {
       fn.paging.reset();
+      $('results songs').scrollTop = 0; //scroll to top of div
       $('results songs').innerHTML = results;
     }
 
