@@ -10,7 +10,7 @@
         pagingNum = 100;
 
     function getMoreSongs(query, callback) {
-      query = o2.searchUrl + query + '/page/' + (page + 1) + '/sort/' + (o2.sort || o2.defaultSort);
+      query = o2.searchUrl + query + '/page/' + (page + 1) + '/sort/' + fn.query.getSortQuery() + '/desc';
 
       fn.json.get(query, function(r){
         callback(r);

@@ -24,7 +24,7 @@
     }
 
 
-    var title, id, artist, album, albumArt, pub=[], searchQuery, songIdQuery;
+    var title, id, artist, album, albumArt, pub=[];
     function publishTrack(track) {
 
       pub      = [],
@@ -35,11 +35,7 @@
 
       document.title = track.artist + " - " + track.title;
 
-      if ((searchQuery = fn.query.getSearchQuery()))
-        searchQuery = '?s=' + searchQuery;
-      songIdQuery = '&p=' + track.id;
-
-      fn.query.write(track.id, searchQuery + songIdQuery);
+      fn.query.write(track.id, null, null, track.id);
 
       pub.push(
         fn.search.albumArt(track.albumArtUrl),
@@ -109,7 +105,7 @@
 
     function getById(id) {
       fn.json.get(o2.searchUrl + 'id:'+id, function(r){
-        fn.song.play(r[0]);
+        play(r[0]);
       });
     }
 

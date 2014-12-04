@@ -40,18 +40,20 @@
     function search(e) {
       if (e.keyCode === 13) {
         e.preventDefault();
-        o2.sort = null;
-        displayResults(e.target.value);
+        e.target.blur();
+        fn.query.write(e.target.value, e.target.value, 'creationDate');
+        displayResults(e.target.value, 'creationDate');
       }
     }
 
+    var sort;
     function getSongs(query, callback) {
       o2.currentQuery = query; // sets the "current" query for pagination
 
       // query = (window.host) ? o2.searchUrl + query : 'testobj.json';
       query = o2.searchUrl + query;
 
-      fn.json.get(query + '/sort/' + (o2.sort || o2.defaultSort), function(r){
+      fn.json.get(query + '/sort/' + fn.query.getSortQuery() + '/desc', function(r){
         songs = r;
         callback(r);
       }, function(){
@@ -98,7 +100,6 @@
       return resultsItems.join('');
     }
 
-
     var rLen, searchHead;
 
     function resultCount(query) {
@@ -118,8 +119,8 @@
       $('results sectionhead').innerHTML = searchHead.join('');
     }
 
-    var searchQuery, songIdQuery, tmpDecode;
-    function displayResults(query) {
+    var tmpDecode;
+    function displayResults(query, sort, scrollToSong) {
       if (!query) return;
       fn.navigation.showResults();
 
@@ -137,20 +138,18 @@
 
         //appends all results to result window
         addResults(buildResults(songs));
-
-        searchQuery = '?s=' + query;
-        if ((songIdQuery = fn.query.getSongIdQuery()))
-          songIdQuery = '&p=' + songIdQuery;
-
-        fn.query.write(query, searchQuery + songIdQuery);
-        selectPlayingSong();
+        selectPlayingSong(scrollToSong);
       });
     }
 
     var lastPlaying;
-    function selectPlayingSong() {
+    function selectPlayingSong(scrollToSong) {
       if (!!fn.query.getSongIdQuery()) {
-        if((lastPlaying = _('song[id="' + fn.query.getSongIdQuery() + '"]'))) lastPlaying.setAttribute('playing','');
+        if((lastPlaying = _('song[id="' + fn.query.getSongIdQuery() + '"]'))) {
+          lastPlaying.setAttribute('playing','');
+          if (scrollToSong)
+            lastPlaying.scrollIntoView(true);
+        }
       }
     }
 
@@ -191,24 +190,29 @@
         glow($('sidebar [queue]'));
         break;
       case 'ARTIST':
-        resultQuery = 'artist:"' + el.firstChild.nodeValue + '"';
-        $('input').value = resultQuery;
-        displayResults(resultQuery);
+        if (el.firstChild) {
+          resultQuery = 'artist:"' + el.firstChild.nodeValue + '"';
+          $('input').value = resultQuery;
+          fn.query.write(resultQuery, resultQuery, 'creationDate');
+          displayResults(resultQuery, 'creationDate');
+        }
         break;
       case 'ALBUM':
-        resultQuery = 'album:"' + el.firstChild.nodeValue + '"';
-        $('input').value = resultQuery;
-        displayResults(resultQuery);
+        if (el.firstChild) {
+          resultQuery = 'album:"' + el.firstChild.nodeValue + '"';
+          $('input').value = resultQuery;
+          fn.query.write(resultQuery, resultQuery, 'creationDate');
+          displayResults(resultQuery, 'creationDate');
+        }
         break;
       default:
         break;
       }
     }
 
-
     function sort(el, e) {
-      o2.sort = el.tagName.toLowerCase() + '/desc';
-      displayResults(o2.currentQuery);
+      fn.query.write(resultQuery, null, el.tagName.toLowerCase(), null)
+      displayResults(o2.currentQuery, el.tagName.toLowerCase());
     }
 
     var allCount, allSongs;
@@ -222,7 +226,7 @@
 
     var date = new Date()*1
     function latest() {
-      o2.sort = null;
+      fn.query.write(resultQuery, 'creationDate:[1 ' + date + ']', 'creationDate', null);
       displayResults('creationDate:[1 ' + date + ']');
     }
 
@@ -232,7 +236,6 @@
 
     return {
       search: search,
-      getSongs: getSongs,
       sort: sort,
       albumArt: albumArt,
       buildResults: buildResults,

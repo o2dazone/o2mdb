@@ -41,7 +41,6 @@
   delegant.register('search.addSongToQueue', fn.search.addSongToQueue);
   delegant.register('paging.scrollEvt', fn.paging.scrollEvt);
   delegant.register('search.addAll', fn.search.addAll);
-  delegant.register('search.context', fn.search.context);
   delegant.register('search.latest', fn.search.latest);
   delegant.register('search.random', fn.search.random);
   delegant.register('search.sort', fn.search.sort);
