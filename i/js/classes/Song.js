@@ -35,7 +35,7 @@
 
       document.title = track.artist + " - " + track.title;
 
-      fn.query.write(track.id, null, null, track.id);
+      fn.query.write({'songId': track.id});
 
       pub.push(
         fn.search.albumArt(track.albumArtUrl),

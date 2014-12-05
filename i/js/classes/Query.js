@@ -7,8 +7,8 @@
     //written by DextOr from stackoverflow.com [ http://stackoverflow.com/a/901144 ]
     function getQueryString(a){a=a.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");a=(new RegExp("[\\?&]"+a+"=([^&#]*)")).exec(location.search);return a===null?"":decodeURIComponent(a[1].replace(/\+/g," "));}
 
-    function pushHistoryState(name, param) {
-      wh.replaceState('searchResults', name, param);
+    function pushHistoryState(param) {
+      wh.replaceState('o2', 'o2', param);
     }
 
     function getSearchQuery() {
@@ -23,17 +23,17 @@
       return unescape(getQueryString('sort')) || 'creationDate';
     }
 
-    var q;
-    function write(historyName, searchQuery, sortQuery, songQuery) {
+    var q, search, sort, songId;
+    function write(obj) {
       q = '?';
-      if ((searchQuery = searchQuery || getSearchQuery()))
-        q += 's=' + searchQuery + '&';
-      if ((sortQuery = sortQuery || getSortQuery()))
-        q += 'sort=' + sortQuery + '&';
-      if ((songQuery = songQuery || getSongIdQuery()))
-        q += 'p=' + songQuery;
+      if ((search = obj.search || getSearchQuery()))
+        q += 's=' + search + '&';
+      if ((sort = obj.sort || getSortQuery()))
+        q += 'sort=' + sort;
+      if ((songId = obj.songId || getSongIdQuery()))
+        q += '&p=' + songId;
 
-      pushHistoryState(historyName, q);
+      pushHistoryState(q);
     }
 
     return {

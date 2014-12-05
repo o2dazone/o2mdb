@@ -41,8 +41,7 @@
       if (e.keyCode === 13) {
         e.preventDefault();
         e.target.blur();
-        fn.query.write(e.target.value, e.target.value, 'creationDate');
-        displayResults(e.target.value);
+        displayResults(e.target.value, {'search':e.target.value, 'sort':'creationDate'});
       }
     }
 
@@ -119,8 +118,8 @@
       $('results sectionhead').innerHTML = searchHead.join('');
     }
 
-    var tmpDecode;
-    function displayResults(query, scrollToSong) {
+    var lastPlaying, tmpDecode;
+    function displayResults(query, history, scroll) {
       if (!query) return;
       fn.navigation.showResults();
 
@@ -138,19 +137,19 @@
 
         //appends all results to result window
         addResults(buildResults(songs));
-        selectPlayingSong(scrollToSong);
-      });
-    }
 
-    var lastPlaying;
-    function selectPlayingSong(scrollToSong) {
-      if (!!fn.query.getSongIdQuery()) {
-        if((lastPlaying = _('song[id="' + fn.query.getSongIdQuery() + '"]'))) {
-          lastPlaying.setAttribute('playing','');
-          if (scrollToSong)
-            lastPlaying.scrollIntoView(true);
+        // write query param history
+        fn.query.write(history);
+
+        // selects currently playing song
+        if (!!fn.query.getSongIdQuery()) {
+          if((lastPlaying = _('song[id="' + fn.query.getSongIdQuery() + '"]'))) {
+            lastPlaying.setAttribute('playing','');
+            if (scroll)
+              lastPlaying.scrollIntoView(1);
+          }
         }
-      }
+      });
     }
 
     function addResults(results) {
@@ -194,16 +193,14 @@
         if (el.firstChild) {
           resultQuery = 'artist:"' + el.firstChild.nodeValue + '"';
           $('input').value = resultQuery;
-          fn.query.write(resultQuery, resultQuery, 'creationDate');
-          displayResults(resultQuery);
+          displayResults(resultQuery, {'search':resultQuery, 'sort':'creationDate'});
         }
         break;
       case 'ALBUM':
         if (el.firstChild) {
           resultQuery = 'album:"' + el.firstChild.nodeValue + '"';
           $('input').value = resultQuery;
-          fn.query.write(resultQuery, resultQuery, 'creationDate');
-          displayResults(resultQuery);
+          displayResults(resultQuery, {'search':resultQuery, 'sort':'creationDate'});
         }
         break;
       default:
@@ -212,8 +209,7 @@
     }
 
     function sort(el, e) {
-      fn.query.write(resultQuery, null, el.tagName.toLowerCase(), null)
-      displayResults(o2.currentQuery);
+      displayResults(o2.currentQuery, {'sort': el.tagName.toLowerCase()});
     }
 
     var allCount, allSongs;
@@ -225,10 +221,10 @@
       fn.queue.counter(allCount);
     }
 
-    var date = new Date()*1
+    var date = new Date()*2;
     function latest() {
-      fn.query.write(resultQuery, 'creationDate:[1 ' + date + ']', 'creationDate', null);
-      displayResults('creationDate:[1 ' + date + ']');
+      date = 'creationDate:[1 ' + date + ']';
+      displayResults(date, {'search': date, 'sort': 'creationDate'});
     }
 
     function random() {
