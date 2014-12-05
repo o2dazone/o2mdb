@@ -10,7 +10,7 @@
     function hotkeys(e) {
       switch (e.keyCode) {
       case 32:
-        fn.controls.playpause($('playpause'),e);
+        playpause($('playpause'),e);
         break;
       default:
         break;

@@ -7,10 +7,6 @@
     //written by DextOr from stackoverflow.com [ http://stackoverflow.com/a/901144 ]
     function getQueryString(a){a=a.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");a=(new RegExp("[\\?&]"+a+"=([^&#]*)")).exec(location.search);return a===null?"":decodeURIComponent(a[1].replace(/\+/g," "));}
 
-    function pushHistoryState(param) {
-      wh.replaceState('o2', 'o2', param);
-    }
-
     function getSearchQuery() {
       return unescape(getQueryString('s')) || '';
     }
@@ -33,7 +29,7 @@
       if ((songId = obj.songId || getSongIdQuery()))
         q += '&p=' + songId;
 
-      pushHistoryState(q);
+      wh.replaceState('o2', 'o2', q);
     }
 
     return {
