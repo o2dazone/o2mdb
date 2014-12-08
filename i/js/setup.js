@@ -48,9 +48,6 @@
   /* song queue */
   delegant.register('queue.prepareSong', fn.queue.prepareSong);
 
-  /* help and errors */
-  delegant.register('help.close', fn.help.close);
-
   /* searching, can't use delegant for this yet...make delegant better */
   $('input').addEventListener('keydown', function(e){
     o2.fn.search.search(e);

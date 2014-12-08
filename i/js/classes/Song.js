@@ -84,7 +84,7 @@
       if (streamUrl) {
         injectSongObj(streamUrl + '&begin=' + microJump);
       } else {
-        getStreamUrl(o2.streamUrl + track.id, function(r) {
+        getStreamUrl(o2.streamUrl + fn.query.getSongIdQuery(), function(r) {
           injectSongObj(r + '&begin=' + microJump);
         });
       }

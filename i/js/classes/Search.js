@@ -221,9 +221,8 @@
       fn.queue.counter(allCount);
     }
 
-    var date = new Date()*2;
+    var date = 'creationDate:[1 ' + (new Date()*2) + ']';
     function latest() {
-      date = 'creationDate:[1 ' + date + ']';
       displayResults(date, {'search': date, 'sort': 'creationDate'});
     }
 
