@@ -124,7 +124,8 @@
         t = smSong.position + microJump;
         $('elapsed').style.width = (t/songDuration*100).toFixed(2) + '%';
 
-        t = t/1000;
+        // courtesy of @EighthJouster http://jsperf.com/mult-versus-div
+        t = t * .001;
         hr =  t / 3600>>0;
         t = t % 3600;
         min = t / 60>>0;
