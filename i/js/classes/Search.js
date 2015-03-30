@@ -1,249 +1,225 @@
-(function(w,d, o2){
-  'use strict';
+var o2 = require('../o2mdb.js'),
+    page = o2.page,
+    json = require('./Json.js'),
+    songModule = require('./Song.js'),
+    queue = require('./Queue.js'),
+    query = require('./Query.js'),
+    navigation = require('./Navigation.js'),
+    $ = o2.$,
+    _ = o2._,
+    date = ('creationDate:[1 ' + (new Date()*2) + ']'),
+    songs, sort, resultsItems, i, len, song, data, link, indSong, rLen, allCount, allSongs, resultQuery, songTar, searchHead, lastPlaying, tmpDecode;
 
-  var $ = o2.$,
-      _ = o2._,
-      fn = o2.fn;
+var loader = new Sonic({
+    width: 50,
+    height: 20,
+    padding: 10,
+    stepsPerFrame: 1,
+    trailLength: .8,
+    pointDistance: .02,
+    fps: 240,
+    strokeColor: '#3179A1',
+    step: 'fader',
+    multiplier: 1,
 
-  fn.search = (function(){
+    setup: function() {
+      this._.lineWidth = 2;
+    },
 
-    var songs;
+    path: [
+      ['arc', 10, 10, 10, -270, -90],
+      ['bezier', 10, 0, 40, 20, 20, 0, 30, 20],
+      ['arc', 40, 10, 10, 90, -90],
+      ['bezier', 40, 0, 10, 20, 30, 0, 20, 20]
+    ]
+});
 
-    /* sonic loader */
-    var loader = new Sonic({
-        width: 50,
-        height: 20,
-        padding: 10,
+function addResults(results) {
+  page = 1;
+  $('results songs').scrollTop = 0; //scroll to top of div
+  $('results songs').innerHTML = results;
+}
 
-        stepsPerFrame: 1,
-        trailLength: .8,
-        pointDistance: .02,
-        fps: 240,
-        strokeColor: '#3179A1',
+function displayResults(queryString, history, scroll) {
+  var self = this;
+  if (!queryString) return;
+  navigation.showResults();
 
-        step: 'fader',
+  loader.play();
+  $('results sectionhead').innerHTML = '';
+  $('results sectionhead').appendChild(loader.canvas);
 
-        multiplier: 1,
+  getSongs(queryString, function(r){
+    rLen = r.length;
+    resultCount(queryString);
+    if (!rLen || r[0] === '') {
+      $('results songs').innerHTML = '<noresults>No results found.</noresults>';
+      return;
+    }
 
-        setup: function() {
-          this._.lineWidth = 2;
-        },
+    //appends all results to result window
+    addResults(buildResults(songs));
 
-        path: [
-          ['arc', 10, 10, 10, -270, -90],
-          ['bezier', 10, 0, 40, 20, 20, 0, 30, 20],
-          ['arc', 40, 10, 10, 90, -90],
-          ['bezier', 40, 0, 10, 20, 30, 0, 20, 20]
-        ]
-    });
+    // write query param history
+    query.write(history);
 
-    function search(e) {
-      if (e.keyCode === 13) {
-        e.preventDefault();
-        e.target.blur();
-        displayResults(e.target.value, {'search':e.target.value, 'sort':'creationDate'});
+    // selects currently playing song
+    if (!!query.getSongIdQuery()) {
+      if((lastPlaying = _('song[id="' + query.getSongIdQuery() + '"]'))) {
+        lastPlaying.setAttribute('playing','');
+        if (scroll)
+          lastPlaying.scrollIntoView(1);
       }
     }
+  });
+}
 
-    var sort;
-    function getSongs(query, callback) {
-      o2.currentQuery = query; // sets the "current" query for pagination
+function glow(el) {
+  el.setAttribute('glow','');
+  el.setAttribute('fade','');
+  setTimeout(function(){
+    el.removeAttribute('glow');
 
-      // query = (window.host) ? o2.searchUrl + query : 'testobj.json';
-      query = o2.searchUrl + query;
+    setTimeout(function(){
+      el.removeAttribute('fade')
+    },350); // set this variable to css transition
+  },225); // how long it should stay blue
+}
 
-      fn.json.get(query + '/sort/' + fn.query.getSortQuery() + '/desc', function(r){
-        songs = r;
-        callback(r);
-      }, function(){
-        loader.stop();
-        $('results sectionhead').innerHTML = 'Oh noez!!!!11111oneoneoneone';
-        $('results songs').innerHTML = '<noresults>There was an error with your query...try something else?</noresults>'
-      });
+function resultClick(e, el) {
+  switch (el.tagName) {
+  case 'ALBUMART':
+    songModule.prepare(el, e);
+    break;
+  case 'NAME':
+    songTar = songTar.parentNode;
+    $('queue songs').innerHTML += songTar.outerHTML;
+    queue.counter(1);
+    glow(songTar);
+    glow($('sidebar [queue]'));
+    break;
+  case 'ARTIST':
+    if (el.firstChild) {
+      resultQuery = 'artist:"' + el.firstChild.nodeValue + '"';
+      $('input').value = resultQuery;
+      displayResults(resultQuery, {'search':resultQuery, 'sort':'creationDate'});
     }
-
-    function albumArt(url) {
-      if (url) {
-        url = url.replace('https:https','https'); //this is for something weird in the data...remove when getting proper album art
-        return '<albumart style="background-image:url(\'' + url + '=w120-c-h120-e100\');"></albumart>'
-      }
-      return '<albumart></albumart>'
+    break;
+  case 'ALBUM':
+    if (el.firstChild) {
+      resultQuery = 'album:"' + el.firstChild.nodeValue + '"';
+      $('input').value = resultQuery;
+      displayResults(resultQuery, {'search':resultQuery, 'sort':'creationDate'});
     }
+    break;
+  default:
+    break;
+  }
+}
 
+function getSongs(queryString, callback) {
+  o2.currentQuery = queryString; // sets the "current" query for pagination
 
-    var resultsItems, i, len, song, data, link, indSong;
-    function buildResults(songs) {
-      resultsItems = [];
+  // query = (window.host) ? o2.searchUrl + query : 'testobj.json';
+  queryString = o2.searchUrl + queryString;
 
-      for (i = 0, len = songs.length; i<len; i++) {
-        song = songs[i],
-        link = [],
-        data = {
-          album:        song.album,
-          title:        song.title,
-          artist:       song.artist,
-          id:           song.id,
-          albumArtUrl:  song.albumArtUrl
-        };
+  json.get(queryString + '/sort/' + query.getSortQuery() + '/desc', function(r){
+    songs = r;
+    callback(r);
+  }, function(){
+    loader.stop();
+    $('results sectionhead').innerHTML = 'Oh noez!!!!11111oneoneoneone';
+    $('results songs').innerHTML = '<noresults>There was an error with your query...try something else?</noresults>'
+  });
+}
 
-        link.push(albumArt(song.albumArtUrl));
-        link.push('<name>', song.title, '</name>');
-        link.push('<artist>', song.artist, '</artist>');
-        link.push('<album>', song.album || '', '</album>');
+function resultCount(query) {
+  searchHead = [];
 
-        indSong = '<song id="' + song.id + '" data-songdata="' + fn.json.toStr(data) + '">' + link.join('') + '</song>';
+  searchHead.push(
+    'Found ', rLen,
+    (rLen >= 100) ? '+' : '',
+    ' result',
+    (rLen === 1) ? '' : 's',
+    ' for <term> ', query || $('input').value, '</term>'
+  );
 
-        resultsItems.push(indSong);
-      }
+  searchHead.push('<addall data-dele-click="search.addAll">Add all results to queue</addall>');
 
-      return resultsItems.join('');
-    }
+  loader.stop();
+  $('results sectionhead').innerHTML = searchHead.join('');
+}
 
-    var rLen, searchHead;
+function buildResults(songs) {
+  resultsItems = [];
 
-    function resultCount(query) {
-      searchHead = [];
-
-      searchHead.push(
-        'Found ', rLen,
-        (rLen >= 100) ? '+' : '',
-        ' result',
-        (rLen === 1) ? '' : 's',
-        ' for <term> ', query || $('input').value, '</term>'
-      );
-
-      searchHead.push('<addall data-dele-click="search.addAll">Add all results to queue</addall>');
-
-      loader.stop();
-      $('results sectionhead').innerHTML = searchHead.join('');
-    }
-
-    var lastPlaying, tmpDecode;
-    function displayResults(query, history, scroll) {
-      if (!query) return;
-      fn.navigation.showResults();
-
-      loader.play();
-      $('results sectionhead').innerHTML = '';
-      $('results sectionhead').appendChild(loader.canvas);
-
-      getSongs(query, function(r){
-        rLen = r.length;
-        resultCount(query);
-        if (!rLen || r[0] === '') {
-          $('results songs').innerHTML = '<noresults>No results found.</noresults>';
-          return;
-        }
-
-        //appends all results to result window
-        addResults(buildResults(songs));
-
-        // write query param history
-        fn.query.write(history);
-
-        // selects currently playing song
-        if (!!fn.query.getSongIdQuery()) {
-          if((lastPlaying = _('song[id="' + fn.query.getSongIdQuery() + '"]'))) {
-            lastPlaying.setAttribute('playing','');
-            if (scroll)
-              lastPlaying.scrollIntoView(1);
-          }
-        }
-      });
-    }
-
-    function addResults(results) {
-      fn.paging.reset();
-      $('results songs').scrollTop = 0; //scroll to top of div
-      $('results songs').innerHTML = results;
-    }
-
-    function glow(el) {
-      el.setAttribute('glow','');
-      el.setAttribute('fade','');
-      setTimeout(function(){
-        el.removeAttribute('glow');
-
-        setTimeout(function(){
-          el.removeAttribute('fade')
-        },350); // set this variable to css transition
-      },225); // how long it should stay blue
-    }
-
-    var songTar;
-    function addSongToQueue(el, e) {
-      songTar = e.target;
-      resultClick(e, songTar);
-    }
-
-    var resultQuery;
-    function resultClick(e, el) {
-      switch (el.tagName) {
-      case 'ALBUMART':
-        fn.queue.prepareSong(el, e);
-        break;
-      case 'NAME':
-        songTar = songTar.parentNode;
-        $('queue songs').innerHTML += songTar.outerHTML;
-        fn.queue.counter(1);
-        glow(songTar);
-        glow($('sidebar [queue]'));
-        break;
-      case 'ARTIST':
-        if (el.firstChild) {
-          resultQuery = 'artist:"' + el.firstChild.nodeValue + '"';
-          $('input').value = resultQuery;
-          displayResults(resultQuery, {'search':resultQuery, 'sort':'creationDate'});
-        }
-        break;
-      case 'ALBUM':
-        if (el.firstChild) {
-          resultQuery = 'album:"' + el.firstChild.nodeValue + '"';
-          $('input').value = resultQuery;
-          displayResults(resultQuery, {'search':resultQuery, 'sort':'creationDate'});
-        }
-        break;
-      default:
-        break;
-      }
-    }
-
-    function sort(el, e) {
-      displayResults(o2.currentQuery, {'sort': el.tagName.toLowerCase()});
-    }
-
-    var allCount, allSongs;
-    function addAll(el) {
-      $('queue songs').innerHTML += resultsItems.join('');
-      glow(el);
-      glow($('sidebar [queue]'));
-      allCount = d.querySelectorAll('results songs song').length;
-      fn.queue.counter(allCount);
-    }
-
-    var date = 'creationDate:[1 ' + (new Date()*2) + ']';
-    function latest() {
-      displayResults(date, {'search': date, 'sort': 'creationDate'});
-    }
-
-    function random() {
-      console.log('this is random');
-    }
-
-    return {
-      search: search,
-      sort: sort,
-      albumArt: albumArt,
-      buildResults: buildResults,
-      displayResults: displayResults,
-      addSongToQueue: addSongToQueue,
-      addAll: addAll,
-      latest: latest,
-      random: random
+  for (i = 0, len = songs.length; i<len; i++) {
+    song = songs[i],
+    link = [],
+    data = {
+      album:        song.album,
+      title:        song.title,
+      artist:       song.artist,
+      id:           song.id,
+      albumArtUrl:  song.albumArtUrl
     };
 
-  }());
+    link.push(songModule.albumArt(song.albumArtUrl));
+    link.push('<name>', song.title, '</name>');
+    link.push('<artist>', song.artist, '</artist>');
+    link.push('<album>', song.album || '', '</album>');
 
-}(window, document, window.o2));
+    indSong = '<song id="' + song.id + '" data-songdata="' + json.toStr(data) + '">' + link.join('') + '</song>';
+
+    resultsItems.push(indSong);
+  }
+
+  return resultsItems.join('');
+}
+
+module.exports = {
+  search: function(e) {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      e.target.blur();
+      displayResults(e.target.value, {'search':e.target.value, 'sort':'creationDate'});
+    }
+  },
+
+  getSongs: getSongs,
+
+  buildResults: buildResults,
+
+  resultCount: resultCount,
+
+  displayResults: displayResults,
+
+  glow: glow,
+
+  addSongToQueue: function(el, e) {
+    songTar = e.target;
+    resultClick(e, songTar);
+  },
+
+  sort: function(el, e) {
+    displayResults(o2.currentQuery, {'sort': el.tagName.toLowerCase()});
+  },
+
+  addAll: function(el) {
+    $('queue songs').innerHTML += resultsItems.join('');
+    glow(el);
+    glow($('sidebar [queue]'));
+    allCount = document.querySelectorAll('results songs song').length;
+    queue.counter(allCount);
+  },
+
+  latest: function() {
+    displayResults(date, {'search': date, 'sort': 'creationDate'});
+  },
+
+  random: function() {
+    console.log('this is random');
+  }
+};
 
 

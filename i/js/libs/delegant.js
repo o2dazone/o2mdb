@@ -45,7 +45,7 @@
     }
 
     function addListener(el,evt) {
-      d.querySelector(el).addEventListener(
+      document.querySelector(el).addEventListener(
         evt,
         (function(e){evtFunc(e);}),
         true

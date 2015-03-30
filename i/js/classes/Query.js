@@ -1,44 +1,34 @@
-(function(w,d, o2, wh){
-  'use strict';
+//written by DextOr from stackoverflow.com [ http://stackoverflow.com/a/901144 ]
+function getQueryString(a){a=a.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");a=(new RegExp("[\\?&]"+a+"=([^&#]*)")).exec(location.search);return a===null?"":decodeURIComponent(a[1].replace(/\+/g," "));}
 
-  var fn = o2.fn;
+var wh = window.history,
+    q, search, sort, songId;
 
-  fn.query = (function(){
-    //written by DextOr from stackoverflow.com [ http://stackoverflow.com/a/901144 ]
-    function getQueryString(a){a=a.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");a=(new RegExp("[\\?&]"+a+"=([^&#]*)")).exec(location.search);return a===null?"":decodeURIComponent(a[1].replace(/\+/g," "));}
+module.exports = {
 
-    function getSearchQuery() {
-      return unescape(getQueryString('s')) || '';
-    }
+  getSearchQuery: function() {
+    return unescape(getQueryString('s')) || '';
+  },
 
-    function getSongIdQuery() {
-      return unescape(getQueryString('p')) || '';
-    }
+  getSongIdQuery: function() {
+    return unescape(getQueryString('p')) || '';
+  },
 
-    function getSortQuery() {
-      return unescape(getQueryString('sort')) || 'creationDate';
-    }
+  getSortQuery: function() {
+    return unescape(getQueryString('sort')) || 'creationDate';
+  },
 
-    var q, search, sort, songId;
-    function write(obj) {
-      q = '?';
-      if ((search = obj.search || getSearchQuery()))
-        q += 's=' + search + '&';
-      if ((sort = obj.sort || getSortQuery()))
-        q += 'sort=' + sort;
-      if ((songId = obj.songId || getSongIdQuery()))
-        q += '&p=' + songId;
+  write: function(obj) {
+    q = '?';
+    if ((search = obj.search || this.getSearchQuery()))
+      q += 's=' + search + '&';
+    if ((sort = obj.sort || this.getSortQuery()))
+      q += 'sort=' + sort;
+    if ((songId = obj.songId || this.getSongIdQuery()))
+      q += '&p=' + songId;
 
-      wh.replaceState('o2', 'o2', q);
-    }
+    wh.replaceState('o2', 'o2', q);
+  }
 
-    return {
-      write: write,
-      getSongIdQuery: getSongIdQuery,
-      getSearchQuery: getSearchQuery,
-      getSortQuery: getSortQuery
-    };
+};
 
-  }());
-
-}(window, document, window.o2, window.history));

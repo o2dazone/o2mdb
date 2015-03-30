@@ -1,55 +1,47 @@
-(function(w,d, o2){
-  'use strict';
+var o2 = require('../o2mdb.js'),
+    $ = o2.$,
+    page = o2.page,
+    json = require('./Json.js'),
+    query = require('./Query.js'),
+    search = require('./Search.js'),
+    scrollTimer,
+    results = $('results songs'),
+    pagingNum = 100;
 
-  var fn = o2.fn,
-      $ = o2.$;
+    console.log(search);
 
-  fn.paging = (function(){
+function getMoreSongs(queryString, callback) {
+  queryString = o2.searchUrl + queryString + '/page/' + (page + 1) + '/sort/' + query.getSortQuery() + '/desc';
 
-    var page = 1,
-        pagingNum = 100;
+  json.get(queryString, function(r){
+    callback(r);
+    page++;
+  });
+}
 
-    function getMoreSongs(query, callback) {
-      query = o2.searchUrl + query + '/page/' + (page + 1) + '/sort/' + fn.query.getSortQuery() + '/desc';
+function loadMoreResults() {
+  getMoreSongs(o2.currentQuery, function(r){
+    if (!r.length || r[0] === '') return; // dont load if no results come back (for results divisable by exactly 100)
 
-      fn.json.get(query, function(r){
-        callback(r);
-        page++;
-      });
-    }
+    //appends all results to result window
+    $('results songs').innerHTML += search.buildResults(r);
+  });
+}
 
-    function loadMoreResults() {
-      getMoreSongs(o2.currentQuery, function(r){
-        if (!r.length || r[0] === '') return; // dont load if no results come back (for results divisable by exactly 100)
+module.exports = {
 
-        //appends all results to result window
-        $('results songs').innerHTML += fn.search.buildResults(r);
-      });
-    }
+  loadMoreResults: loadMoreResults,
 
-    var scrollTimer,
-        results = $('results songs');
-    function scrollEvt(el, e) {
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(function(){
-        if ((d.querySelectorAll('results songs song').length === pagingNum * page) && (results.scrollHeight - results.scrollTop - 500) < results.clientHeight) {
-          loadMoreResults();
-        }
-      },500);
-    }
+  scrollEvt: function(el, e) {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function(){
+      if ((document.querySelectorAll('results songs song').length === pagingNum * page) && (results.scrollHeight - results.scrollTop - 500) < results.clientHeight) {
+        loadMoreResults();
+      }
+    },500);
+  }
 
-    function reset() {
-      page = 1;
-    }
-
-    return {
-      scrollEvt: scrollEvt,
-      reset: reset
-    };
-
-  }());
-
-}(window, document, window.o2));
+};
 
 
 

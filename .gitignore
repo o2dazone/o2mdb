@@ -9,3 +9,5 @@ todo
 .sass_cache/**/*
 .sass-cache/*
 .htaccess
+i/js/bundle.js
+*.sublime-project

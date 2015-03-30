@@ -19,35 +19,27 @@
 
 */
 
-(function(w){
-  'use strict';
+var dom = {};
 
-  var o2 = function() {
-    var dom = {},
-        fn = {};
+module.exports = {
 
-    function selector(el) {
-      if (!dom[el])
-        dom[el] = document.querySelector(el);
+  currentQuery: '',
 
-      return dom[el];
-    }
+  page: 1,
 
-    var searchUrl = 'http://o2dazone.com/music/search/',
-        streamUrl = 'http://o2dazone.com/music/song/stream-url/';
+  searchUrl: 'http://o2dazone.com/music/search/',
 
-    function querySelect(selector) {
-      return document.querySelector(selector);
-    }
+  streamUrl: 'http://o2dazone.com/music/song/stream-url/',
 
-    return {
-      $: selector,
-      searchUrl: searchUrl,
-      streamUrl: streamUrl,
-      _: querySelect,
-      fn: fn
-    };
-  };
+  _: function(selector) {
+    return document.querySelector(selector);
+  },
 
-  w.o2 = o2();
-}(window));
+  $: function(el) {
+    if (!dom[el])
+      dom[el] = document.querySelector(el);
+
+    return dom[el];
+  }
+
+};

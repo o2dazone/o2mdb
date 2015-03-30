@@ -1,43 +1,32 @@
-(function(w,d, o2){
-  'use strict';
+var $ = require('../o2mdb.js').$,
+    sectionDom;
 
-  o2.fn.navigation = (function(){
+function showSection(showSec, hideSec) {
+  if ((sectionDom = document.querySelector(showSec+'[hide]')))
+    sectionDom.removeAttribute('hide')
 
-    var $ = o2.$;
+  $(hideSec).setAttribute('hide','');
 
-    var sectionDom;
-    function showSection(showSec, hideSec) {
-      if ((sectionDom = d.querySelector(showSec+'[hide]')))
-        sectionDom.removeAttribute('hide')
+  selectNav(showSec);
+}
 
-      $(hideSec).setAttribute('hide','');
+function selectNav(el) {
+  document.querySelector('sidebar [selected]').removeAttribute('selected');
+  $('[' + el + ']').setAttribute('selected','');
+}
 
-      selectNav(showSec);
-    }
+module.exports = {
 
-    function selectNav(el) {
-      d.querySelector('sidebar [selected]').removeAttribute('selected');
-      $('[' + el + ']').setAttribute('selected','');
-    }
+  showResults: function() {
+    showSection('results','queue');
+  },
 
-    function showResults() {
-      showSection('results','queue');
-    }
+  showQueue: function() {
+    showSection('queue','results');
+  },
 
-    function showQueue() {
-      showSection('queue','results');
-    }
+  showPlaylist: function(el) {
+    console.log('ayyyy not done yet...');
+  }
 
-    function showPlaylist(el) {
-      console.log('ayyyy not done yet...');
-    }
-
-    return {
-      showResults: showResults,
-      showQueue: showQueue,
-      showPlaylist: showPlaylist
-    };
-
-  }());
-
-}(window, document, window.o2));
+};

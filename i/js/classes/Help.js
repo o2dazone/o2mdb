@@ -1,30 +1,23 @@
-(function(w,d, o2){
-  'use strict';
+var $ = require('../o2mdb.js').$,
+    cookie = require('./Cookie.js');
 
-  var $ = o2.$,
-      fn = o2.fn;
+module.exports = {
 
-  fn.help = (function(){
-
-    function show() {
-      if (!fn.cookie.get('shownHelp')) {
-        $('help').removeAttribute('hide');
-      }
+  show: function() {
+    if (!cookie.get('shownHelp')) {
+      $('help').removeAttribute('hide');
     }
+  },
 
-    function init() {
-      show();
-    }
+  init: function() {
+    show();
+  },
 
-    function close() {
-      $('help').setAttribute('hide','');
-      fn.cookie.set('shownHelp',true);
-    }
+  close: function() {
+    $('help').setAttribute('hide','');
+    cookie.set('shownHelp',true);
+  }
 
-    return {
-      close: close
-    }
+};
 
-  }());
 
-}(window, document, window.o2));
