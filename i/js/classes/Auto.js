@@ -5,38 +5,38 @@ var o2 = require('../o2mdb.js'),
     _ = o2._,
     $ = o2.$;
 
-module.exports = {
+function autoSearch() {
+  $('input').value = query.getSearchQuery();
+  search.displayResults($('input').value, {}, true);
+}
 
-  init: function() {
-    var paramMatch, i, paramKey, len,
-        regex = /[\?&]([^=]+)=/g,
-        paramList = [],
-        loc = window.location.href;
+function autoPlay() {
+  song.getById(query.getSongIdQuery());
+}
 
-    var paramDelegator = {
-        s: this.search,
-        p: this.play
-    };
+function init() {
+  var paramMatch, i, paramKey, len,
+      regex = /[\?&]([^=]+)=/g,
+      paramList = [],
+      loc = window.location.href;
 
-    while ((paramMatch = regex.exec(loc)) !== null)
-      paramList.push(paramMatch[1]);
+  var paramDelegator = {
+      's': autoSearch,
+      'p': autoPlay
+  };
 
-    for (i = paramList.length, len = 0; i > len; i--) {
-      paramKey = paramList[i-1];
-      if (paramDelegator[paramKey]) {
-        paramDelegator[paramKey]();
-      }
+  while ((paramMatch = regex.exec(loc)) !== null)
+    paramList.push(paramMatch[1]);
+
+  for (i = paramList.length, len = 0; i > len; i--) {
+    paramKey = paramList[i-1];
+    if (paramDelegator[paramKey]) {
+      paramDelegator[paramKey]();
     }
-  },
-
-  search: function() {
-    $('input').value = query.getSearchQuery();
-    search.displayResults($('input').value, {}, true);
-  },
-
-  play: function() {
-    song.getById(query.getSongIdQuery());
   }
+}
 
+module.exports = {
+  init: init
 };
 

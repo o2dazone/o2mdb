@@ -177,49 +177,50 @@ function buildResults(songs) {
   return resultsItems.join('');
 }
 
-module.exports = {
-  search: function(e) {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-      e.target.blur();
-      displayResults(e.target.value, {'search':e.target.value, 'sort':'creationDate'});
-    }
-  },
+function addSongToQueue(el, e) {
+  songTar = e.target;
+  resultClick(e, songTar);
+}
 
-  getSongs: getSongs,
+function sort(el, e) {
+  displayResults(o2.currentQuery, {'sort': el.tagName.toLowerCase()});
+}
 
-  buildResults: buildResults,
 
-  resultCount: resultCount,
+function addAll(el) {
+  $('queue songs').innerHTML += resultsItems.join('');
+  glow(el);
+  glow($('sidebar [queue]'));
+  allCount = document.querySelectorAll('results songs song').length;
+  queue.counter(allCount);
+}
 
-  displayResults: displayResults,
+function latest() {
+  displayResults(date, {'search': date, 'sort': 'creationDate'});
+}
 
-  glow: glow,
+function random() {
+  console.log('this is random');
+}
 
-  addSongToQueue: function(el, e) {
-    songTar = e.target;
-    resultClick(e, songTar);
-  },
-
-  sort: function(el, e) {
-    displayResults(o2.currentQuery, {'sort': el.tagName.toLowerCase()});
-  },
-
-  addAll: function(el) {
-    $('queue songs').innerHTML += resultsItems.join('');
-    glow(el);
-    glow($('sidebar [queue]'));
-    allCount = document.querySelectorAll('results songs song').length;
-    queue.counter(allCount);
-  },
-
-  latest: function() {
-    displayResults(date, {'search': date, 'sort': 'creationDate'});
-  },
-
-  random: function() {
-    console.log('this is random');
+function search(e) {
+  if (e.keyCode === 13) {
+    e.preventDefault();
+    e.target.blur();
+    displayResults(e.target.value, {'search':e.target.value, 'sort':'creationDate'});
   }
+}
+
+module.exports = {
+  search: search,
+  buildResults: buildResults,
+  resultCount: resultCount,
+  displayResults: displayResults,
+  addSongToQueue: addSongToQueue,
+  sort: sort,
+  addAll: addAll,
+  latest: latest,
+  random: random
 };
 
 

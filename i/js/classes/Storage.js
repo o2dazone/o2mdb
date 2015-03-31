@@ -1,19 +1,23 @@
 var data;
 
+function set(key, value) {
+  sessionStorage.setItem(key, value);
+}
+
+function get(key, callback) {
+  if ((data = sessionStorage.getItem(key))) {
+    if (callback)
+      callback(data);
+
+    return true;
+  }
+  return false;
+}
+
 module.exports = {
 
-  get: function(key, callback) {
-    if ((data = sessionStorage.getItem(key))) {
-      if (callback)
-        callback(data);
+  get: get ,
 
-      return true;
-    }
-    return false;
-  },
-
-  set: function(key, value) {
-    sessionStorage.setItem(key, value);
-  }
+  set: set
 
 };

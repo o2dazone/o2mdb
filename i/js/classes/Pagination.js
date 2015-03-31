@@ -8,8 +8,6 @@ var o2 = require('../o2mdb.js'),
     results = $('results songs'),
     pagingNum = 100;
 
-    console.log(search);
-
 function getMoreSongs(queryString, callback) {
   queryString = o2.searchUrl + queryString + '/page/' + (page + 1) + '/sort/' + query.getSortQuery() + '/desc';
 
@@ -28,24 +26,15 @@ function loadMoreResults() {
   });
 }
 
+function scrollEvt(el, e) {
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(function(){
+    if ((document.querySelectorAll('results songs song').length === pagingNum * page) && (results.scrollHeight - results.scrollTop - 500) < results.clientHeight) {
+      loadMoreResults();
+    }
+  },500);
+}
+
 module.exports = {
-
-  loadMoreResults: loadMoreResults,
-
-  scrollEvt: function(el, e) {
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(function(){
-      if ((document.querySelectorAll('results songs song').length === pagingNum * page) && (results.scrollHeight - results.scrollTop - 500) < results.clientHeight) {
-        loadMoreResults();
-      }
-    },500);
-  }
-
+  scrollEvt: scrollEvt
 };
-
-
-
-
-
-
-

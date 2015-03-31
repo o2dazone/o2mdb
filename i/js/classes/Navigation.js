@@ -15,18 +15,21 @@ function selectNav(el) {
   $('[' + el + ']').setAttribute('selected','');
 }
 
+function showResults() {
+  showSection('results','queue');
+}
+
+function showQueue() {
+  showSection('queue','results');
+}
+
+function showPlaylist(el) {
+  console.log('ayyyy not done yet...');
+}
+
 module.exports = {
-
-  showResults: function() {
-    showSection('results','queue');
-  },
-
-  showQueue: function() {
-    showSection('queue','results');
-  },
-
-  showPlaylist: function(el) {
-    console.log('ayyyy not done yet...');
-  }
+  showResults: showResults,
+  showQueue: showQueue,
+  showPlaylist: showPlaylist
 
 };

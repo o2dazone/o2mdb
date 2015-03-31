@@ -4,31 +4,35 @@ function getQueryString(a){a=a.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");a=(ne
 var wh = window.history,
     q, search, sort, songId;
 
+function getSearchQuery() {
+  return unescape(getQueryString('s')) || '';
+}
+
+function getSongIdQuery() {
+  return unescape(getQueryString('p')) || '';
+}
+
+
+function getSortQuery() {
+  return unescape(getQueryString('sort')) || 'creationDate';
+}
+
+function write(obj) {
+  q = '?';
+  if ((search = obj.search || this.getSearchQuery()))
+  q += 's=' + search + '&';
+  if ((sort = obj.sort || this.getSortQuery()))
+  q += 'sort=' + sort;
+  if ((songId = obj.songId || this.getSongIdQuery()))
+  q += '&p=' + songId;
+
+  wh.replaceState('o2', 'o2', q);
+}
+
 module.exports = {
-
-  getSearchQuery: function() {
-    return unescape(getQueryString('s')) || '';
-  },
-
-  getSongIdQuery: function() {
-    return unescape(getQueryString('p')) || '';
-  },
-
-  getSortQuery: function() {
-    return unescape(getQueryString('sort')) || 'creationDate';
-  },
-
-  write: function(obj) {
-    q = '?';
-    if ((search = obj.search || this.getSearchQuery()))
-      q += 's=' + search + '&';
-    if ((sort = obj.sort || this.getSortQuery()))
-      q += 'sort=' + sort;
-    if ((songId = obj.songId || this.getSongIdQuery()))
-      q += '&p=' + songId;
-
-    wh.replaceState('o2', 'o2', q);
-  }
-
+  getSearchQuery: getSearchQuery,
+  getSongIdQuery: getSongIdQuery,
+  getSortQuery: getSortQuery,
+  write: write
 };
 

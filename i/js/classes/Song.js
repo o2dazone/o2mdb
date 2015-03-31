@@ -83,6 +83,7 @@ function scrubTime() {
 }
 
 function injectSongObj(stream) {
+  console.log(stream);
   smSong = soundManager.load('smObj', {
     url: stream
   });
@@ -104,49 +105,51 @@ function play(track) {
   });
 }
 
-module.exports = {
-  albumArt: returnAlbumArt,
+function prepare(el, e) {
+ if ((playing = _('[playing]')))
+   playing.removeAttribute('playing');
 
-  prepare: function(el, e) {
-    if ((playing = _('[playing]')))
-      playing.removeAttribute('playing');
+ if (e) { //clicking a song in queue
+   songTar = e.target;
+   if (songTar.tagName !== 'SONG')
+     songTar = songTar.parentNode; // jump up one if its not the element youre looking for
+ } else songTar = el; //clicking "prev/next"
 
-    if (e) { //clicking a song in queue
-      songTar = e.target;
-      if (songTar.tagName !== 'SONG')
-        songTar = songTar.parentNode; // jump up one if its not the element youre looking for
-    } else songTar = el; //clicking "prev/next"
+ songTar.setAttribute('playing','');
+ play(json.toObj(songTar.dataset.songdata));
+}
 
-    songTar.setAttribute('playing','');
-    play(json.toObj(songTar.dataset.songdata));
-  },
+function onLoading() {
+  scrubTime();
+  if (!songDuration)
+    songDuration = smSong.duration;
+}
 
-  onLoading: function() {
-    scrubTime();
-    if (!songDuration)
-      songDuration = smSong.duration;
-  },
+function durationTracking(el, e) {
+  readjustWidth();
+  microJump = (((e.offsetX/durBarWidth) * songDuration) | 0);
 
-  play: play,
-
-  durationTracking: function(el, e) {
-    readjustWidth();
-    microJump = (((e.offsetX/durBarWidth) * songDuration) | 0);
-
-    if (streamUrl) {
-      injectSongObj(streamUrl + '&begin=' + microJump);
-    } else {
-      getStreamUrl(o2.streamUrl + query.getSongIdQuery(), function(r) {
-        injectSongObj(r + '&begin=' + microJump);
-      });
-    }
-  },
-
-  getById: function(id) {
-    json.get(o2.searchUrl + 'id:'+id, function(r){
-      play(r[0]);
+  if (streamUrl) {
+    injectSongObj(streamUrl + '&begin=' + microJump);
+  } else {
+    getStreamUrl(o2.streamUrl + query.getSongIdQuery(), function(r) {
+      injectSongObj(r + '&begin=' + microJump);
     });
   }
+}
 
+function getById(id) {
+ json.get(o2.searchUrl + 'id:'+id, function(r){
+   play(r[0]);
+ });
+}
+
+module.exports = {
+  albumArt: returnAlbumArt,
+  prepare: prepare,
+  onLoading: onLoading,
+  play: play,
+  durationTracking: durationTracking,
+  getById: getById
 };
 

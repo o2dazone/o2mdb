@@ -20,68 +20,68 @@ function prevNext(song) {
   song.scrollIntoView(true);
 }
 
-module.exports = {
+function skip(el, e) {
+  songModule.durationTracking(el, e);
+}
 
-  hotkeys: function(e) {
-    switch (e.keyCode) {
-    case 32:
-      playpause($('playpause'),e);
-      break;
-    default:
-      break;
-    }
-  },
+function shuffle(el) {
+  if (_('shuffle[on]')) el.removeAttribute('on');
+  else el.setAttribute('on','');
+}
 
-  // clean this up...
-  playpause: function(el,e) {
-    if (e.target.tagName === 'INPUT') return; // dont do anything if input is focused
+function pickShuffled() {
+ trackList = currentPane().querySelectorAll('song');
+ return trackList[Math.floor(Math.random() * trackList.length)];
+}
 
-    if(e.type === 'keydown') e.preventDefault(); // if its a keydown (and not a click), keep page from scrolling by hitting spacebar
+function finish() {
+  next();
+}
 
-    _('playpause[pause]') ? play() : pause();
-  },
+function next() {
+  song = (!_('[playing]') || _('[playing]').nextSibling === null) ? currentPane().querySelector('song') : _('[playing]').nextSibling;
+  prevNext(song);
+}
 
-  prevNext: prevNext,
+function previous() {
+  song = currentPane().querySelector('song[playing]').previousSibling === null ? currentPane().querySelector('song') : currentPane().querySelector('song[playing]').previousSibling;
+  prevNext(song);
+}
 
+function pause() {
+  $('playpause').setAttribute('pause','');
+  soundManager.pause('smObj');
+}
 
-  play: function() {
-    $('playpause').removeAttribute('pause');
-    soundManager.play('smObj');
-  },
+function play() {
+  $('playpause').removeAttribute('pause');
+  soundManager.play('smObj');
+}
 
-  pause: function() {
-    $('playpause').setAttribute('pause','');
-    soundManager.pause('smObj');
-  },
+function playpause(el,e) {
+  if (e.target.tagName === 'INPUT') return; // dont do anything if input is focused
 
-  previous: function() {
-    song = currentPane().querySelector('song[playing]').previousSibling === null ? currentPane().querySelector('song') : currentPane().querySelector('song[playing]').previousSibling;
-    prevNext(song);
-  },
+  if(e.type === 'keydown') e.preventDefault(); // if its a keydown (and not a click), keep page from scrolling by hitting spacebar
 
-  next: function() {
-    song = (!_('[playing]') || _('[playing]').nextSibling === null) ? currentPane().querySelector('song') : _('[playing]').nextSibling;
-    prevNext(song);
-  },
+  _('playpause[pause]') ? play() : pause();
+}
 
-  finish: function() {
-    this.next();
-  },
-
-  pickShuffled: function() {
-    trackList = currentPane().querySelectorAll('song');
-    return trackList[Math.floor(Math.random() * trackList.length)];
-  },
-
-
-  shuffle: function(el) {
-    if (_('shuffle[on]')) el.removeAttribute('on');
-    else el.setAttribute('on','');
-  },
-
-  skip: function(el, e) {
-    songModule.durationTracking(el, e);
+function hotkeys(e) {
+  switch (e.keyCode) {
+  case 32:
+    playpause($('playpause'),e);
+    break;
+  default:
+    break;
   }
+}
 
-
+module.exports = {
+  hotkeys: hotkeys,
+  playpause: playpause,
+  previous: previous,
+  next: next,
+  finish: finish,
+  shuffle: shuffle,
+  skip: skip
 }
