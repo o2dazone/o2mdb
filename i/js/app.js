@@ -1,3 +1,5 @@
+require('./jsx/index.jsx');
+
 // event delgeation
 require('./libs/delegant.min.js');
 

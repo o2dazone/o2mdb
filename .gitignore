@@ -6,6 +6,7 @@ todo
 *.ttf
 *.otf
 *.sassc
+node_modules/
 .sass_cache/**/*
 .sass-cache/*
 .htaccess
