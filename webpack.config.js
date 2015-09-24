@@ -1,3 +1,5 @@
+var webpack = require('webpack');
+
 module.exports = {
     entry: "./i/js/app.js",
     output: {
@@ -14,12 +16,12 @@ module.exports = {
         }
       ]
     },
-    externals: {
-      //don't bundle the 'react' npm package with our bundle.js
-      //but get it from a global 'React' variable
-      'react': 'React'
-    },
     resolve: {
       extensions: ['', '.js', '.jsx']
-    }
+    },
+    plugins: [
+      new webpack.ProvidePlugin({
+          React: "react"
+      })
+    ]
 };

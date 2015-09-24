@@ -11,4 +11,3 @@ require('./libs/sonic.js');
 
 // sets up the app
 require('./setup.js');
-

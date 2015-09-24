@@ -5,83 +5,11 @@
   <title>o2dazone's Music Player</title>
   <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
   <link type="text/css" rel="stylesheet" href="i/style.css" />
-  <script src="./node_modules/react/dist/react-with-addons.js"></script>
 </head>
 <body>
-<div id="content"></div>
-<header>
-  <h1><a href="index.html">o2mdb</a></h1>
-  <form action="index.html" method="get">
-    <fieldset>
-      <label>Search</label>
-      <input type="text" placeholder="Search for songs" name="s" autocomplete="off" />
-    </fieldset>
-  </form>
-</header>
 
-<container>
+  <script src="http://localhost:8090/webpack-dev-server.js"></script>
+  <script type="text/javascript" src="http://localhost:8090/assets/bundle.js"></script>
 
-  <sidebar>
-    <a href="#" results data-dele-click="nav.showResults" selected>Search Results</a>
-    <a href="#" queue data-dele-click="nav.showQueue">Music Queue</a>
-    <a href="#" playlist data-dele-click="nav.showPlaylist">Playlists</a>
-    <pl data-dele-click="search.latest">Latest Additions</pl>
-    <pl data-dele-click="search.random">Start Listening</pl>
-  </sidebar>
-
-  <results songlist>
-    <sectionhead></sectionhead>
-
-    <songlegends>
-      <albumart></albumart>
-      <name data-dele-click="search.sort">Name</name>
-      <artist data-dele-click="search.sort">Artist</artist>
-      <album data-dele-click="search.sort">Album</album>
-    </songlegends>
-
-    <songs data-dele-scroll="paging.scrollEvt" data-dele-click="search.addSongToQueue"></songs>
-  </results>
-
-
-  <queue hide songlist>
-    <sectionhead>You have 0 songs in your queue</sectionhead>
-
-    <songlegends>
-      <albumart></albumart>
-      <name>Name</name>
-      <artist>Artist</artist>
-      <album>Album</album>
-    </songlegends>
-
-    <songs data-dele-click="song.prepare" data-dele-change="queue.counter"></songs>
-
-  </queue>
-
-</container>
-
-<footer>
-
-  <info>
-    <albumart></albumart>
-    <name></name>
-    <artistalbum></artistalbum>
-  </info>
-
-  <player>
-    <previous data-dele-click="controls.previous">Previous Track</previous>
-    <playpause pause data-dele-click="controls.playpause">Play/Pause</playpause>
-    <next data-dele-click="controls.next">Next Track</next>
-    <shuffle data-dele-click="controls.shuffle">Shuffle</shuffle>
-  </player>
-
-  <duration data-dele-click="controls.skip">
-    <elapsed data-dele-click="controls.skip">
-      <time></time>
-    </elapsed>
-  </duration>
-
-</footer>
-<script src="http://localhost:8090/webpack-dev-server.js"></script>
-<script type="text/javascript" src="http://localhost:8090/assets/bundle.js"></script>
 </body>
 </html>

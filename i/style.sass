@@ -29,7 +29,7 @@ html, body
   padding: 0
   box-sizing: border-box
 
-body
+div
   display: flex
   flex-direction: column
   justify-content: center
@@ -76,6 +76,13 @@ body
   @include font-smoothing
   min-width: 640px
   overflow: hidden
+
+div
+  position: absolute
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
 
 /* header */
 $header-height: 65px
@@ -382,48 +389,48 @@ time
 
 
 
-@media all and (max-width: 640px)
-  body
-    justify-content: flex-start
+// @media all and (max-width: 640px)
+//   body
+//     justify-content: flex-start
 
-  container
-    flex-flow: column
+//   container
+//     flex-flow: column
 
-  [songlist]
-    flex: 0 1 auto
+//   [songlist]
+//     flex: 0 1 auto
 
-  sidebar
-    width: 100%
-    flex-direction: row
-    justify-content: center
-    a
-      width: 33%
-      text-align: center
-    pl
-      display: none
-  song
-    min-height: 60px
-    font-size: 20px
-    albumart
-      width: 60px
-      min-width: 60px
-      height: 60px
-      background-size: 60px
-    &:hover albumart:before
-      background: $color-highlight
-  sectionhead term
-    width: 40%
-  footer info
-    width: 70%
+//   sidebar
+//     width: 100%
+//     flex-direction: row
+//     justify-content: center
+//     a
+//       width: 33%
+//       text-align: center
+//     pl
+//       display: none
+//   song
+//     min-height: 60px
+//     font-size: 20px
+//     albumart
+//       width: 60px
+//       min-width: 60px
+//       height: 60px
+//       background-size: 60px
+//     &:hover albumart:before
+//       background: $color-highlight
+//   sectionhead term
+//     width: 40%
+//   footer info
+//     width: 70%
 
-@media all and (max-height: 250px)
-  sidebar, header, container
-    display: none
-  footer
-    margin-top: 3px
-    flex: 1 0
-    flex-flow: column
-    info, player
-      width: 100%
+// @media all and (max-height: 250px)
+//   sidebar, header, container
+//     display: none
+//   footer
+//     margin-top: 3px
+//     flex: 1 0
+//     flex-flow: column
+//     info, player
+//       width: 100%
 
 
