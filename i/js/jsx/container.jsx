@@ -14,7 +14,7 @@ module.exports = React.createClass({
                     <pl data-dele-click="search.random">Start Listening</pl>
                   </sidebar>
 
-                  <results data-songlist>
+                  <results songlist>
                     <sectionhead></sectionhead>
 
                     <songlegends>
@@ -28,7 +28,7 @@ module.exports = React.createClass({
                   </results>
 
 
-                  <queue data-hide data-songlist>
+                  <queue hide songlist>
                     <sectionhead>You have 0 songs in your queue</sectionhead>
 
                     <songlegends>
