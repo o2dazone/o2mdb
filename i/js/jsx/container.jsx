@@ -7,14 +7,14 @@ module.exports = React.createClass({
                 <container>
 
                   <sidebar>
-                    <a href="#" results data-dele-click="nav.showResults" selected>Search Results</a>
-                    <a href="#" queue data-dele-click="nav.showQueue">Music Queue</a>
-                    <a href="#" playlist data-dele-click="nav.showPlaylist">Playlists</a>
+                    <a href="#" data-dele-click="nav.showResults" className="results selected">Search Results</a>
+                    <a href="#" className="queue" data-dele-click="nav.showQueue">Music Queue</a>
+                    <a href="#" className="playlist" data-dele-click="nav.showPlaylist">Playlists</a>
                     <pl data-dele-click="search.latest">Latest Additions</pl>
                     <pl data-dele-click="search.random">Start Listening</pl>
                   </sidebar>
 
-                  <results songlist>
+                  <results className="songlist">
                     <sectionhead></sectionhead>
 
                     <songlegends>
@@ -28,7 +28,7 @@ module.exports = React.createClass({
                   </results>
 
 
-                  <queue hide songlist>
+                  <queue className="songlist hide">
                     <sectionhead>You have 0 songs in your queue</sectionhead>
 
                     <songlegends>

@@ -2,17 +2,16 @@ var $ = require('../o2mdb.js').$,
     sectionDom;
 
 function showSection(showSec, hideSec) {
-  if ((sectionDom = document.querySelector(showSec+'[hide]')))
-    sectionDom.removeAttribute('hide')
+  if ((sectionDom = document.querySelector(showSec+'.hide')))
+    sectionDom.classList.remove('hide')
 
-  $(hideSec).setAttribute('hide','');
-
-  selectNav(showSec);
+  $(hideSec).classList.add('hide');
+  selectNav($('.' + showSec));
 }
 
 function selectNav(el) {
-  document.querySelector('sidebar [selected]').removeAttribute('selected');
-  $('[' + el + ']').setAttribute('selected','');
+  document.querySelector('sidebar .selected').classList.remove('selected');
+  el.classList.add('selected');
 }
 
 function showResults() {
@@ -23,7 +22,7 @@ function showQueue() {
   showSection('queue','results');
 }
 
-function showPlaylist(el) {
+function showPlaylist() {
   console.log('ayyyy not done yet...');
 }
 

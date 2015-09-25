@@ -49,6 +49,9 @@ function displayResults(queryString, history, scroll) {
   $('results sectionhead').innerHTML = '';
   $('results sectionhead').appendChild(loader.canvas);
 
+  // write query param history
+  query.write(history);
+
   getSongs(queryString, function(r){
     rLen = r.length;
     resultCount(queryString);
@@ -59,9 +62,6 @@ function displayResults(queryString, history, scroll) {
 
     //appends all results to result window
     addResults(buildResults(songs));
-
-    // write query param history
-    query.write(history);
 
     // selects currently playing song
     if (!!query.getSongIdQuery()) {
@@ -96,7 +96,7 @@ function resultClick(e, el) {
     $('queue songs').innerHTML += songTar.outerHTML;
     queue.counter(1);
     glow(songTar);
-    glow($('sidebar [queue]'));
+    glow($('sidebar .queue'));
     break;
   case 'ARTIST':
     if (el.firstChild) {
@@ -120,9 +120,10 @@ function resultClick(e, el) {
 function getSongs(queryString, callback) {
   o2.currentQuery = queryString; // sets the "current" query for pagination
 
-  // query = (window.host) ? o2.searchUrl + query : 'testobj.json';
   queryString = o2.searchUrl + queryString;
 
+  // for testing...
+  // json.get('testobj.json', function(r){
   json.get(queryString + '/sort/' + query.getSortQuery() + '/desc', function(r){
     songs = r;
     callback(r);
@@ -190,7 +191,7 @@ function sort(el, e) {
 function addAll(el) {
   $('queue songs').innerHTML += resultsItems.join('');
   glow(el);
-  glow($('sidebar [queue]'));
+  glow($('sidebar .queue'));
   allCount = document.querySelectorAll('results songs song').length;
   queue.counter(allCount);
 }

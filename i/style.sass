@@ -50,7 +50,7 @@ sidebar
   order: 1
   flex: none
 
-[songlist]
+.songlist
   flex: 1 0 auto
   order: 2
   display: flex
@@ -118,7 +118,7 @@ sidebar
     line-height: $sidebar-menu-height
     font-weight: 300
     text-indent: 20px
-  [selected]
+  .selected
     text-indent: 16px
     &:before
       content: " "
@@ -141,7 +141,7 @@ container
 
 /* results and queue */
 $song-height: 34px
-[songlist]
+.songlist
   albumart
     max-width: $song-height
     position: relative
@@ -210,7 +210,7 @@ songs
   font-size: 14px
   justify-content: flex-start
 
-[songlist]
+.songlist
   albumart, name, artist, album
     flex: 1 0 auto
     overflow: hidden
@@ -288,7 +288,7 @@ footer
 $progress-bar-height: 10px
 info
   color: $color-leland
-  width: 70%
+  width: 100%
   font-weight: 300
   albumart
     width: $info-album-height
@@ -310,8 +310,7 @@ info
     color: $color-leland
 
 player
-  width: 30%
-  min-width: 240px
+  min-width: 250px
   white-space: nowrap
   overflow: hidden
   > *
@@ -376,7 +375,7 @@ time
   border-radius: 3px
 
 /* misc */
-[hide]
+.hide
   display: none
   visibility: hidden
 
@@ -389,48 +388,48 @@ time
 
 
 
-// @media all and (max-width: 640px)
-//   body
-//     justify-content: flex-start
+@media all and (max-width: 640px)
+  body
+    justify-content: flex-start
 
-//   container
-//     flex-flow: column
+  container
+    flex-flow: column
 
-//   [songlist]
-//     flex: 0 1 auto
+  .songlist
+    flex: 0 1 auto
 
-//   sidebar
-//     width: 100%
-//     flex-direction: row
-//     justify-content: center
-//     a
-//       width: 33%
-//       text-align: center
-//     pl
-//       display: none
-//   song
-//     min-height: 60px
-//     font-size: 20px
-//     albumart
-//       width: 60px
-//       min-width: 60px
-//       height: 60px
-//       background-size: 60px
-//     &:hover albumart:before
-//       background: $color-highlight
-//   sectionhead term
-//     width: 40%
-//   footer info
-//     width: 70%
+  sidebar
+    width: 100%
+    flex-direction: row
+    justify-content: center
+    a
+      width: 33%
+      text-align: center
+    pl
+      display: none
+  song
+    min-height: 60px
+    font-size: 20px
+    albumart
+      width: 60px
+      min-width: 60px
+      height: 60px
+      background-size: 60px
+    &:hover albumart:before
+      background: $color-highlight
+  sectionhead term
+    width: 40%
+  footer info
+    width: 70%
 
-// @media all and (max-height: 250px)
-//   sidebar, header, container
-//     display: none
-//   footer
-//     margin-top: 3px
-//     flex: 1 0
-//     flex-flow: column
-//     info, player
-//       width: 100%
+@media all and (max-height: 250px)
+  sidebar, header, container
+    display: none
+  footer
+    margin-top: 3px
+    flex: 1 0
+    flex-flow: column
+    info, player
+      width: 100%
 
 
