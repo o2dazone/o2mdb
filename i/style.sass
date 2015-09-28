@@ -29,7 +29,7 @@ html, body
   padding: 0
   box-sizing: border-box
 
-div
+#app
   display: flex
   flex-direction: column
   justify-content: center
@@ -77,7 +77,7 @@ body
   min-width: 640px
   overflow: hidden
 
-div
+#app
   position: absolute
   top: 0
   right: 0
@@ -142,15 +142,15 @@ container
 /* results and queue */
 $song-height: 34px
 .songlist
-  albumart
+  .albumart
     max-width: $song-height
     position: relative
-  name
+  .name
     width: 30%
     text-indent: 8px
-  artist
+  .artist
     width: 20%
-  album
+  .album
     width: 35%
   noresults
     width: 100%
@@ -211,7 +211,7 @@ songs
   justify-content: flex-start
 
 .songlist
-  albumart, name, artist, album
+  .albumart, .name, .artist, .album
     flex: 1 0 auto
     overflow: hidden
     text-overflow: ellipsis
@@ -220,17 +220,17 @@ songs
     min-height: $song-height
 
 song, info
-  albumart
+  .albumart
     @extend .cover
 
 song
   min-height: $song-height
-  albumart
+  .albumart
     width: $song-height
     height: $song-height
     background-size: $song-height
   &[playing]
-    albumart:before
+    .albumart:before
       @extend .eq
       content: " "
       position: absolute
@@ -241,7 +241,7 @@ song
   &:hover
     cursor: pointer
     background: $color-highlight
-    albumart:before
+    .albumart:before
       @extend .spriteProperties
       background-size: 200px
       content: " "
@@ -290,22 +290,22 @@ info
   color: $color-leland
   width: 100%
   font-weight: 300
-  albumart
+  .albumart
     width: $info-album-height
     height: $info-album-height
     background-size: $info-album-height
     float: left
     margin-right: 10px
-  name, artistalbum
+  .name, .artistalbum
     text-overflow: ellipsis
     white-space: nowrap
     overflow: hidden
     display: block
-  name
+  .name
     margin-top: 4px
     font-size: 19px
     color: $color-sagan
-  artistalbum
+  .artistalbum
     font-size: 16px
     color: $color-leland
 
@@ -410,12 +410,12 @@ time
   song
     min-height: 60px
     font-size: 20px
-    albumart
+    .albumart
       width: 60px
       min-width: 60px
       height: 60px
       background-size: 60px
-    &:hover albumart:before
+    &:hover .albumart:before
       background: $color-highlight
   sectionhead term
     width: 40%

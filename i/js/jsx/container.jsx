@@ -1,5 +1,7 @@
 'use strict'
 
+var Songs = require('./songs');
+
 module.exports = React.createClass({
     displayName: 'container',
     render: function(){
@@ -18,13 +20,13 @@ module.exports = React.createClass({
                     <sectionhead></sectionhead>
 
                     <songlegends>
-                      <albumart></albumart>
-                      <name data-dele-click="search.sort">Name</name>
-                      <artist data-dele-click="search.sort">Artist</artist>
-                      <album data-dele-click="search.sort">Album</album>
+                      <span className="albumart"></span>
+                      <span className="name" data-dele-click="search.sort">Name</span>
+                      <span className="artist" data-dele-click="search.sort">Artist</span>
+                      <span className="album" data-dele-click="search.sort">Album</span>
                     </songlegends>
 
-                    <songs data-dele-scroll="paging.scrollEvt" data-dele-click="search.addSongToQueue"></songs>
+                    <Songs />
                   </results>
 
 

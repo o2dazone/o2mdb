@@ -61,7 +61,7 @@ function displayResults(queryString, history, scroll) {
     }
 
     //appends all results to result window
-    addResults(buildResults(songs));
+    // addResults(buildResults(songs));
 
     // selects currently playing song
     if (!!query.getSongIdQuery()) {
@@ -123,8 +123,8 @@ function getSongs(queryString, callback) {
   queryString = o2.searchUrl + queryString;
 
   // for testing...
-  // json.get('testobj.json', function(r){
-  json.get(queryString + '/sort/' + query.getSortQuery() + '/desc', function(r){
+  json.get('testobj.json', function(r){
+  // json.get(queryString + '/sort/' + query.getSortQuery() + '/desc', function(r){
     songs = r;
     callback(r);
   }, function(){
